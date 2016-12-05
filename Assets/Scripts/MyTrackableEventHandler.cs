@@ -70,20 +70,22 @@ namespace Vuforia
 
         private void OnTrackingFound()
         {
-            Renderer[] rendererComponents = TrackedObjects.GetComponentsInChildren<Renderer>(true);
-            Collider[] colliderComponents = TrackedObjects.GetComponentsInChildren<Collider>(true);
+            //Renderer[] rendererComponents = TrackedObjects.GetComponentsInChildren<Renderer>(true);
+            //Collider[] colliderComponents = TrackedObjects.GetComponentsInChildren<Collider>(true);
 
-            // Enable rendering:
-            foreach (Renderer component in rendererComponents)
-            {
-                component.enabled = true;
-            }
+            //// Enable rendering:
+            //foreach (Renderer component in rendererComponents)
+            //{
+            //    component.enabled = true;
+            //}
 
-            // Enable colliders:
-            foreach (Collider component in colliderComponents)
-            {
-                component.enabled = true;
-            }
+            //// Enable colliders:
+            //foreach (Collider component in colliderComponents)
+            //{
+            //    component.enabled = true;
+            //}
+            MainController.control.targetsTrackedNow++;
+            TrackedObjects.SetActive(true);
 
             Debug.Log("Trackable " + mTrackableBehaviour.TrackableName + " found");
         }
@@ -91,21 +93,28 @@ namespace Vuforia
 
         private void OnTrackingLost()
         {
-            Renderer[] rendererComponents = TrackedObjects.GetComponentsInChildren<Renderer>(true);
-            Collider[] colliderComponents = TrackedObjects.GetComponentsInChildren<Collider>(true);
+            //Renderer[] rendererComponents = TrackedObjects.GetComponentsInChildren<Renderer>(true);
+            //Collider[] colliderComponents = TrackedObjects.GetComponentsInChildren<Collider>(true);
 
-            // Disable rendering:
-            foreach (Renderer component in rendererComponents)
-            {
-                component.enabled = false;
+            //// Disable rendering:
+            //foreach (Renderer component in rendererComponents)
+            //{
+            //    component.enabled = false;
+            //}
+
+            //// Disable colliders:
+            //foreach (Collider component in colliderComponents)
+            //{
+            //    component.enabled = false;
+            //}
+
+            
+            MainController.control.targetsTrackedNow--;
+            if(MainController.control.targetsTrackedNow <= 0) {
+                MainController.control.targetsTrackedNow = 0;
+                TrackedObjects.SetActive(false);
             }
-
-            // Disable colliders:
-            foreach (Collider component in colliderComponents)
-            {
-                component.enabled = false;
-            }
-
+                
             Debug.Log("Trackable " + mTrackableBehaviour.TrackableName + " lost");
         }
 

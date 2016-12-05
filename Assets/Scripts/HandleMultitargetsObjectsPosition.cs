@@ -3,24 +3,27 @@ using System.Collections;
 
 public class HandleMultitargetsObjectsPosition : MonoBehaviour
 {
+    
     public GameObject trackedObjects;
     public GameObject imageTargets;
-    // Use this for initialization
-
-    void Start()
-    {
-
+    
+    void Start(){
+        MainController.control.totalTargets = imageTargets.transform.childCount;
+        Debug.Log(imageTargets.transform.childCount);
     }
+
     // Update is called once per frame
-    void Update()
-    {
+    void Update(){
         
         Vector3 p = Vector3.zero;
         Quaternion r = Quaternion.identity;
-
-        for (int i = 0; i < trackedObjects.transform.childCount; i++) { 
-            if (trackedObjects.transform.GetChild(i).transform.gameObject.GetComponent<MeshRenderer>().enabled) { 
-               // trackedObjects.transform.position = Vector3.Lerp(trackedObjects.transform.position,)
+        
+        for (int i = 0; i < imageTargets.transform.childCount; i++)
+        {
+            if (trackedObjects.activeInHierarchy)
+            {
+                trackedObjects.transform.position = Vector3.Lerp(trackedObjects.transform.position, imageTargets.transform.GetChild(i).transform.position, 0.5f);
+                trackedObjects.transform.rotation = Quaternion.Slerp(trackedObjects.transform.rotation, imageTargets.transform.GetChild(i).transform.rotation, 0.5f);
             }
             //if (cubo2.gameObject.GetComponent<MeshRenderer>().enabled)
             //{
@@ -35,4 +38,5 @@ public class HandleMultitargetsObjectsPosition : MonoBehaviour
 
 
         }
+    }
 }
