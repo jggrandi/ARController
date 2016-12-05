@@ -21,6 +21,6 @@ public class MainController : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-        Debug.Log("tracked now: " + targetsTrackedNow);
+        //Debug.Log("tracked now: " + targetsTrackedNow);
 	}
 }

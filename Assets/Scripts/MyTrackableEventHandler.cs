@@ -23,7 +23,7 @@ namespace Vuforia
         #endregion // PRIVATE_MEMBER_VARIABLES
 
         public GameObject TrackedObjects;
-   
+        public bool tracking = false;
         #region UNTIY_MONOBEHAVIOUR_METHODS
     
         void Start()
@@ -84,10 +84,10 @@ namespace Vuforia
             //{
             //    component.enabled = true;
             //}
+            this.transform.GetChild(0).gameObject.SetActive(true);
             MainController.control.targetsTrackedNow++;
             TrackedObjects.SetActive(true);
-
-            Debug.Log("Trackable " + mTrackableBehaviour.TrackableName + " found");
+            //Debug.Log("Trackable " + mTrackableBehaviour.TrackableName + " found");
         }
 
 
@@ -110,12 +110,13 @@ namespace Vuforia
 
             
             MainController.control.targetsTrackedNow--;
-            if(MainController.control.targetsTrackedNow <= 0) {
+            this.transform.GetChild(0).gameObject.SetActive(false);
+            if (MainController.control.targetsTrackedNow <= 0) {
                 MainController.control.targetsTrackedNow = 0;
                 TrackedObjects.SetActive(false);
             }
                 
-            Debug.Log("Trackable " + mTrackableBehaviour.TrackableName + " lost");
+            //Debug.Log("Trackable " + mTrackableBehaviour.TrackableName + " lost");
         }
 
         #endregion // PRIVATE_METHODS
