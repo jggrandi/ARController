@@ -10,6 +10,16 @@ public class HandleMultitargetsObjectsPosition : MonoBehaviour
     void Start(){
         MainController.control.totalTargets = imageTargets.transform.childCount;
         //Debug.Log(imageTargets.transform.childCount);
+        for (int i = 0; i < imageTargets.transform.childCount; i++) {
+            GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            cube.transform.parent = imageTargets.transform.GetChild(i).transform;
+            cube.transform.position = Vector3.zero;
+            cube.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+            
+            cube.transform.GetComponent<BoxCollider>().enabled = false;
+            //imageTargets.transform.GetChild(i).GetChild(0).transform.position = Vector3.zero;
+            //imageTargets.transform.GetChild(i).GetChild(0).transform.rotation = Quaternion.identity;
+        }
     }
 
     // Update is called once per frame
@@ -17,11 +27,62 @@ public class HandleMultitargetsObjectsPosition : MonoBehaviour
 
         //Debug.Log(trackedObjects.transform.childCount);
 
-        for (int i = 0; i < imageTargets.transform.childCount; i++){
-            if (trackedObjects.activeInHierarchy){
+
+        Vector3 avg = Vector3.zero;
+        int n = 0;
+
+        for (int i = 0; i < imageTargets.transform.childCount; i++) {
+            if (trackedObjects.activeInHierarchy) {
                 if (imageTargets.transform.GetChild(i).GetChild(0).gameObject.activeInHierarchy) {
-                    trackedObjects.transform.position = Vector3.Lerp(trackedObjects.transform.position, imageTargets.transform.GetChild(i).GetChild(0).transform.position, 0.5f);
-                    trackedObjects.transform.rotation = Quaternion.Slerp(trackedObjects.transform.rotation, imageTargets.transform.GetChild(i).GetChild(0).transform.rotation, 0.5f);
+
+                    avg += imageTargets.transform.GetChild(i).GetChild(0).position;
+                    n++;
+                }
+            }
+        }
+
+        float distAvg = 0;
+        avg /= n;
+
+        for (int i = 0; i < imageTargets.transform.childCount; i++) {
+            if (trackedObjects.activeInHierarchy) {
+                if (imageTargets.transform.GetChild(i).GetChild(0).gameObject.activeInHierarchy) {
+                    distAvg += Vector3.Distance(imageTargets.transform.GetChild(i).GetChild(0).position, avg);
+                }
+            }
+        }
+        distAvg = Mathf.Max(distAvg / n, 0.05f);
+
+        Debug.Log("distAvg: " + distAvg);
+        Vector3 avg2 = Vector3.zero;
+        n = 0;
+
+        for (int i = 0; i < imageTargets.transform.childCount; i++) {
+            if (trackedObjects.activeInHierarchy) {
+                if (imageTargets.transform.GetChild(i).GetChild(0).gameObject.activeInHierarchy) {
+                    if (Vector3.Distance(imageTargets.transform.GetChild(i).GetChild(0).transform.position, avg) > distAvg*1.1) {
+                        Debug.Log("Descartado: " + i);
+                        continue;
+                    }
+                    
+                    trackedObjects.transform.position = Vector3.Lerp(trackedObjects.transform.position, imageTargets.transform.GetChild(i).GetChild(0).transform.position, 0.05f);
+                    trackedObjects.transform.rotation = Quaternion.Slerp(trackedObjects.transform.rotation, imageTargets.transform.GetChild(i).GetChild(0).transform.rotation, 0.05f);
+
+                    avg2 += imageTargets.transform.GetChild(i).GetChild(0).transform.position;
+                    n++;
+                }
+            }
+        }
+        
+        avg2 /= n;
+        if(n > 0)
+        for (int i = 0; i < imageTargets.transform.childCount; i++) {
+            if (trackedObjects.activeInHierarchy) {
+                if (imageTargets.transform.GetChild(i).GetChild(0).gameObject.activeInHierarchy) {
+                    if (Vector3.Distance(imageTargets.transform.GetChild(i).GetChild(0).transform.position, avg2) > 1.5f) continue;
+
+                    imageTargets.transform.GetChild(i).GetChild(0).transform.position = Vector3.Lerp(avg2, imageTargets.transform.GetChild(i).GetChild(0).transform.position, 0.999f);
+                    imageTargets.transform.GetChild(i).GetChild(0).transform.rotation = Quaternion.Slerp(trackedObjects.transform.rotation, imageTargets.transform.GetChild(i).GetChild(0).transform.rotation, 0.999f);
                 }
             }
         }
