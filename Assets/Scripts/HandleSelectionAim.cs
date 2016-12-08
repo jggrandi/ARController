@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class HandleSelection : MonoBehaviour {
+public class HandleSelectionAim : MonoBehaviour {
 
     public GameObject selectedObject;
     public GameObject trackedObjects;
@@ -13,6 +13,7 @@ public class HandleSelection : MonoBehaviour {
     
     // Use this for initialization
     void Start () {
+        selectedNow = new GameObject();
 	}
 	
 	// Update is called once per frame
@@ -37,7 +38,7 @@ public class HandleSelection : MonoBehaviour {
             }
 
         } else {
-            overNow.transform.GetComponent<Renderer>().material.color = Color.white;
+            //overNow.transform.GetComponent<Renderer>().material.color = Color.white;
             overNow = null;
             //selectedNow.transform.gameObject.transform.parent = trackedObjects.transform;
         }

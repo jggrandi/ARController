@@ -53,7 +53,7 @@ public class HandleMultitargetsObjectsPosition : MonoBehaviour
         }
         distAvg = Mathf.Max(distAvg / n, 0.05f);
 
-        Debug.Log("distAvg: " + distAvg);
+        //Debug.Log("distAvg: " + distAvg);
         Vector3 avg2 = Vector3.zero;
         n = 0;
 
@@ -74,17 +74,17 @@ public class HandleMultitargetsObjectsPosition : MonoBehaviour
             }
         }
         
-        avg2 /= n;
-        if(n > 0)
-        for (int i = 0; i < imageTargets.transform.childCount; i++) {
-            if (trackedObjects.activeInHierarchy) {
-                if (imageTargets.transform.GetChild(i).GetChild(0).gameObject.activeInHierarchy) {
-                    if (Vector3.Distance(imageTargets.transform.GetChild(i).GetChild(0).transform.position, avg2) > 1.5f) continue;
+        //avg2 /= n;
+        //if(n > 0)
+        //for (int i = 0; i < imageTargets.transform.childCount; i++) {
+        //    if (trackedObjects.activeInHierarchy) {
+        //        if (imageTargets.transform.GetChild(i).GetChild(0).gameObject.activeInHierarchy) {
+        //            if (Vector3.Distance(imageTargets.transform.GetChild(i).GetChild(0).transform.position, avg2) > 1.5f) continue;
 
-                    imageTargets.transform.GetChild(i).GetChild(0).transform.position = Vector3.Lerp(avg2, imageTargets.transform.GetChild(i).GetChild(0).transform.position, 0.999f);
-                    imageTargets.transform.GetChild(i).GetChild(0).transform.rotation = Quaternion.Slerp(trackedObjects.transform.rotation, imageTargets.transform.GetChild(i).GetChild(0).transform.rotation, 0.999f);
-                }
-            }
-        }
+        //            imageTargets.transform.GetChild(i).GetChild(0).transform.position = Vector3.Lerp(avg2, imageTargets.transform.GetChild(i).GetChild(0).transform.position, 0.999f);
+        //            imageTargets.transform.GetChild(i).GetChild(0).transform.rotation = Quaternion.Slerp(trackedObjects.transform.rotation, imageTargets.transform.GetChild(i).GetChild(0).transform.rotation, 0.999f);
+        //        }
+        //    }
+        //}
     }
 }
