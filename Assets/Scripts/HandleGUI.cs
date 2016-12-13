@@ -8,6 +8,7 @@ public class HandleGUI : MonoBehaviour {
     public GameObject selectScale;
     public GameObject btnGroup;
     public GameObject btnUngroup;
+    public GameObject guiGroupUngroup;
 
     // Use this for initialization
     public void buttonLock () {
@@ -40,8 +41,25 @@ public class HandleGUI : MonoBehaviour {
 
     }
 
-    public void buttonGroup() {
-        Debug.Log("eee");
+    public void toggleGroup() {
+        if (MainController.control.isToGroup) {
+            MainController.control.isToGroup = false;
+            btnGroup.SetActive(true);
+            btnUngroup.SetActive(false);
+        } else {
+            MainController.control.isToGroup = true;
+            btnGroup.SetActive(false);
+            btnUngroup.SetActive(true);
+        }
+    }
+
+    private void Update() {
+       if(MainController.control.objSelectedNow.Count > 1) {
+            guiGroupUngroup.SetActive(true);
+        } else {
+            guiGroupUngroup.SetActive(false);
+        }
+
     }
 
 

@@ -10,8 +10,9 @@ public class MainController : MonoBehaviour {
     public int targetsTrackedNow = 0;
     public int totalTargets = 0;
 
-    public int transformationNow;
-    public bool lockTransform;
+    public int transformationNow = 0;
+    public bool lockTransform = false;
+    public bool isToGroup = false;
     public List<GameObject> objSelectedNow = new List<GameObject>();
 
     void Awake() {
@@ -36,9 +37,9 @@ public class MainController : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-        foreach(GameObject g in objSelectedNow) {
-            Debug.Log(g.name);
-        }
+        //foreach(GameObject g in objSelectedNow) {
+        //    Debug.Log(g.name);
+        //}
         //Debug.Log("tracked now: " + targetsTrackedNow);
 	}
 }

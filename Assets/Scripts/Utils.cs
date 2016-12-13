@@ -1,5 +1,12 @@
 using UnityEngine;
 using System;
+using System.Collections.Generic;
+
+public class Group 
+{
+    public int gId;
+    public List<GameObject> objects = new List<GameObject>();
+}
 
 
 internal static class Utils
