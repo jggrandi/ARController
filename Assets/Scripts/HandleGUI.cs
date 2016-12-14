@@ -46,10 +46,15 @@ public class HandleGUI : MonoBehaviour {
             MainController.control.isToGroup = false;
             btnGroup.SetActive(true);
             btnUngroup.SetActive(false);
+            gameObject.GetComponent<HandleGroup>().UnGroup();
+
         } else {
             MainController.control.isToGroup = true;
             btnGroup.SetActive(false);
             btnUngroup.SetActive(true);
+            gameObject.GetComponent<HandleGroup>().CreateGroup();
+            
+            
         }
     }
 

@@ -14,6 +14,8 @@ public class MainController : MonoBehaviour {
     public bool lockTransform = false;
     public bool isToGroup = false;
     public List<GameObject> objSelectedNow = new List<GameObject>();
+    public List<MyGameObject> groupedObjects = new List<MyGameObject>();
+    public int groupedObjectsIdNow = 0;
 
     void Awake() {
 

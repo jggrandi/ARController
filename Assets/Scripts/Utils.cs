@@ -2,12 +2,11 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
-public class Group 
+public class MyGameObject 
 {
     public int gId;
-    public List<GameObject> objects = new List<GameObject>();
+    public GameObject gGameObject;
 }
-
 
 internal static class Utils
 {
