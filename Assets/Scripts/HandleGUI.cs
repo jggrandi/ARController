@@ -17,6 +17,7 @@ public class HandleGUI : MonoBehaviour {
 
     public void buttonUnlock() {
         MainController.control.lockTransform = false;
+        Debug.Log("Aqui!");
     }
 
 
@@ -42,14 +43,14 @@ public class HandleGUI : MonoBehaviour {
     }
 
     public void toggleGroup() {
-        if (MainController.control.isToGroup) {
-            MainController.control.isToGroup = false;
+        if (MainController.control.groupButtonActive) {
+            MainController.control.groupButtonActive = false;
             btnGroup.SetActive(true);
             btnUngroup.SetActive(false);
             gameObject.GetComponent<HandleGroup>().UnGroup();
 
         } else {
-            MainController.control.isToGroup = true;
+            MainController.control.groupButtonActive = true;
             btnGroup.SetActive(false);
             btnUngroup.SetActive(true);
             gameObject.GetComponent<HandleGroup>().CreateGroup();

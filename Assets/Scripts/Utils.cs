@@ -2,12 +2,6 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
-public class MyGameObject 
-{
-    public int gId;
-    public GameObject gGameObject;
-}
-
 internal static class Utils
 {
     public enum Transformations { Translation, Rotation, Scale};

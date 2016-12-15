@@ -5,6 +5,8 @@ using System;
 namespace Lean.Touch {
     public class HandleSelectionTouch : MonoBehaviour {
 
+        public GameObject trackedObjects;
+
         [Tooltip("Ignore fingers with StartedOverGui?")]
         public bool IgnoreGuiFingers = true;
 
@@ -19,14 +21,18 @@ namespace Lean.Touch {
 
         GameObject objToRemove;
 
+        bool isMultipleSelection = false;
+
         protected virtual void OnEnable() {
             // Hook into the events we need
             LeanTouch.OnFingerTap += OnFingerTap;
+            LeanTouch.OnFingerHeldDown += OnFingerHeldDown;
         }
 
         protected virtual void OnDisable() {
             // Unhook the events
             LeanTouch.OnFingerTap -= OnFingerTap;
+            LeanTouch.OnFingerHeldDown -= OnFingerHeldDown;
         }
 
         private void OnFingerTap(LeanFinger finger) {
@@ -37,6 +43,12 @@ namespace Lean.Touch {
 
             Select(finger);
 
+        }
+
+        private void OnFingerHeldDown(LeanFinger finger) {
+            if (IgnoreGuiFingers == true && finger.StartedOverGui == true) return;
+            isMultipleSelection = true;
+            Select(finger);
         }
 
 
@@ -55,70 +67,58 @@ namespace Lean.Touch {
 
             if (Physics.Raycast(ray, out hit, float.PositiveInfinity, LayerMask) == true) {
                 component = hit.collider;
-                foreach (GameObject g in MainController.control.objSelectedNow) {
-                    if (g.name == component.transform.gameObject.name) {
-                        objIsSelected = true;
-                        objToRemove = g;
-                        break;
+             
+                if (isMultipleSelection) {
+                    foreach (GameObject g in MainController.control.objSelectedNow) {
+                        if (g.name == component.transform.gameObject.name) {
+                            objIsSelected = true;
+                            objToRemove = g;
+                            break;
+                        }
+                    }
+
+                    if (objIsSelected) {
+                        MainController.control.objSelectedNow.Remove(objToRemove);
+                        component.transform.GetComponent<Renderer>().material.color = Color.white;
+
+                    } else {
+                        component.transform.GetComponent<Renderer>().material.color = Color.yellow;
+                        MainController.control.objSelectedNow.Add(component.transform.gameObject);
+                    }
+                } else {
+                    if (MainController.control.objSelectedNow != null) {
+
+                        foreach (GameObject g in MainController.control.objSelectedNow) {
+                            g.transform.GetComponent<Renderer>().material.color = Color.white;
+                        }
+
+                        MainController.control.objSelectedNow.Clear();
+                        if (component.transform.gameObject.GetComponent<ObjectGroupId>().id != -1) {
+                            int idToSelect = component.transform.gameObject.GetComponent<ObjectGroupId>().id;
+
+                            for (int i = 0; i < trackedObjects.transform.childCount; i++) {
+                                if (trackedObjects.transform.GetChild(i).transform.gameObject.GetComponent<ObjectGroupId>().id == idToSelect) {
+                                    trackedObjects.transform.GetChild(i).transform.gameObject.GetComponent<Renderer>().material.color = Color.yellow;
+                                    MainController.control.objSelectedNow.Add(trackedObjects.transform.GetChild(i).transform.gameObject);
+                                }
+                            }
+
+                        }else {
+                            component.transform.GetComponent<Renderer>().material.color = Color.yellow;
+                            MainController.control.objSelectedNow.Add(component.transform.gameObject);
+
+                        }
                     }
                 }
-
-                if (objIsSelected) {
-                    MainController.control.objSelectedNow.Remove(objToRemove);
-                    component.transform.GetComponent<Renderer>().material.color = Color.white;
-
-                } else {
-                    component.transform.GetComponent<Renderer>().material.color = Color.yellow;
-                    MainController.control.objSelectedNow.Add(component.transform.gameObject);
+            } else {
+                isMultipleSelection = false;
+                foreach (GameObject g in MainController.control.objSelectedNow) {
+                    g.transform.GetComponent<Renderer>().material.color = Color.white;
                 }
+                MainController.control.objSelectedNow.Clear();
+                
             }
-
         }
-
-
-            // Select the component
-
-        }
-
-        //Ray ray;
-        //RaycastHit hit;
-        //GameObject objToRemove;
-
-        //// Use this for initialization
-        //void Start() {
-        //}
-
-        //// Update is called once per frame
-        //void Update() {
-
-        //    if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began) {
-        //        ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
-        //        Debug.DrawRay(ray.origin, ray.direction * 20, Color.red);
-
-
-        //        bool objIsSelected = false;
-
-        //        if (Physics.Raycast(ray, out hit, Mathf.Infinity)) {
-        //            foreach (GameObject g in MainController.control.objSelectedNow) {
-        //                if (g.name == hit.transform.gameObject.name) {
-        //                    objIsSelected = true;
-        //                    objToRemove = g;
-        //                    break;
-        //                }
-        //            }
-
-        //            if (objIsSelected) {
-        //                MainController.control.objSelectedNow.Remove(objToRemove);
-        //                hit.transform.GetComponent<Renderer>().material.color = Color.white;
-
-        //            } else {
-        //                hit.transform.GetComponent<Renderer>().material.color = Color.yellow;
-        //                MainController.control.objSelectedNow.Add(hit.transform.gameObject);
-        //            }
-        //        }
-        //    }
-        //}
-
-    //}
-
+    }
 }
+

@@ -7,15 +7,17 @@ public class MainController : MonoBehaviour {
 
     public static MainController control;
 
+    public GameObject trackedObjects;
+
     public int targetsTrackedNow = 0;
     public int totalTargets = 0;
 
     public int transformationNow = 0;
     public bool lockTransform = false;
-    public bool isToGroup = false;
+    public bool groupButtonActive = false;
     public List<GameObject> objSelectedNow = new List<GameObject>();
-    public List<MyGameObject> groupedObjects = new List<MyGameObject>();
-    public int groupedObjectsIdNow = 0;
+
+    public int idAvaiableNow = 0;
 
     void Awake() {
 
@@ -27,7 +29,12 @@ public class MainController : MonoBehaviour {
             Destroy(gameObject);
         }
 
-        // Handle the screen orientation
+        for (int i = 0; i < trackedObjects.transform.childCount; i++)
+            trackedObjects.transform.GetChild(i).transform.gameObject.AddComponent<ObjectGroupId>();
+            
+
+
+            // Handle the screen orientation
         Screen.autorotateToLandscapeLeft = true;
         Screen.autorotateToLandscapeRight = true;
         Screen.autorotateToPortraitUpsideDown = true;
