@@ -18,6 +18,7 @@ public class MainController : MonoBehaviour {
     public List<GameObject> objSelectedNow = new List<GameObject>();
 
     public int idAvaiableNow = 0;
+    public int elementsInTheGroupNow = 0;
 
     void Awake() {
 
@@ -51,4 +52,5 @@ public class MainController : MonoBehaviour {
         //}
         //Debug.Log("tracked now: " + targetsTrackedNow);
 	}
+
 }

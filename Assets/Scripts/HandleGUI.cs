@@ -17,7 +17,6 @@ public class HandleGUI : MonoBehaviour {
 
     public void buttonUnlock() {
         MainController.control.lockTransform = false;
-        Debug.Log("Aqui!");
     }
 
 
@@ -60,7 +59,7 @@ public class HandleGUI : MonoBehaviour {
     }
 
     private void Update() {
-       if(MainController.control.objSelectedNow.Count > 1) {
+        if (MainController.control.objSelectedNow.Count > 1 ) {
             guiGroupUngroup.SetActive(true);
         } else {
             guiGroupUngroup.SetActive(false);

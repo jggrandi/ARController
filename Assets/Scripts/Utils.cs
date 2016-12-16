@@ -2,9 +2,9 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
-internal static class Utils
-{
-    public enum Transformations { Translation, Rotation, Scale};
+internal static class Utils {
+    public enum Transformations { Translation, Rotation, Scale };
+
 
 	public static void FromMatrix4x4(this Transform transform, Matrix4x4 matrix)
 	{
