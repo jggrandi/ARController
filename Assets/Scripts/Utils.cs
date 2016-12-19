@@ -2,7 +2,7 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
-internal static class Utils {
+public static class Utils {
     public enum Transformations { Translation, Rotation, Scale };
 
 
