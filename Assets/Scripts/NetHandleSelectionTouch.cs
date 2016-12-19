@@ -3,7 +3,7 @@ using System.Collections;
 using System;
 
 namespace Lean.Touch {
-    public class HandleSelectionTouch : MonoBehaviour {
+    public class NetHandleSelectionTouch : MonoBehaviour {
 
         public GameObject trackedObjects;
 
