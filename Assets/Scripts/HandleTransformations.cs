@@ -11,7 +11,8 @@ namespace Lean.Touch {
         public GameObject trackedObjetecs;
         public GameObject lockedObjects;
 
-        public int Mode = 0;
+        //public int Mode = 0;
+		Utils.Transformations mode = 0;
 
         private float rotSpeed = 1.0f;
 
@@ -35,7 +36,8 @@ namespace Lean.Touch {
                 }
             }
             
-            switch (MainController.control.transformationNow) {
+			mode = MainController.control.transformationNow;
+/*            switch (MainController.control.transformationNow) {
                 case (int)Utils.Transformations.Translation:
                     Mode = 0;
                     break;
@@ -47,7 +49,7 @@ namespace Lean.Touch {
                     break;
                 default:
                     break;
-            }
+            }*/
             
             var fingers = LeanTouch.GetFingers(true, 2);
             if (fingers != null) OnGesture(fingers);
@@ -67,12 +69,12 @@ namespace Lean.Touch {
 
         public void OnFingerSet(LeanFinger finger) {  // one finger on the screen
             if (LeanTouch.Fingers.Count < 1) return;
-            if (Mode == (int)Utils.Transformations.Translation) {  // translate in x and y axis
+            if (mode == Utils.Transformations.Translation) {  // translate in x and y axis
                 foreach (GameObject g in MainController.control.objSelectedNow) {
                     g.transform.position += Camera.main.transform.right * finger.ScreenDelta.x * 0.005f;
                     g.transform.position += Camera.main.transform.up * finger.ScreenDelta.y * 0.005f;
                 }
-            } else if (Mode == (int)Utils.Transformations.Rotation) { // rotate in the x and y axis
+            } else if (mode == Utils.Transformations.Rotation) { // rotate in the x and y axis
                 Vector3 avg = avgCenterOfObjects(MainController.control.objSelectedNow);
                 Vector3 axis = Camera.main.transform.right * finger.ScreenDelta.y + Camera.main.transform.up * -finger.ScreenDelta.x;
 
@@ -85,7 +87,7 @@ namespace Lean.Touch {
         
 
         public void OnGesture(List<LeanFinger> fingers) {  // two fingers on screen
-            if (Mode == (int)Utils.Transformations.Translation) { // translate the object near or far away from the camera position
+            if (mode == Utils.Transformations.Translation) { // translate the object near or far away from the camera position
 
                 Vector3 avg = avgCenterOfObjects(MainController.control.objSelectedNow);
                 Vector3 dir = avg - Camera.main.transform.position;
@@ -94,7 +96,7 @@ namespace Lean.Touch {
                     g.transform.position += dir * LeanGesture.GetScreenDelta(fingers).y * 0.01f;
 
                 }
-            } else if (Mode == (int)Utils.Transformations.Rotation) { // rotate the object around the 3rd axis
+            } else if (mode == Utils.Transformations.Rotation) { // rotate the object around the 3rd axis
 
                 Vector3 avg = avgCenterOfObjects(MainController.control.objSelectedNow);
 
@@ -105,7 +107,7 @@ namespace Lean.Touch {
                     g.transform.RotateAround(avg, axis, angle);
                 }
 
-            } else if (Mode == (int)Utils.Transformations.Scale) { // pinch to scale up and down
+            } else if (mode == Utils.Transformations.Scale) { // pinch to scale up and down
 
                 Vector3 avg = avgCenterOfObjects(MainController.control.objSelectedNow);
 

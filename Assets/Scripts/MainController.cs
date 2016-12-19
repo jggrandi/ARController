@@ -12,7 +12,8 @@ public class MainController : MonoBehaviour {
     public int targetsTrackedNow = 0;
     public int totalTargets = 0;
 
-    public int transformationNow = 0;
+    //public int transformationNow = 0;
+	public Utils.Transformations transformationNow = 0;
     public bool lockTransform = false;
     public bool groupButtonActive = false;
     public List<GameObject> objSelectedNow = new List<GameObject>();
