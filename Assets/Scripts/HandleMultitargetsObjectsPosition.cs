@@ -61,7 +61,7 @@ public class HandleMultitargetsObjectsPosition : MonoBehaviour
             if (trackedObjects.activeInHierarchy) {
                 if (imageTargets.transform.GetChild(i).GetChild(0).gameObject.activeInHierarchy) {
                     if (Vector3.Distance(imageTargets.transform.GetChild(i).GetChild(0).transform.position, avg) > distAvg*1.1) {
-                        Debug.Log("Descartado: " + i);
+                        //Debug.Log("Descartado: " + i);
                         continue;
                     }
                     

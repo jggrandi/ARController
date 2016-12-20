@@ -26,6 +26,8 @@ namespace Lean.Touch {
     // Update is called once per frame
     void Update() {
 
+            var fingers = LeanTouch.GetFingers(true, 2);
+
             if (MainController.control.lockTransform) {
                 foreach (GameObject g in MainController.control.objSelectedNow) {
                     g.transform.parent = lockedObjects.transform;
@@ -37,21 +39,8 @@ namespace Lean.Touch {
             }
             
 			mode = MainController.control.transformationNow;
-/*            switch (MainController.control.transformationNow) {
-                case (int)Utils.Transformations.Translation:
-                    Mode = 0;
-                    break;
-                case (int)Utils.Transformations.Rotation:
-                    Mode = 1;
-                    break;
-                case (int)Utils.Transformations.Scale:
-                    Mode = 2;
-                    break;
-                default:
-                    break;
-            }*/
             
-            var fingers = LeanTouch.GetFingers(true, 2);
+            
             if (fingers != null) OnGesture(fingers);
 
         }
@@ -69,6 +58,8 @@ namespace Lean.Touch {
 
         public void OnFingerSet(LeanFinger finger) {  // one finger on the screen
             if (LeanTouch.Fingers.Count < 1) return;
+            if (finger.IsOverGui) return;
+
             if (mode == Utils.Transformations.Translation) {  // translate in x and y axis
                 foreach (GameObject g in MainController.control.objSelectedNow) {
                     g.transform.position += Camera.main.transform.right * finger.ScreenDelta.x * 0.005f;

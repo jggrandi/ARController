@@ -1,0 +1,151 @@
+fileFormatVersion: 2
+guid: eba9bc0e3dd105c4cab13ebe8af1c011
+timeCreated: 1470123984
+licenseType: Pro
+ModelImporter:
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: plate6x6octagonalopencenter_LDrawLine0_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    100004: plate6x6octagonalopencenter_LDrawLine10_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    100006: plate6x6octagonalopencenter_LDrawLine11_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    100008: plate6x6octagonalopencenter_LDrawLine12_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    100010: plate6x6octagonalopencenter_LDrawLine13_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    100012: plate6x6octagonalopencenter_LDrawLine14_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    100014: plate6x6octagonalopencenter_LDrawLine15_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    100016: plate6x6octagonalopencenter_LDrawLine1_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    100018: plate6x6octagonalopencenter_LDrawLine2_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    100020: plate6x6octagonalopencenter_LDrawLine3_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    100022: plate6x6octagonalopencenter_LDrawLine4_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    100024: plate6x6octagonalopencenter_LDrawLine5_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    100026: plate6x6octagonalopencenter_LDrawLine6_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    100028: plate6x6octagonalopencenter_LDrawLine7_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    100030: plate6x6octagonalopencenter_LDrawLine8_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    100032: plate6x6octagonalopencenter_LDrawLine9_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    400000: //RootNode
+    400002: plate6x6octagonalopencenter_LDrawLine0_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    400004: plate6x6octagonalopencenter_LDrawLine10_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    400006: plate6x6octagonalopencenter_LDrawLine11_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    400008: plate6x6octagonalopencenter_LDrawLine12_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    400010: plate6x6octagonalopencenter_LDrawLine13_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    400012: plate6x6octagonalopencenter_LDrawLine14_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    400014: plate6x6octagonalopencenter_LDrawLine15_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    400016: plate6x6octagonalopencenter_LDrawLine1_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    400018: plate6x6octagonalopencenter_LDrawLine2_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    400020: plate6x6octagonalopencenter_LDrawLine3_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    400022: plate6x6octagonalopencenter_LDrawLine4_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    400024: plate6x6octagonalopencenter_LDrawLine5_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    400026: plate6x6octagonalopencenter_LDrawLine6_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    400028: plate6x6octagonalopencenter_LDrawLine7_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    400030: plate6x6octagonalopencenter_LDrawLine8_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    400032: plate6x6octagonalopencenter_LDrawLine9_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    2300000: plate6x6octagonalopencenter_LDrawLine0_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    2300002: plate6x6octagonalopencenter_LDrawLine10_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    2300004: plate6x6octagonalopencenter_LDrawLine11_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    2300006: plate6x6octagonalopencenter_LDrawLine12_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    2300008: plate6x6octagonalopencenter_LDrawLine13_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    2300010: plate6x6octagonalopencenter_LDrawLine14_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    2300012: plate6x6octagonalopencenter_LDrawLine15_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    2300014: plate6x6octagonalopencenter_LDrawLine1_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    2300016: plate6x6octagonalopencenter_LDrawLine2_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    2300018: plate6x6octagonalopencenter_LDrawLine3_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    2300020: plate6x6octagonalopencenter_LDrawLine4_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    2300022: plate6x6octagonalopencenter_LDrawLine5_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    2300024: plate6x6octagonalopencenter_LDrawLine6_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    2300026: plate6x6octagonalopencenter_LDrawLine7_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    2300028: plate6x6octagonalopencenter_LDrawLine8_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    2300030: plate6x6octagonalopencenter_LDrawLine9_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    3300000: plate6x6octagonalopencenter_LDrawLine0_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    3300002: plate6x6octagonalopencenter_LDrawLine10_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    3300004: plate6x6octagonalopencenter_LDrawLine11_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    3300006: plate6x6octagonalopencenter_LDrawLine12_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    3300008: plate6x6octagonalopencenter_LDrawLine13_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    3300010: plate6x6octagonalopencenter_LDrawLine14_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    3300012: plate6x6octagonalopencenter_LDrawLine15_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    3300014: plate6x6octagonalopencenter_LDrawLine1_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    3300016: plate6x6octagonalopencenter_LDrawLine2_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    3300018: plate6x6octagonalopencenter_LDrawLine3_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    3300020: plate6x6octagonalopencenter_LDrawLine4_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    3300022: plate6x6octagonalopencenter_LDrawLine5_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    3300024: plate6x6octagonalopencenter_LDrawLine6_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    3300026: plate6x6octagonalopencenter_LDrawLine7_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    3300028: plate6x6octagonalopencenter_LDrawLine8_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    3300030: plate6x6octagonalopencenter_LDrawLine9_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    4300000: plate6x6octagonalopencenter_LDrawLine0_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    4300002: plate6x6octagonalopencenter_LDrawLine10_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    4300004: plate6x6octagonalopencenter_LDrawLine11_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    4300006: plate6x6octagonalopencenter_LDrawLine12_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    4300008: plate6x6octagonalopencenter_LDrawLine13_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    4300010: plate6x6octagonalopencenter_LDrawLine14_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    4300012: plate6x6octagonalopencenter_LDrawLine15_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    4300014: plate6x6octagonalopencenter_LDrawLine1_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    4300016: plate6x6octagonalopencenter_LDrawLine2_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    4300018: plate6x6octagonalopencenter_LDrawLine3_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    4300020: plate6x6octagonalopencenter_LDrawLine4_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    4300022: plate6x6octagonalopencenter_LDrawLine5_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    4300024: plate6x6octagonalopencenter_LDrawLine6_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    4300026: plate6x6octagonalopencenter_LDrawLine7_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    4300028: plate6x6octagonalopencenter_LDrawLine8_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+    4300030: plate6x6octagonalopencenter_LDrawLine9_plate6x6octagonalopencenter_LDrawStep_plate6x6octagonalopencenter
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .0500000007
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

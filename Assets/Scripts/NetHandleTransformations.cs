@@ -25,7 +25,8 @@ namespace Lean.Touch {
 
     // Update is called once per frame
     void Update() {
-
+            if (!isLocalPlayer) return;
+           
             //var x = Input.GetAxis("Horizontal") * Time.deltaTime * 150.0f;
             //var z = Input.GetAxis("Vertical") * Time.deltaTime * 3.0f;
             //CmdTranslate(x, z);
@@ -87,6 +88,8 @@ namespace Lean.Touch {
 
 
         public void OnFingerSet(LeanFinger finger) {  // one finger on the screen
+            if (!isLocalPlayer) return;
+
             if (LeanTouch.Fingers.Count < 1) return;
             if (mode == Utils.Transformations.Translation) {  // translate in x and y axis
                 foreach (GameObject g in MainController.control.objSelectedNow) {
@@ -108,6 +111,8 @@ namespace Lean.Touch {
         
 
         public void OnGesture(List<LeanFinger> fingers) {  // two fingers on screen
+            if (!isLocalPlayer) return;
+
             if (mode == Utils.Transformations.Translation) { // translate the object near or far away from the camera position
 
                 Vector3 avg = avgCenterOfObjects(MainController.control.objSelectedNow);

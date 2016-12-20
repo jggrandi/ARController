@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Networking;
 
-public class HandleGUI : MonoBehaviour {
+public class HandleGUI : NetworkBehaviour {
 
     public GameObject selectTranslate;
     public GameObject selectRotate;
@@ -42,17 +43,18 @@ public class HandleGUI : MonoBehaviour {
     }
 
     public void toggleGroup() {
-        if (MainController.control.groupButtonActive) {
-            MainController.control.groupButtonActive = false;
-            btnGroup.SetActive(true);
-            btnUngroup.SetActive(false);
-            gameObject.GetComponent<HandleGroup>().UnGroup();
-
+        
+        if (!btnGroup.activeInHierarchy) {
+            //MainController.control.groupButtonActive = false;
+            //btnGroup.SetActive(true);
+            //btnUngroup.SetActive(false);
+            gameObject.GetComponent<NetHandleGroup>().UnGroup();
+            
         } else {
-            MainController.control.groupButtonActive = true;
-            btnGroup.SetActive(false);
-            btnUngroup.SetActive(true);
-            gameObject.GetComponent<HandleGroup>().CreateGroup();
+            //MainController.control.groupButtonActive = true;
+            //btnGroup.SetActive(false);
+            //btnUngroup.SetActive(true);
+            gameObject.GetComponent<NetHandleGroup>().CreateGroup();
             
             
         }
@@ -60,7 +62,25 @@ public class HandleGUI : MonoBehaviour {
 
     private void Update() {
         if (MainController.control.objSelectedNow.Count > 1 ) {
+
+            int groupSelected = -2;
+            bool sigleGroup = true;
+            foreach (GameObject g in MainController.control.objSelectedNow) {
+                int group = g.transform.gameObject.GetComponent<ObjectGroupId>().id;
+                if(group < 0) {
+                    sigleGroup = false;
+                    break;
+                }
+                if (groupSelected == -2) {
+                    groupSelected = group;
+                }else if(group != groupSelected) {
+                    sigleGroup = false;
+                    break;
+                }
+            }
             guiGroupUngroup.SetActive(true);
+            btnGroup.SetActive(!sigleGroup);
+
         } else {
             guiGroupUngroup.SetActive(false);
         }
