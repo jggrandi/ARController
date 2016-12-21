@@ -97,7 +97,6 @@ namespace Lean.Touch {
         public void Select(GameObject obj) {
             obj.GetComponent<Renderer>().material.color = Color.yellow;
             MainController.control.objSelectedNow.Add(obj);
-            MainController.control.elementsInTheGroupNow = MainController.control.objSelectedNow.Count;
         }
 
         public void Select(LeanFinger finger, Component obj) {

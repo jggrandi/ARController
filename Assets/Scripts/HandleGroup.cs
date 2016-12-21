@@ -38,6 +38,5 @@ public class HandleGroup : MonoBehaviour {
         }
 
         MainController.control.objSelectedNow.Clear();
-        MainController.control.elementsInTheGroupNow = 0;
     }
 }

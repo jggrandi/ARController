@@ -8,7 +8,7 @@ public class HandleMultitargetsObjectsPosition : MonoBehaviour
     public GameObject imageTargets;
     
     void Start(){
-        MainController.control.totalTargets = imageTargets.transform.childCount;
+        
         //Debug.Log(imageTargets.transform.childCount);
         for (int i = 0; i < imageTargets.transform.childCount; i++) {
             GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);

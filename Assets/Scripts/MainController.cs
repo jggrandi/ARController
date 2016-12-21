@@ -9,9 +9,6 @@ public class MainController : MonoBehaviour {
 
     public GameObject trackedObjects;
 
-    public int targetsTrackedNow = 0;
-    public int totalTargets = 0;
-
     //public int transformationNow = 0;
 	public Utils.Transformations transformationNow = 0;
     public bool lockTransform = false;
@@ -19,7 +16,7 @@ public class MainController : MonoBehaviour {
     public List<GameObject> objSelectedNow = new List<GameObject>();
 
     public int idAvaiableNow = 0;
-    public int elementsInTheGroupNow = 0;
+    
 
     void Awake() {
 

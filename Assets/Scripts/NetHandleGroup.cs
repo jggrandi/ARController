@@ -51,6 +51,5 @@ public class NetHandleGroup : NetworkBehaviour {
         }
         
         MainController.control.objSelectedNow.Clear();
-        MainController.control.elementsInTheGroupNow = 0;
     }
 }

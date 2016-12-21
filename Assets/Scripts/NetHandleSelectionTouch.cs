@@ -24,16 +24,16 @@ namespace Lean.Touch {
         bool isMultipleSelection = false;
         bool isFingerMoving = false;
 
-        [Command]
-        public void CmdAuth(NetworkIdentity id) {
-            GameObject.Find("MainHandler").GetComponent<NetworkIdentity>().AssignClientAuthority(id.connectionToServer);
-        }
+        //[Command]
+        //public void CmdAuth(NetworkIdentity id) {
+        //    GameObject.Find("MainHandler").GetComponent<NetworkIdentity>().AssignClientAuthority(id.connectionToServer);
+        //}
 
-        public override void OnStartClient() {
-            CmdAuth();
-            base.OnStartClient();
+        //public override void OnStartClient() {
+        //    CmdAuth();
+        //    base.OnStartClient();
 
-        }
+        //}
 
 
         protected virtual void OnEnable() {
@@ -117,7 +117,6 @@ namespace Lean.Touch {
         public void Select(GameObject obj) {
             obj.GetComponent<Renderer>().material.color = Color.yellow;
             MainController.control.objSelectedNow.Add(obj);
-            MainController.control.elementsInTheGroupNow = MainController.control.objSelectedNow.Count;
         }
 
         public void Select(LeanFinger finger, Component obj) {
