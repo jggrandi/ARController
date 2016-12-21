@@ -2,7 +2,7 @@
 using System.Collections;
 
 
-public class HandleGUI : MonoBehaviour {
+public class NetHandleGUI : MonoBehaviour {
 
     public GameObject selectTranslate;
     public GameObject selectRotate;
@@ -49,13 +49,13 @@ public class HandleGUI : MonoBehaviour {
             //MainController.control.groupButtonActive = false;
             //btnGroup.SetActive(true);
             //btnUngroup.SetActive(false);
-            gameObject.GetComponent<HandleGroup>().UnGroup();
+            gameObject.GetComponent<NetHandleGroup>().UnGroup();
             
         } else {
             //MainController.control.groupButtonActive = true;
             //btnGroup.SetActive(false);
             //btnUngroup.SetActive(true);
-            gameObject.GetComponent<HandleGroup>().CreateGroup();
+            gameObject.GetComponent<NetHandleGroup>().CreateGroup();
             
             
         }

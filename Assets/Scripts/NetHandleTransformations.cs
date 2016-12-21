@@ -71,20 +71,7 @@ namespace Lean.Touch {
 
         }
 
-        [Command]
-        void CmdTranslate(GameObject g, Vector3 vec) {
-            g.transform.position += vec;
-        }
 
-        [Command]
-        void CmdRotate(GameObject g, Vector3 avg, Vector3 axis, float mag) {
-            g.transform.RotateAround(avg, axis, mag * 0.1f);
-        }
-
-        [Command]
-        void CmdScale(GameObject g, Vector3 right, Vector3 up) {
-
-        }
 
 
         public void OnFingerSet(LeanFinger finger) {  // one finger on the screen
@@ -95,15 +82,15 @@ namespace Lean.Touch {
                 foreach (GameObject g in MainController.control.objSelectedNow) {
                     Vector3 right = Camera.main.transform.right * finger.ScreenDelta.x * 0.005f;
                     Vector3 up = Camera.main.transform.up * finger.ScreenDelta.y * 0.005f;
-                    CmdTranslate(g, right);
-                    CmdTranslate(g, up);
+                    this.gameObject.GetComponent<HandleNetworkFunctions>().CmdTranslate(g, right);
+                    this.gameObject.GetComponent<HandleNetworkFunctions>().CmdTranslate(g, up);
                 }
             } else if (mode == Utils.Transformations.Rotation) { // rotate in the x and y axis
                 Vector3 avg = avgCenterOfObjects(MainController.control.objSelectedNow);
                 Vector3 axis = Camera.main.transform.right * finger.ScreenDelta.y + Camera.main.transform.up * -finger.ScreenDelta.x;
                 float magnitude = finger.ScreenDelta.magnitude;
                 foreach (GameObject g in MainController.control.objSelectedNow) {
-                    CmdRotate(g, avg, axis, magnitude);
+                    this.gameObject.GetComponent<HandleNetworkFunctions>().CmdRotate(g, avg, axis, magnitude);
 
                 }
             }
@@ -119,7 +106,7 @@ namespace Lean.Touch {
                 Vector3 dir = avg - Camera.main.transform.position * LeanGesture.GetScreenDelta(fingers).y * 0.005f;
 
                 foreach (GameObject g in MainController.control.objSelectedNow) {
-                    CmdTranslate(g, dir);
+                    this.gameObject.GetComponent<HandleNetworkFunctions>().CmdTranslate(g, dir);
                 }
             } else if (mode == Utils.Transformations.Rotation) { // rotate the object around the 3rd axis
 

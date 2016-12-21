@@ -19,7 +19,8 @@ public class MainController : MonoBehaviour {
     public List<GameObject> objSelectedNow = new List<GameObject>();
 
     public int idAvaiableNow = 0;
-    
+
+    public HandleNetworkFunctions netFunc;
 
     void Awake() {
 
@@ -30,6 +31,8 @@ public class MainController : MonoBehaviour {
         } else if (control != this) {
             Destroy(gameObject);
         }
+
+        HandleNetworkFunctions netFunc = new HandleNetworkFunctions();
 
         for (int i = 0; i < trackedObjects.transform.childCount; i++)
             trackedObjects.transform.GetChild(i).transform.gameObject.AddComponent<ObjectGroupId>();

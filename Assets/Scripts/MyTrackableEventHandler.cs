@@ -113,7 +113,8 @@ namespace Vuforia
 
             
             MainController.control.targetsTrackedNow--;
-            this.transform.GetChild(0).gameObject.SetActive(false);
+//            if(this.transform.childCount > 0)
+                this.transform.GetChild(0).gameObject.SetActive(false);
             if (MainController.control.targetsTrackedNow <= 0) {
                 MainController.control.targetsTrackedNow = 0;
                 TrackedObjects.SetActive(false);
