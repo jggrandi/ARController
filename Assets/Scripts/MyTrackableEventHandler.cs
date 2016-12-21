@@ -85,7 +85,11 @@ namespace Vuforia
             //    component.enabled = true;
             //}
             this.transform.GetChild(0).gameObject.SetActive(true);
+            MainController.control.targetsTrackedNow++;
             TrackedObjects.SetActive(true);
+            for(int i = 0; i < TrackedObjects.transform.childCount; i++) {
+                TrackedObjects.transform.GetChild(i).gameObject.SetActive(true);
+            }
             //Debug.Log("Trackable " + mTrackableBehaviour.TrackableName + " found");
         }
 
@@ -108,9 +112,12 @@ namespace Vuforia
             //}
 
             
-
+            MainController.control.targetsTrackedNow--;
             this.transform.GetChild(0).gameObject.SetActive(false);
-
+            if (MainController.control.targetsTrackedNow <= 0) {
+                MainController.control.targetsTrackedNow = 0;
+                TrackedObjects.SetActive(false);
+            }
                 
             //Debug.Log("Trackable " + mTrackableBehaviour.TrackableName + " lost");
         }

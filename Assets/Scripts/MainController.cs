@@ -9,8 +9,11 @@ public class MainController : MonoBehaviour {
 
     public GameObject trackedObjects;
 
+    public int targetsTrackedNow = 0;
+    public bool isMultipleSelection = false;
+
     //public int transformationNow = 0;
-	public Utils.Transformations transformationNow = 0;
+    public Utils.Transformations transformationNow = 0;
     public bool lockTransform = false;
     public bool groupButtonActive = false;
     public List<GameObject> objSelectedNow = new List<GameObject>();

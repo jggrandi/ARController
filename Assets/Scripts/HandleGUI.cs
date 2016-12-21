@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UnityEngine.Networking;
 
-public class HandleGUI : NetworkBehaviour {
+
+public class HandleGUI : MonoBehaviour {
 
     public GameObject selectTranslate;
     public GameObject selectRotate;
@@ -10,6 +10,7 @@ public class HandleGUI : NetworkBehaviour {
     public GameObject btnGroup;
     public GameObject btnUngroup;
     public GameObject guiGroupUngroup;
+    public GameObject trackedObjects;
 
     // Use this for initialization
     public void buttonLock () {
@@ -79,6 +80,23 @@ public class HandleGUI : NetworkBehaviour {
                 }
             }
             guiGroupUngroup.SetActive(true);
+
+            if (sigleGroup) {
+                for (int i = 0; i < trackedObjects.transform.childCount; i++) {
+                    if (trackedObjects.transform.GetChild(i).transform.GetComponent<ObjectGroupId>().id != groupSelected) continue;
+                    bool selected = false;
+                    foreach (GameObject g in MainController.control.objSelectedNow) {
+                        if (g == trackedObjects.transform.GetChild(i).transform.gameObject) {
+                            selected = true;
+                            break;
+                        }
+                    }
+                    if (!selected) {
+                        sigleGroup = false;
+                        break;
+                    }
+                }
+            }
             btnGroup.SetActive(!sigleGroup);
 
         } else {
