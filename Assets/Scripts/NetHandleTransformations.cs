@@ -8,7 +8,7 @@ namespace Lean.Touch {
     public class NetHandleTransformations : NetworkBehaviour {
 
 
-        public GameObject trackedObjetcs;
+        public GameObject trackedObjects;
         public GameObject lockedObjects;
 
         //int Mode = 0;
@@ -18,7 +18,7 @@ namespace Lean.Touch {
 
         // Use this for initialization
         void Start() {
-            trackedObjetcs = GameObject.Find("TrackedObjects");
+            trackedObjects = GameObject.Find("TrackedObjects");
             lockedObjects = GameObject.Find("LockedObjects");
             
         }
@@ -37,7 +37,7 @@ namespace Lean.Touch {
                 }
             } else {
                 foreach (GameObject g in MainController.control.objSelectedNow) {
-                    g.transform.parent = trackedObjetcs.transform;
+                    g.transform.parent = trackedObjects.transform;
                 }
             }
             

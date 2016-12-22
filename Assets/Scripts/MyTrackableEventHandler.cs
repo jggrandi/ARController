@@ -26,8 +26,10 @@ namespace Vuforia
         public bool tracking = false;
         #region UNTIY_MONOBEHAVIOUR_METHODS
     
-        void Start()
+        void Awake()
         {
+            TrackedObjects.SetActive(true);
+            Debug.Log("AQUI");
             mTrackableBehaviour = GetComponent<TrackableBehaviour>();
             if (mTrackableBehaviour)
             {

@@ -25,17 +25,18 @@ public class NetHandleGroup : NetworkBehaviour {
 
     public void CreateGroup() {
         Debug.Log("Group");
+        if (!isLocalPlayer) return;
         foreach (GameObject g in MainController.control.objSelectedNow) {
-            MainController.control.netFunc.CmdSetGroup(g);
+            this.gameObject.GetComponent<HandleNetworkFunctions>().CmdSetGroup(g);
         }
-        MainController.control.netFunc.CmdIncrementCount();
+        this.gameObject.GetComponent<HandleNetworkFunctions>().CmdIncrementCount();
     }
 
 
     public void UnGroup() {
-
+        if (!isLocalPlayer) return;
         foreach (GameObject g in MainController.control.objSelectedNow) {
-            MainController.control.netFunc.CmdSetGroup2(g, -1);
+            this.gameObject.GetComponent<HandleNetworkFunctions>().CmdSetGroup2(g, -1);
             g.GetComponent<Renderer>().material.color = Color.white;
         }
         

@@ -21,6 +21,7 @@ public class MyNetworkManager : NetworkManager {
 
     public void JoinGame() {
         SetPort();
+        SetIpAddress();
         NetworkManager.singleton.StartClient();
     }
 
@@ -29,14 +30,4 @@ public class MyNetworkManager : NetworkManager {
         NetworkManager.singleton.networkAddress = ipAddress;
     }
 
-    void OnLevelWasLoaded(int level) {
-        if (level == 0) {
-            GameObject.Find("ButtonStartHost").GetComponent<Button>().onClick.RemoveAllListeners();
-            GameObject.Find("ButtonStartHost").GetComponent<Button>().onClick.AddListener(StartHost);
-
-            GameObject.Find("ButtonJoin").GetComponent<Button>().onClick.RemoveAllListeners();
-            GameObject.Find("ButtonJoin").GetComponent<Button>().onClick.AddListener(JoinGame);
-        }
-
-    }
 }
