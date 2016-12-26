@@ -4,10 +4,11 @@ using UnityEngine.Networking;
 
 public class mexicubo : NetworkBehaviour {
 
-    
+    GameObject mcubo;
+
 	// Use this for initialization
 	void Start () {
-	
+        mcubo = GameObject.FindGameObjectWithTag("box");
 	}
 	
 	// Update is called once per frame
@@ -19,8 +20,8 @@ public class mexicubo : NetworkBehaviour {
 
     [Command]
     void CmdMove(float x, float z) {
-        GameObject.FindGameObjectWithTag("box").transform.Rotate(0, x, 0);
-        GameObject.FindGameObjectWithTag("box").transform.Translate(0, 0, z);
+        mcubo.transform.Rotate(0, x, 0);
+        mcubo.transform.Translate(0, 0, z);
     }
 
 }

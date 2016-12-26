@@ -39,6 +39,13 @@ namespace Vuforia
 
         #endregion // UNTIY_MONOBEHAVIOUR_METHODS
 
+        int stayActive = 0;
+        
+        void Update() {
+            stayActive++;
+            if (stayActive <= 50)
+                TrackedObjects.SetActive(true);
+        }
 
 
         #region PUBLIC_METHODS
@@ -115,7 +122,7 @@ namespace Vuforia
 
             
             MainController.control.targetsTrackedNow--;
-//            if(this.transform.childCount > 0)
+            if(this.transform.childCount > 0)
                 this.transform.GetChild(0).gameObject.SetActive(false);
             if (MainController.control.targetsTrackedNow <= 0) {
                 MainController.control.targetsTrackedNow = 0;
