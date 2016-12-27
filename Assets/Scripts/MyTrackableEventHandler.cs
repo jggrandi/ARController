@@ -8,16 +8,14 @@ using UnityEngine;
 using System.Collections;
 
 
-namespace Vuforia
-{
-    
+namespace Vuforia {
+
     /// <summary>
     /// A custom handler that implements the ITrackableEventHandler interface.
     /// </summary>
-    public class MyTrackableEventHandler : MonoBehaviour,ITrackableEventHandler
-    {
+    public class MyTrackableEventHandler : MonoBehaviour, ITrackableEventHandler {
         #region PRIVATE_MEMBER_VARIABLES
-        
+
         private TrackableBehaviour mTrackableBehaviour;
 
         #endregion // PRIVATE_MEMBER_VARIABLES
@@ -25,27 +23,18 @@ namespace Vuforia
         public GameObject TrackedObjects;
         public bool tracking = false;
         #region UNTIY_MONOBEHAVIOUR_METHODS
-    
-        void Awake()
-        {
+
+        void Awake() {
             TrackedObjects.SetActive(true);
             Debug.Log("AQUI");
             mTrackableBehaviour = GetComponent<TrackableBehaviour>();
-            if (mTrackableBehaviour)
-            {
+            if (mTrackableBehaviour) {
                 mTrackableBehaviour.RegisterTrackableEventHandler(this);
             }
         }
 
         #endregion // UNTIY_MONOBEHAVIOUR_METHODS
 
-        int stayActive = 0;
-        
-        void Update() {
-            stayActive++;
-            if (stayActive <= 50)
-                TrackedObjects.SetActive(true);
-        }
 
 
         #region PUBLIC_METHODS
@@ -56,16 +45,12 @@ namespace Vuforia
         /// </summary>
         public void OnTrackableStateChanged(
                                         TrackableBehaviour.Status previousStatus,
-                                        TrackableBehaviour.Status newStatus)
-        {
+                                        TrackableBehaviour.Status newStatus) {
             if (newStatus == TrackableBehaviour.Status.DETECTED ||
                 newStatus == TrackableBehaviour.Status.TRACKED ||
-                newStatus == TrackableBehaviour.Status.EXTENDED_TRACKED)
-            {
+                newStatus == TrackableBehaviour.Status.EXTENDED_TRACKED) {
                 OnTrackingFound();
-            }
-            else
-            {
+            } else {
                 OnTrackingLost();
             }
         }
@@ -77,58 +62,37 @@ namespace Vuforia
         #region PRIVATE_METHODS
 
 
-        private void OnTrackingFound()
-        {
-            //Renderer[] rendererComponents = TrackedObjects.GetComponentsInChildren<Renderer>(true);
-            //Collider[] colliderComponents = TrackedObjects.GetComponentsInChildren<Collider>(true);
-
-            //// Enable rendering:
-            //foreach (Renderer component in rendererComponents)
-            //{
-            //    component.enabled = true;
-            //}
-
-            //// Enable colliders:
-            //foreach (Collider component in colliderComponents)
-            //{
-            //    component.enabled = true;
-            //}
-            this.transform.GetChild(0).gameObject.SetActive(true);
-            MainController.control.targetsTrackedNow++;
-            TrackedObjects.SetActive(true);
-            for(int i = 0; i < TrackedObjects.transform.childCount; i++) {
-                TrackedObjects.transform.GetChild(i).gameObject.SetActive(true);
+        private void OnTrackingFound() {
+            Renderer[] rendererComponents = TrackedObjects.GetComponentsInChildren<Renderer>(true);
+            Collider[] colliderComponents = TrackedObjects.GetComponentsInChildren<Collider>(true);
+                       
+            foreach (Renderer component in rendererComponents) {
+                component.enabled = true;
             }
-            //Debug.Log("Trackable " + mTrackableBehaviour.TrackableName + " found");
+
+            foreach (Collider component in colliderComponents)
+                component.enabled = true;
+            
+            MainController.control.targetsTrackedNow++;
         }
 
 
-        private void OnTrackingLost()
-        {
-            //Renderer[] rendererComponents = TrackedObjects.GetComponentsInChildren<Renderer>(true);
-            //Collider[] colliderComponents = TrackedObjects.GetComponentsInChildren<Collider>(true);
+        private void OnTrackingLost() {
+            Renderer[] rendererComponents = TrackedObjects.GetComponentsInChildren<Renderer>(true);
+            Collider[] colliderComponents = TrackedObjects.GetComponentsInChildren<Collider>(true);
 
-            //// Disable rendering:
-            //foreach (Renderer component in rendererComponents)
-            //{
-            //    component.enabled = false;
-            //}
-
-            //// Disable colliders:
-            //foreach (Collider component in colliderComponents)
-            //{
-            //    component.enabled = false;
-            //}
-
-            
             MainController.control.targetsTrackedNow--;
-            if(this.transform.childCount > 0)
-                this.transform.GetChild(0).gameObject.SetActive(false);
+
             if (MainController.control.targetsTrackedNow <= 0) {
                 MainController.control.targetsTrackedNow = 0;
-                TrackedObjects.SetActive(false);
-            }
+                foreach (Renderer component in rendererComponents)
+                    component.enabled = false;
                 
+                foreach (Collider component in colliderComponents)
+                    component.enabled = false;
+                
+            }
+
             //Debug.Log("Trackable " + mTrackableBehaviour.TrackableName + " lost");
         }
 
