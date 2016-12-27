@@ -20,8 +20,6 @@ public class MainController : MonoBehaviour {
 
     public int idAvaiableNow = 0;
 
-    public HandleNetworkFunctions netFunc;
-
     void Awake() {
 
         if (control == null) {
