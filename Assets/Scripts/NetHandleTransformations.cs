@@ -11,9 +11,11 @@ namespace Lean.Touch {
         public GameObject trackedObjects;
         public GameObject lockedObjects;
 
+        [Tooltip("Ignore fingers with StartedOverGui?")]
+        public bool IgnoreGuiFingers = true;
+
         Utils.Transformations mode = Utils.Transformations.Translation;
 
-        private float rotSpeed = 1.0f;
 
         // Use this for initialization
         void Start() {
@@ -58,13 +60,13 @@ namespace Lean.Touch {
 
         public void OnFingerSet(LeanFinger finger) {  // one finger on the screen
             if (!isLocalPlayer) return;
+            if (IgnoreGuiFingers == true && finger.StartedOverGui == true) return;
 
             if (LeanTouch.Fingers.Count < 1) return;
             if (mode == Utils.Transformations.Translation) {  // translate in x and y axis
                 foreach (GameObject g in MainController.control.objSelectedNow) {
                     Vector3 right = Camera.main.transform.right * finger.ScreenDelta.x * 0.005f;
                     Vector3 up = Camera.main.transform.up * finger.ScreenDelta.y * 0.005f;
-                    Debug.Log(g.name);
                     this.gameObject.transform.GetComponent<HandleNetworkFunctions>().CmdTranslate(g, right);
                     this.gameObject.transform.GetComponent<HandleNetworkFunctions>().CmdTranslate(g, up);
                 }
@@ -82,6 +84,7 @@ namespace Lean.Touch {
 
         public void OnGesture(List<LeanFinger> fingers) {  // two fingers on screen
             if (!isLocalPlayer) return;
+            //if (IgnoreGuiFingers == true && finger.StartedOverGui == true) return;
 
             if (mode == Utils.Transformations.Translation) { // translate the object near or far away from the camera position
 

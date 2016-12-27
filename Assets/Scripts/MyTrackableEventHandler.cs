@@ -21,12 +21,12 @@ namespace Vuforia {
         #endregion // PRIVATE_MEMBER_VARIABLES
 
         public GameObject TrackedObjects;
-        public bool tracking = false;
+        
         #region UNTIY_MONOBEHAVIOUR_METHODS
 
         void Awake() {
             TrackedObjects.SetActive(true);
-            Debug.Log("AQUI");
+
             mTrackableBehaviour = GetComponent<TrackableBehaviour>();
             if (mTrackableBehaviour) {
                 mTrackableBehaviour.RegisterTrackableEventHandler(this);

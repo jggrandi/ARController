@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Networking;
 
-
-public class NetHandleGUI : MonoBehaviour {
+public class NetHandleGUI : NetworkBehaviour {
 
     public GameObject selectTranslate;
     public GameObject selectRotate;

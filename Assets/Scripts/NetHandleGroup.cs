@@ -22,21 +22,40 @@ public class NetHandleGroup : NetworkBehaviour {
     }
 
 
+    [Command]
+    public void CmdSetGroup(GameObject obj) {
+        Debug.Log("SetGroup");
+        obj.transform.gameObject.GetComponent<ObjectGroupId>().id = MainController.control.idAvaiableNow;
+    }
+
+    [Command]
+    public void CmdSetGroup2(GameObject obj, int id) {
+        Debug.Log("SetGroup2");
+        obj.transform.gameObject.GetComponent<ObjectGroupId>().id = id;
+    }
+
+
+    public void CmdIncrementCount() {
+        Debug.Log("INC");
+        MainController.control.idAvaiableNow++;
+    }
+
+
 
     public void CreateGroup() {
         Debug.Log("Group");
-        if (!isLocalPlayer) return;
+        
         foreach (GameObject g in MainController.control.objSelectedNow) {
-            this.gameObject.GetComponent<HandleNetworkFunctions>().CmdSetGroup(g);
+            CmdSetGroup(g);
         }
-        this.gameObject.GetComponent<HandleNetworkFunctions>().CmdIncrementCount();
+        CmdIncrementCount();
     }
 
 
     public void UnGroup() {
-        if (!isLocalPlayer) return;
+        
         foreach (GameObject g in MainController.control.objSelectedNow) {
-            this.gameObject.GetComponent<HandleNetworkFunctions>().CmdSetGroup2(g, -1);
+            CmdSetGroup2(g, -1);
             g.GetComponent<Renderer>().material.color = Color.white;
         }
         
