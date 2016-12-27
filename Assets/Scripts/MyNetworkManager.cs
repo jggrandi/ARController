@@ -10,7 +10,7 @@ public class MyNetworkManager : NetworkManager {
     //    GameObject.Find("MainHandler").GetComponent<NetworkIdentity>().AssignClientAuthority(conn);
     //}
 
-    public void StartHost() {
+    public void StartMyHost() {
         SetPort();
         NetworkManager.singleton.StartHost();
     }

@@ -11,8 +11,7 @@ namespace Lean.Touch {
         public GameObject trackedObjects;
         public GameObject lockedObjects;
 
-        //int Mode = 0;
-		Utils.Transformations mode = Utils.Transformations.Translation;
+        Utils.Transformations mode = Utils.Transformations.Translation;
 
         private float rotSpeed = 1.0f;
 
@@ -27,10 +26,6 @@ namespace Lean.Touch {
     void Update() {
             if (!isLocalPlayer) return;
            
-            //var x = Input.GetAxis("Horizontal") * Time.deltaTime * 150.0f;
-            //var z = Input.GetAxis("Vertical") * Time.deltaTime * 3.0f;
-            //CmdTranslate(x, z);
-
             if (MainController.control.lockTransform) {
                 foreach (GameObject g in MainController.control.objSelectedNow) {
                     g.transform.parent = lockedObjects.transform;
@@ -42,20 +37,7 @@ namespace Lean.Touch {
             }
             
 			mode = MainController.control.transformationNow;
-            /*switch (MainController.control.transformationNow) {
-                case (int)Utils.Transformations.Translation:
-                    Mode = 0;
-                    break;
-                case (int)Utils.Transformations.Rotation:
-                    Mode = 1;
-                    break;
-                case (int)Utils.Transformations.Scale:
-                    Mode = 2;
-                    break;
-                default:
-                    break;
-            }*/
-            
+
             var fingers = LeanTouch.GetFingers(true, 2);
             if (fingers != null) OnGesture(fingers);
 
@@ -82,8 +64,9 @@ namespace Lean.Touch {
                 foreach (GameObject g in MainController.control.objSelectedNow) {
                     Vector3 right = Camera.main.transform.right * finger.ScreenDelta.x * 0.005f;
                     Vector3 up = Camera.main.transform.up * finger.ScreenDelta.y * 0.005f;
-                    this.gameObject.GetComponent<HandleNetworkFunctions>().CmdTranslate(g, right);
-                    this.gameObject.GetComponent<HandleNetworkFunctions>().CmdTranslate(g, up);
+                    Debug.Log(g.name);
+                    this.gameObject.transform.GetComponent<HandleNetworkFunctions>().CmdTranslate(g, right);
+                    this.gameObject.transform.GetComponent<HandleNetworkFunctions>().CmdTranslate(g, up);
                 }
             } else if (mode == Utils.Transformations.Rotation) { // rotate in the x and y axis
                 Vector3 avg = avgCenterOfObjects(MainController.control.objSelectedNow);
