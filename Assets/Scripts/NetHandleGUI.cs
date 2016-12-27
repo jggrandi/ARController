@@ -12,6 +12,8 @@ public class NetHandleGUI : NetworkBehaviour {
     public GameObject guiGroupUngroup;
     public GameObject trackedObjects;
 
+    public GameObject playerObject;
+
     // Use this for initialization
     public void buttonLock () {
         MainController.control.lockTransform = true;
@@ -49,13 +51,14 @@ public class NetHandleGUI : NetworkBehaviour {
             //MainController.control.groupButtonActive = false;
             //btnGroup.SetActive(true);
             //btnUngroup.SetActive(false);
-            gameObject.GetComponent<NetHandleGroup>().UnGroup();
-            
+            playerObject.GetComponent<NetHandleGroup>().UnGroup();
+
         } else {
             //MainController.control.groupButtonActive = true;
             //btnGroup.SetActive(false);
             //btnUngroup.SetActive(true);
-            gameObject.GetComponent<NetHandleGroup>().CreateGroup();
+            playerObject.GetComponent<NetHandleGroup>().CreateGroup();
+            
             
             
         }

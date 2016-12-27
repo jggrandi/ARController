@@ -34,7 +34,7 @@ public class NetHandleGroup : NetworkBehaviour {
         obj.transform.gameObject.GetComponent<ObjectGroupId>().id = id;
     }
 
-
+    [Command]
     public void CmdIncrementCount() {
         Debug.Log("INC");
         MainController.control.idAvaiableNow++;
