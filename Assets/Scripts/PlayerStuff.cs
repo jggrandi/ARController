@@ -9,8 +9,4 @@ public class PlayerStuff : MonoBehaviour {
         go.GetComponent<NetHandleGUI>().playerObject = this.gameObject;
 	}
 	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 }

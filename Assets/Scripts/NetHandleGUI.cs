@@ -59,8 +59,6 @@ public class NetHandleGUI : NetworkBehaviour {
             //btnUngroup.SetActive(true);
             playerObject.GetComponent<NetHandleGroup>().CreateGroup();
             
-            
-            
         }
     }
 

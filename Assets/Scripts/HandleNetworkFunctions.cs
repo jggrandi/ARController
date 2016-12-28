@@ -6,7 +6,6 @@ public class HandleNetworkFunctions : NetworkBehaviour {
 
     [Command]
     public void CmdTranslate(GameObject g, Vector3 vec) {
-        Debug.Log("Translate");
         g.transform.position += vec;
     }
 
@@ -15,29 +14,31 @@ public class HandleNetworkFunctions : NetworkBehaviour {
         g.transform.RotateAround(avg, axis, mag * 0.1f);
     }
 
-    [Command]
-    public void CmdScale(GameObject g, Vector3 right, Vector3 up) {
-
+    [ClientRpc]
+    public void RpcScale(GameObject g, float scale, Vector3 dir) {
+        g.transform.position += dir * (-1 + scale);
+        g.transform.localScale *= scale;
     }
 
+    [Command]
+    public void CmdScale(GameObject g, float scale, Vector3 dir) {
+        RpcScale(g, scale, dir);
+    }
 
-    //[Command]
-    //public int CmdGetGroup(GameObject obj) {
-    //    return obj.transform.gameObject.GetComponent<ObjectGroupId>().id;
-    //}
-    //[Command]
-    //public void CmdSetGroup(GameObject obj) {
-    //    Debug.Log("SetGroup");
-    //    obj.transform.gameObject.GetComponent<ObjectGroupId>().id = MainController.control.idAvaiableNow;
-    //}
-    //[Command]
-    //public void CmdSetGroup2(GameObject obj, int id) {
-    //    Debug.Log("SetGroup2");
-    //    obj.transform.gameObject.GetComponent<ObjectGroupId>().id = id;
-    //}
-    //public void CmdIncrementCount() {
-    //    Debug.Log("INC");
-    //    MainController.control.idAvaiableNow++;
-    //}
+    [Command]
+    public void CmdSetGroup(GameObject obj) {
+        obj.transform.gameObject.GetComponent<ObjectGroupId>().id = MainController.control.idAvaiableNow;
+    }
+
+    [Command]
+    public void CmdSetGroup2(GameObject obj, int id) {
+        obj.transform.gameObject.GetComponent<ObjectGroupId>().id = id;
+    }
+
+    [Command]
+    public void CmdIncrementCount() {
+        MainController.control.idAvaiableNow++;
+    }
+
 
 }

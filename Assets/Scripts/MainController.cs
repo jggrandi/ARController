@@ -30,18 +30,16 @@ public class MainController : MonoBehaviour {
             Destroy(gameObject);
         }
 
-        HandleNetworkFunctions netFunc = new HandleNetworkFunctions();
 
         for (int i = 0; i < trackedObjects.transform.childCount; i++)
             trackedObjects.transform.GetChild(i).transform.gameObject.AddComponent<ObjectGroupId>();
             
 
-
             // Handle the screen orientation
         Screen.autorotateToLandscapeLeft = true;
         Screen.autorotateToLandscapeRight = true;
-        Screen.autorotateToPortraitUpsideDown = true;
-        Screen.autorotateToPortrait = true;
+        Screen.autorotateToPortraitUpsideDown = false;
+        Screen.autorotateToPortrait = false;
         Screen.orientation = ScreenOrientation.AutoRotation;
     }
 

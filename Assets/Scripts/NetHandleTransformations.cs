@@ -55,9 +55,6 @@ namespace Lean.Touch {
 
         }
 
-
-
-
         public void OnFingerSet(LeanFinger finger) {  // one finger on the screen
             if (!isLocalPlayer) return;
             if (IgnoreGuiFingers == true && finger.StartedOverGui == true) return;
@@ -102,7 +99,7 @@ namespace Lean.Touch {
                 Vector3 axis = Camera.main.transform.forward;
 
                 foreach (GameObject g in MainController.control.objSelectedNow) {
-                    g.transform.RotateAround(avg, axis, angle);
+                    this.gameObject.GetComponent<HandleNetworkFunctions>().CmdRotate(g, avg, axis, 0.0f);
                 }
 
             } else if (mode == Utils.Transformations.Scale) { // pinch to scale up and down
@@ -112,8 +109,9 @@ namespace Lean.Touch {
                 float scale = LeanGesture.GetPinchScale(fingers);
 
                 foreach (GameObject g in MainController.control.objSelectedNow) {
-                    Scale(g, scale, avg);
-
+                    Vector3 dir = g.transform.position - avg;
+                    this.gameObject.GetComponent<HandleNetworkFunctions>().CmdScale(g, scale, dir);
+                    //Scale(g, scale, dir);
                 }
 
             }
@@ -127,14 +125,14 @@ namespace Lean.Touch {
             }
 
             return avg /= objects.Count;
-        } 
+        }
 
-        private void Scale(GameObject obj, float scale, Vector3 center) {
+        private void Scale(GameObject obj, float scale, Vector3 dir) {
 
-            Vector3 dir = obj.transform.position - center;
-            obj.transform.position += dir *(-1 + scale);
+            //Vector3 dir = obj.transform.position - center;
+            obj.transform.position += dir * (-1 + scale);
             obj.transform.localScale *= scale;
-            
+
         }
 
     }

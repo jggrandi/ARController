@@ -16,7 +16,7 @@ public class HandleGUI : MonoBehaviour {
     public void buttonLock () {
         MainController.control.lockTransform = true;
     }
-
+    
     public void buttonUnlock() {
         MainController.control.lockTransform = false;
     }
