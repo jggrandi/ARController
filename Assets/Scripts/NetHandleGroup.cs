@@ -8,6 +8,7 @@ public class NetHandleGroup : MonoBehaviour {
             this.gameObject.transform.GetComponent<HandleNetworkFunctions>().CmdSetGroup(g);
         }
         this.gameObject.transform.GetComponent<HandleNetworkFunctions>().CmdIncrementCount();
+        MainController.control.isMultipleSelection = false;
     }
 
 
@@ -19,5 +20,6 @@ public class NetHandleGroup : MonoBehaviour {
         }
         
         MainController.control.objSelectedNow.Clear();
+        MainController.control.isMultipleSelection = false;
     }
 }

@@ -14,8 +14,6 @@ namespace Lean.Touch {
         //public int Mode = 0;
 		Utils.Transformations mode = 0;
 
-        private float rotSpeed = 1.0f;
-
         // Use this for initialization
         void Start() {
         trackedObjetecs = GameObject.Find("TrackedObjects");

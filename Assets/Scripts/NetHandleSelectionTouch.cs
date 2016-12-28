@@ -22,22 +22,6 @@ namespace Lean.Touch {
 
         bool isFingerMoving = false;
 
-        //[Command]
-        //public void CmdAuth(NetworkIdentity id) {
-        //    GameObject.Find("MainHandler").GetComponent<NetworkIdentity>().AssignClientAuthority(id.connectionToServer);
-        //}
-
-        //public override void OnClientConnect(NetworkConnection conn) {
-           
-        //}
-
-
-        //public override void () {
-        //    //CmdAuth();
-        //    base.OnStartClient();
-
-        //}
-
 
         protected virtual void OnEnable() {
             // Hook into the events we need
@@ -148,14 +132,20 @@ namespace Lean.Touch {
 
             if (obj.transform.gameObject.GetComponent<ObjectGroupId>().id != -1) { // if the object is in a group
                 int idToSelect = obj.transform.gameObject.GetComponent<ObjectGroupId>().id; // take the obj id
-                if (MainController.control.objSelectedNow.Count > 0 &&  MainController.control.objSelectedNow[0].gameObject.GetComponent<ObjectGroupId>().id == idToSelect)
+                if (MainController.control.objSelectedNow.Count > 0 && MainController.control.objSelectedNow[0].gameObject.GetComponent<ObjectGroupId>().id == idToSelect)
                     Select(obj.transform.gameObject);
-                else
-                    for (int i = 0; i < trackedObjects.transform.childCount; i++) // and find the other objects in the same group
-                        if (trackedObjects.transform.GetChild(i).transform.gameObject.GetComponent<ObjectGroupId>().id == idToSelect)
+                else {
+                    for (int i = 0; i < trackedObjects.transform.childCount; i++) { // and find the other objects in the same group
+                        if (trackedObjects.transform.GetChild(i).transform.gameObject.GetComponent<ObjectGroupId>().id == idToSelect) {
+                            Debug.Log(trackedObjects.transform.GetChild(i).transform.gameObject.name);
                             Select(trackedObjects.transform.GetChild(i).transform.gameObject); // select them
-            } else
+                        }
+                    }
+                }
+
+            } else {
                 Select(obj.transform.gameObject);
+            }
 
         }
     }
