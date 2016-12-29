@@ -27,7 +27,7 @@ namespace Lean.Touch
 		}
 		
 		[MenuItem("GameObject/Lean/Touch", false, 1)]
-		public static void CreateLocalization()
+		public static void CreateTouch()
 		{
 			var gameObject = new GameObject(typeof(LeanTouch).Name);
 			

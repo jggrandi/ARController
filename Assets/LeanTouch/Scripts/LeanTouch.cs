@@ -44,7 +44,6 @@ namespace Lean.Touch
 		public static System.Action<LeanFinger> OnFingerHeldUp;
 		
 		// This gets fired every frame at least one finger is touching the screen (List = Fingers)
-		// NOTE: Don't modify the finger list!
 		public static System.Action<List<LeanFinger>> OnGesture;
 		
 		[Tooltip("This allows you to set how many seconds are required between a finger down/up for a tap to be registered")]
@@ -253,7 +252,7 @@ namespace Lean.Touch
 		}
 
 		// If ignoreGuiFingers is set, Fingers will be filtered to remove any with StartedOverGui
-		// If requiredFingerCount is greather than 1, this method will return null if the finger count doesn't match
+		// If requiredFingerCount is greather than 0, this method will return null if the finger count doesn't match
 		public static List<LeanFinger> GetFingers(bool ignoreGuiFingers, int requiredFingerCount = 0)
 		{
 			filteredFingers.Clear();
@@ -443,7 +442,11 @@ namespace Lean.Touch
 				{
 					var touch = Input.GetTouch(i);
 					
-					AddFinger(touch.fingerId, touch.position);
+					// Only poll fingers that are active?
+					//if (touch.phase == TouchPhase.Began || touch.phase == TouchPhase.Stationary || touch.phase == TouchPhase.Moved)
+					{
+						AddFinger(touch.fingerId, touch.position);
+					}
 				}
 			}
 			// If there are no real touches, simulate some from the mouse?
@@ -494,6 +497,14 @@ namespace Lean.Touch
 					if (finger.HeldDown == true && OnFingerHeldDown != null) OnFingerHeldDown(finger);
 					if (finger.HeldSet  == true && OnFingerHeldSet  != null) OnFingerHeldSet(finger);
 					if (finger.HeldUp   == true && OnFingerHeldUp   != null) OnFingerHeldUp(finger);
+				}
+				
+				if (OnGesture != null)
+				{
+					filteredFingers.Clear();
+					filteredFingers.AddRange(Fingers);
+					
+					OnGesture(filteredFingers);
 				}
 			}
 		}

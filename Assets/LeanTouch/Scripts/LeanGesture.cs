@@ -335,57 +335,70 @@ namespace Lean.Touch
 
 			return false;
 		}
-
+		
 		// Gets the pinch scale of the fingers
-		public static float GetPinchScale()
+		public static float GetPinchScale(float wheelSensitivity = 0.0f)
 		{
-			return GetPinchScale(LeanTouch.Fingers);
+			return GetPinchScale(LeanTouch.Fingers, wheelSensitivity);
 		}
 
-		public static float GetPinchScale(List<LeanFinger> fingers)
+		public static float GetPinchScale(List<LeanFinger> fingers, float wheelSensitivity = 0.0f)
 		{
 			var scale      = 1.0f;
 			var center     = LeanGesture.GetScreenCenter(fingers);
 			var lastCenter = LeanGesture.GetLastScreenCenter(fingers);
 
-			TryGetPinchScale(fingers, center, lastCenter, ref scale);
+			TryGetPinchScale(fingers, center, lastCenter, ref scale, wheelSensitivity);
 
 			return scale;
 		}
 
-		public static bool TryGetPinchScale(List<LeanFinger> fingers, Vector2 center, Vector2 lastCenter, ref float scale)
+		public static bool TryGetPinchScale(List<LeanFinger> fingers, Vector2 center, Vector2 lastCenter, ref float scale, float wheelSensitivity = 0.0f)
 		{
 			var distance     = LeanGesture.GetScreenDistance(fingers, center);
 			var lastDistance = LeanGesture.GetLastScreenDistance(fingers, lastCenter);
 
 			if (lastDistance > 0.0f)
 			{
-				scale = distance / lastDistance;
+				scale = distance / lastDistance; return true;
+			}
 
-				return true;
+			if (wheelSensitivity != 0.0f)
+			{
+				var scroll = Input.mouseScrollDelta.y;
+
+				if (scroll > 0.0f)
+				{
+					scale = 1.0f - wheelSensitivity; return true;
+				}
+				
+				if (scroll < 0.0f)
+				{
+					scale = 1.0f + wheelSensitivity; return true;
+				}
 			}
 
 			return false;
 		}
 
 		// Gets the pinch ratio of the fingers (reciprocal of pinch scale)
-		public static float GetPinchRatio()
+		public static float GetPinchRatio(float wheelSensitivity = 0.0f)
 		{
 			return GetPinchRatio(LeanTouch.Fingers);
 		}
 
-		public static float GetPinchRatio(List<LeanFinger> fingers)
+		public static float GetPinchRatio(List<LeanFinger> fingers, float wheelSensitivity = 0.0f)
 		{
 			var ratio      = 1.0f;
 			var center     = LeanGesture.GetScreenCenter(fingers);
 			var lastCenter = LeanGesture.GetLastScreenCenter(fingers);
 
-			TryGetPinchRatio(fingers, center, lastCenter, ref ratio);
+			TryGetPinchRatio(fingers, center, lastCenter, ref ratio, wheelSensitivity);
 
 			return ratio;
 		}
 
-		public static bool TryGetPinchRatio(List<LeanFinger> fingers, Vector2 center, Vector2 lastCenter, ref float ratio)
+		public static bool TryGetPinchRatio(List<LeanFinger> fingers, Vector2 center, Vector2 lastCenter, ref float ratio, float wheelSensitivity = 0.0f)
 		{
 			var distance     = LeanGesture.GetScreenDistance(fingers, center);
 			var lastDistance = LeanGesture.GetLastScreenDistance(fingers, lastCenter);
@@ -395,6 +408,21 @@ namespace Lean.Touch
 				ratio = lastDistance / distance;
 
 				return true;
+			}
+
+			if (wheelSensitivity != 0.0f)
+			{
+				var scroll = Input.mouseScrollDelta.y;
+
+				if (scroll > 0.0f)
+				{
+					ratio = 1.0f + wheelSensitivity; return true;
+				}
+				
+				if (scroll < 0.0f)
+				{
+					ratio = 1.0f - wheelSensitivity; return true;
+				}
 			}
 
 			return false;
