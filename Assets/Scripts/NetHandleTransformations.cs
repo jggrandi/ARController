@@ -20,37 +20,60 @@ namespace Lean.Touch {
             
         }
 
+        Matrix4x4 prevMatrix;
+
     void Update() {
             if (!isLocalPlayer) return;
-           
+
+            Matrix4x4 camMatrix = Camera.main.worldToCameraMatrix; 
+
             if (MainController.control.lockTransform) {
+
+                Matrix4x4 step = prevMatrix * camMatrix.inverse;
+
                 foreach (GameObject g in MainController.control.objSelectedNow) {
-                    g.transform.parent = lockedObjects.transform;
-                }
-            } else {
-                foreach (GameObject g in MainController.control.objSelectedNow) {
-                    g.transform.parent = trackedObjects.transform;
+                    Matrix4x4 modelMatrix = Matrix4x4.TRS(g.transform.position, g.transform.rotation, new Vector3(1,1,1)); // get the object matrix
+                    modelMatrix = prevMatrix * modelMatrix; // transform the model matrix to the camera space matrix
+                    modelMatrix = step * modelMatrix; // transform the object's position and orientation
+                    modelMatrix = prevMatrix.inverse * modelMatrix; // put the object in the world coordinates
+
+                    //g.transform.position = Utils.GetPosition(modelMatrix);
+                    //g.transform.rotation = Utils.GetRotation(modelMatrix);
+
+                    this.gameObject.transform.GetComponent<HandleNetworkFunctions>().CmdLockTransform(g, Utils.GetPosition(modelMatrix), Utils.GetRotation(modelMatrix));
+                    //g.transform.position += step.GetPosition();
+
+                    // g.transform.parent = lockedObjects.transform;
+
                 }
             }
+            //} else {
+            //    foreach (GameObject g in MainController.control.objSelectedNow) {
+            //        g.transform.parent = trackedObjects.transform;
+            //    }
+            //}
 
-			mode = MainController.control.transformationNow;
-            var fingers = LeanTouch.GetFingers(true, 2);
-            if (fingers != null) OnGesture(fingers);
+            prevMatrix = camMatrix;
+            mode = MainController.control.transformationNow;
+            //var fingers = LeanTouch.GetFingers(true, 2);
+            //if (fingers != null) OnGesture(fingers);
         }
 
        protected virtual void OnEnable() {
             LeanTouch.OnFingerSet += OnFingerSet; // Hook into the events we need
+            LeanTouch.OnGesture += OnGesture;
         }
 
         protected virtual void OnDisable() {
             LeanTouch.OnFingerSet -= OnFingerSet;    // Unhook the events
+            LeanTouch.OnGesture -= OnGesture;
         }
 
         public void OnFingerSet(LeanFinger finger) {  // one finger on the screen
             if (!isLocalPlayer) return;
             if (IgnoreGuiFingers == true && finger.StartedOverGui == true) return;
+            if (LeanTouch.Fingers.Count != 1) return;
 
-            if (LeanTouch.Fingers.Count < 1) return;
             if (mode == Utils.Transformations.Translation) {  // translate in x and y axis
                 foreach (GameObject g in MainController.control.objSelectedNow) {
                     Vector3 right = Camera.main.transform.right * finger.ScreenDelta.x * 0.005f;
@@ -69,17 +92,11 @@ namespace Lean.Touch {
         
         public void OnGesture(List<LeanFinger> fingers) {  // two fingers on screen
             if (!isLocalPlayer) return;
-
-            //bool fingerOverGUI = false;
-            //foreach (LeanFinger f in fingers)
-            //    if (f.StartedOverGui == true)
-            //        fingerOverGUI = true;
-            //Debug.Log(fingerOverGUI);
-            //if (IgnoreGuiFingers == true && fingerOverGUI == true) { Debug.Log("A"); return; }
+            if (LeanTouch.Fingers.Count != 2) return;
 
             Vector3 avg = avgCenterOfObjects(MainController.control.objSelectedNow);
             if (mode == Utils.Transformations.Translation) { // translate the object near or far away from the camera position
-                Vector3 dir = avg - Camera.main.transform.position * LeanGesture.GetScreenDelta(fingers).y * 0.005f;
+                Vector3 dir = (avg - Camera.main.transform.position) * LeanGesture.GetScreenDelta(fingers).y * 0.005f;
                 foreach (GameObject g in MainController.control.objSelectedNow)
                     this.gameObject.GetComponent<HandleNetworkFunctions>().CmdTranslate(g, dir);
             } else if (mode == Utils.Transformations.Rotation) { // rotate the object around the 3rd axis

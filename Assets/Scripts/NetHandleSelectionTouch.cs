@@ -21,7 +21,7 @@ namespace Lean.Touch {
         public LayerMask LayerMask = Physics.DefaultRaycastLayers;
 
         bool isFingerMoving = false;
-
+        
 
         protected virtual void OnEnable() {
             // Hook into the events we need
@@ -75,7 +75,7 @@ namespace Lean.Touch {
 
         private void OnFingerHeldDown(LeanFinger finger) {
             if (!isLocalPlayer) return;
-
+            if (LeanTouch.Fingers.Count != 1) return;
             if (IgnoreGuiFingers == true && finger.StartedOverGui == true) return;
             if (isFingerMoving) return;
 

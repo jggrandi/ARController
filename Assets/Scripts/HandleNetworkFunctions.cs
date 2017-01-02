@@ -5,6 +5,12 @@ using UnityEngine.Networking;
 public class HandleNetworkFunctions : NetworkBehaviour {
 
     [Command]
+    public void CmdLockTransform(GameObject g, Vector3 position, Quaternion rotation) {
+        g.transform.position = position;
+        g.transform.rotation = rotation;
+    }
+
+    [Command]
     public void CmdTranslate(GameObject g, Vector3 vec) {
         g.transform.position += vec;
     }
