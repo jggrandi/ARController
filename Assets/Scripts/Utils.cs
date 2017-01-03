@@ -77,6 +77,12 @@ public static class Utils {
 		return m;
 	}
 
+    public static Vector3 PowVec3(Vector3 v, float p) {
+        float length = v.magnitude;
+        length = Mathf.Pow(length, p);
+        return v.normalized * length;
+    }
+
 
 
 	public static float distMatrices(Matrix4x4 a, Matrix4x4 b)

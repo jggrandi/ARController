@@ -14,17 +14,16 @@ namespace Lean.Touch {
         public bool IgnoreGuiFingers = true;
         Utils.Transformations mode = Utils.Transformations.Translation;
 
+        Matrix4x4 prevMatrix;
         void Start() {
             trackedObjects = GameObject.Find("TrackedObjects");
             lockedObjects = GameObject.Find("LockedObjects");
             
         }
 
-        Matrix4x4 prevMatrix;
-
-    void Update() {
+        void Update() {
             if (!isLocalPlayer) return;
-
+            
             Matrix4x4 camMatrix = Camera.main.worldToCameraMatrix; 
 
             if (MainController.control.lockTransform) {
@@ -36,9 +35,9 @@ namespace Lean.Touch {
                     modelMatrix = prevMatrix * modelMatrix; // transform the model matrix to the camera space matrix
                     modelMatrix = step * modelMatrix; // transform the object's position and orientation
                     modelMatrix = prevMatrix.inverse * modelMatrix; // put the object in the world coordinates
-
-                    //g.transform.position = Utils.GetPosition(modelMatrix);
-                    //g.transform.rotation = Utils.GetRotation(modelMatrix);
+                    
+                    g.transform.position = Utils.GetPosition(modelMatrix);
+                    g.transform.rotation = Utils.GetRotation(modelMatrix);
 
                     this.gameObject.transform.GetComponent<HandleNetworkFunctions>().CmdLockTransform(g, Utils.GetPosition(modelMatrix), Utils.GetRotation(modelMatrix));
                     //g.transform.position += step.GetPosition();
@@ -78,8 +77,8 @@ namespace Lean.Touch {
                 foreach (GameObject g in MainController.control.objSelectedNow) {
                     Vector3 right = Camera.main.transform.right * finger.ScreenDelta.x * 0.005f;
                     Vector3 up = Camera.main.transform.up * finger.ScreenDelta.y * 0.005f;
-                    this.gameObject.transform.GetComponent<HandleNetworkFunctions>().CmdTranslate(g, right);
-                    this.gameObject.transform.GetComponent<HandleNetworkFunctions>().CmdTranslate(g, up);
+                    this.gameObject.transform.GetComponent<HandleNetworkFunctions>().CmdTranslate(g, Utils.PowVec3(right+up, 1.2f));
+                    
                 }
             } else if (mode == Utils.Transformations.Rotation) { // rotate in the x and y axis
                 Vector3 avg = avgCenterOfObjects(MainController.control.objSelectedNow);

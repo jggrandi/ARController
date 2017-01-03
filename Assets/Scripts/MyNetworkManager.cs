@@ -19,9 +19,6 @@ public class MyNetworkManager : NetworkManager {
                 break;
             }
         }
-
-        Debug.Log(player.name);
-
     }
 
     public void StartMyHost() {

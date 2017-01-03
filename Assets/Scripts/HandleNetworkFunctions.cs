@@ -4,20 +4,37 @@ using UnityEngine.Networking;
 
 public class HandleNetworkFunctions : NetworkBehaviour {
 
-    [Command]
-    public void CmdLockTransform(GameObject g, Vector3 position, Quaternion rotation) {
+    [ClientRpc]
+    public void RpcLockTransform(GameObject g, Vector3 position, Quaternion rotation) {
+        if (isLocalPlayer) return;
+        
         g.transform.position = position;
         g.transform.rotation = rotation;
     }
 
     [Command]
-    public void CmdTranslate(GameObject g, Vector3 vec) {
+    public void CmdLockTransform(GameObject g, Vector3 position, Quaternion rotation) {
+        RpcLockTransform(g, position, rotation);
+    }
+
+    [ClientRpc]
+    public void RpcTranslate(GameObject g, Vector3 vec) {
         g.transform.position += vec;
     }
 
     [Command]
-    public void CmdRotate(GameObject g, Vector3 avg, Vector3 axis, float mag) {
+    public void CmdTranslate(GameObject g, Vector3 vec) {
+        RpcTranslate(g, vec);
+    }
+
+    [ClientRpc]
+    public void RpcRotate(GameObject g, Vector3 avg, Vector3 axis, float mag) {
         g.transform.RotateAround(avg, axis, mag * 0.1f);
+    }
+
+    [Command]
+    public void CmdRotate(GameObject g, Vector3 avg, Vector3 axis, float mag) {
+        RpcRotate(g, avg, axis, mag);
     }
 
     [ClientRpc]
