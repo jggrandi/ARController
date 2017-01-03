@@ -2,6 +2,7 @@
 using System.Collections;
 using System;
 using UnityEngine.Networking;
+using System.Collections.Generic;
 
 namespace Lean.Touch {
     public class NetHandleSelectionTouch : NetworkBehaviour {
@@ -21,7 +22,52 @@ namespace Lean.Touch {
         public LayerMask LayerMask = Physics.DefaultRaycastLayers;
 
         bool isFingerMoving = false;
+
+        /*public class SyncGameObject : SyncList<GameObject> {
+            protected override GameObject DeserializeItem(NetworkReader reader) {
+                return reader.ReadGameObject();
+            }
+
+            protected override void SerializeItem(NetworkWriter writer, GameObject item) {
+                writer.Write(item);
+            }
+        }
+
+        public SyncGameObject objSelected = new SyncGameObject();
         
+        //[Command]
+        public void CmdSyncSelected(List<GameObject> objs) {
+            objSelected.Clear();
+            foreach(GameObject g in objs) {
+                objSelected.Add(g);
+            }
+        }*/
+
+
+        public List<GameObject> objSelected = new List<GameObject>();
+
+        [ClientRpc]
+        void RpcAddSelected(GameObject g) {
+            objSelected.Add(g);
+        }
+        [Command]
+        void CmdAddSelected(GameObject g) {
+            RpcAddSelected(g);
+        }
+        [ClientRpc]
+        void RpcClearSelected() {
+            objSelected.Clear();
+        }
+        [Command]
+        void CmdClearSelected() {
+            RpcClearSelected();
+        }
+        public void CmdSyncSelected() {
+            CmdClearSelected();
+            foreach (GameObject g in MainController.control.objSelectedNow) {
+                CmdAddSelected(g);
+            }
+        }
 
         protected virtual void OnEnable() {
             // Hook into the events we need
@@ -35,21 +81,102 @@ namespace Lean.Touch {
             LeanTouch.OnFingerHeldDown -= OnFingerHeldDown;
         }
 
-
+        public GameObject lines;
         void Start() {
             if (!isLocalPlayer) return;
             trackedObjects = GameObject.Find("TrackedObjects");
+            lines = GameObject.Find("Lines");
+            var obj = GameObject.Find("VolumetricLinePrefab");
+            /*for (int i = 0; i < 100; i++) {
+                var g = (Instantiate(obj) as GameObject);
+                g.transform.parent = lines.transform;
+            }*/
+            ClearLines();
+
         }
 
+
+        int linesUsed = 0;
+        void AddLine(Vector3 a, Vector3 b) {
+            if (linesUsed > lines.transform.childCount) return;
+            var g = lines.transform.GetChild(linesUsed++).gameObject;
+            var line = g.GetComponent<VolumetricLines.VolumetricLineBehavior>();
+            line.SetStartAndEndPoints(a, b);
+        }
+        void ClearLines() {
+            for (int i = linesUsed; i < lines.transform.childCount; i++) {
+                var g = lines.transform.GetChild(i).gameObject;
+                var line = g.GetComponent<VolumetricLines.VolumetricLineBehavior>();
+                line.SetStartAndEndPoints(new Vector3(5000.0f, 5000.0f, 5000.0f), new Vector3(5000.0f, 5000.0f, 5000.0f));
+            }
+            linesUsed = 0;
+        }
+
+
         void Update() {
+
             if (!isLocalPlayer) return;
-            
+
+            linesUsed = 0;
+
+            foreach (var player in GameObject.FindGameObjectsWithTag("player")) {
+                if (player.GetComponent<NetworkIdentity>().isLocalPlayer) continue;
+                var selected = player.GetComponent<NetHandleSelectionTouch>().objSelected;
+
+                if (selected.Count == 0) continue;
+
+
+                float minDist = float.MaxValue;
+                GameObject minObj = null;
+                var camera = player.transform.GetChild(0).gameObject.transform.position;
+
+                foreach(var g in selected) {
+                    var dist = Vector3.Magnitude(g.transform.position - camera);
+                    if (dist < minDist) {
+                        minDist = dist;
+                        minObj = g;
+                    }
+                }
+
+                AddLine(camera, minObj.transform.position);
+                
+                List<GameObject> visited = new List<GameObject>();
+                visited.Add(minObj);
+                selected.Remove(minObj);
+
+
+                while (selected.Count > 0) {
+
+                    minDist = float.MaxValue;
+                    GameObject minObjA = null;
+                    GameObject minObjB = null;
+
+                    foreach (var a in visited) {
+                        foreach (var b in selected) {
+                            var dist = Vector3.Magnitude(a.transform.position - b.transform.position);
+                            if (dist < minDist) {
+                                minDist = dist;
+                                minObjA = a;
+                                minObjB = b;
+                            }
+                        }
+                    }
+                    AddLine(minObjA.transform.position, minObjB.transform.position);
+                    selected.Remove(minObjB);
+                    visited.Add(minObjB);
+                }
+
+            }
+            ClearLines();
+
             if (LeanTouch.Fingers.Count == 1) {
                 if (LeanTouch.Fingers[0].ScreenDelta.magnitude > 0.001f)
                     isFingerMoving = true;
             } else {
                 isFingerMoving = false;
             }
+
+            CmdSyncSelected();
         }
 
         private void OnFingerTap(LeanFinger finger) {

@@ -40,22 +40,13 @@ namespace Lean.Touch {
                     g.transform.rotation = Utils.GetRotation(modelMatrix);
 
                     this.gameObject.transform.GetComponent<HandleNetworkFunctions>().CmdLockTransform(g, Utils.GetPosition(modelMatrix), Utils.GetRotation(modelMatrix));
-                    //g.transform.position += step.GetPosition();
-
-                    // g.transform.parent = lockedObjects.transform;
-
                 }
             }
-            //} else {
-            //    foreach (GameObject g in MainController.control.objSelectedNow) {
-            //        g.transform.parent = trackedObjects.transform;
-            //    }
-            //}
 
             prevMatrix = camMatrix;
             mode = MainController.control.transformationNow;
-            //var fingers = LeanTouch.GetFingers(true, 2);
-            //if (fingers != null) OnGesture(fingers);
+            this.gameObject.transform.GetComponent<HandleNetworkFunctions>().CmdSyncCamPosition(Camera.main.transform.position);
+            
         }
 
        protected virtual void OnEnable() {
@@ -77,7 +68,7 @@ namespace Lean.Touch {
                 foreach (GameObject g in MainController.control.objSelectedNow) {
                     Vector3 right = Camera.main.transform.right * finger.ScreenDelta.x * 0.005f;
                     Vector3 up = Camera.main.transform.up * finger.ScreenDelta.y * 0.005f;
-                    this.gameObject.transform.GetComponent<HandleNetworkFunctions>().CmdTranslate(g, Utils.PowVec3(right+up, 1.2f));
+                    this.gameObject.transform.GetComponent<HandleNetworkFunctions>().Translate(g, Utils.PowVec3(right+up, 1.2f));
                     
                 }
             } else if (mode == Utils.Transformations.Rotation) { // rotate in the x and y axis

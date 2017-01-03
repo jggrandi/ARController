@@ -17,14 +17,23 @@ public class HandleNetworkFunctions : NetworkBehaviour {
         RpcLockTransform(g, position, rotation);
     }
 
-    [ClientRpc]
-    public void RpcTranslate(GameObject g, Vector3 vec) {
+    public void Translate(GameObject g, Vector3 vec) {
+        Vector3 prevLocalPos = g.transform.localPosition;
         g.transform.position += vec;
+        Vector3 localPos = g.transform.localPosition;
+        g.transform.position -= vec;
+        CmdTranslate(g, localPos - prevLocalPos);
+
     }
 
     [Command]
     public void CmdTranslate(GameObject g, Vector3 vec) {
-        RpcTranslate(g, vec);
+        g.transform.localPosition += vec;
+        RpcTranslate(g, g.transform.localPosition);
+    }
+    [ClientRpc]
+    public void RpcTranslate(GameObject g, Vector3 pos) {
+        g.transform.localPosition = pos;
     }
 
     [ClientRpc]
@@ -63,5 +72,9 @@ public class HandleNetworkFunctions : NetworkBehaviour {
         MainController.control.idAvaiableNow++;
     }
 
+    [Command]
+    public void CmdSyncCamPosition(Vector3 pos) {
+        gameObject.transform.GetChild(0).transform.position = pos;
+    }
 
 }
