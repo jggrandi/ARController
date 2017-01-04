@@ -30,7 +30,8 @@ namespace Lean.Touch {
 
                 Matrix4x4 step = prevMatrix * camMatrix.inverse;
 
-                foreach (GameObject g in MainController.control.objSelectedNow) {
+                foreach (int index in MainController.control.objSelected) {
+                    var g = Utils.GetByIndex(index);
                     Matrix4x4 modelMatrix = Matrix4x4.TRS(g.transform.position, g.transform.rotation, new Vector3(1,1,1)); // get the object matrix
                     modelMatrix = prevMatrix * modelMatrix; // transform the model matrix to the camera space matrix
                     modelMatrix = step * modelMatrix; // transform the object's position and orientation
@@ -69,19 +70,19 @@ namespace Lean.Touch {
             if (LeanTouch.Fingers.Count != 1) return;
 
             if (mode == Utils.Transformations.Translation) {  // translate in x and y axis
-                foreach (GameObject g in MainController.control.objSelectedNow) {
+                foreach (var index in MainController.control.objSelected) {
                     
                     Vector3 right = Camera.main.transform.right * finger.ScreenDelta.x * 0.005f;
                     Vector3 up = Camera.main.transform.up * finger.ScreenDelta.y * 0.005f;
-                    this.gameObject.transform.GetComponent<HandleNetworkFunctions>().Translate(GetIndex(g), Utils.PowVec3(right+up, 1.2f));
+                    this.gameObject.transform.GetComponent<HandleNetworkFunctions>().Translate(index, Utils.PowVec3(right+up, 1.2f));
                     
                 }
             } else if (mode == Utils.Transformations.Rotation) { // rotate in the x and y axis
-                Vector3 avg = avgCenterOfObjects(MainController.control.objSelectedNow);
+                Vector3 avg = avgCenterOfObjects(MainController.control.objSelected);
                 Vector3 axis = Camera.main.transform.right * finger.ScreenDelta.y + Camera.main.transform.up * -finger.ScreenDelta.x;
                 float magnitude = finger.ScreenDelta.magnitude*0.3f;
-                foreach (GameObject g in MainController.control.objSelectedNow)
-                    this.gameObject.GetComponent<HandleNetworkFunctions>().Rotate(GetIndex(g), avg, axis, magnitude);
+                foreach (int index in MainController.control.objSelected)
+                    this.gameObject.GetComponent<HandleNetworkFunctions>().Rotate(index, avg, axis, magnitude);
             }
         }
         
@@ -89,29 +90,32 @@ namespace Lean.Touch {
             if (!isLocalPlayer) return;
             if (LeanTouch.Fingers.Count != 2) return;
 
-            Vector3 avg = avgCenterOfObjects(MainController.control.objSelectedNow);
+            Vector3 avg = avgCenterOfObjects(MainController.control.objSelected);
             if (mode == Utils.Transformations.Translation) { // translate the object near or far away from the camera position
                 Vector3 dir = (avg - Camera.main.transform.position) * LeanGesture.GetScreenDelta(fingers).y * 0.005f;
-                foreach (GameObject g in MainController.control.objSelectedNow)
-                    this.gameObject.GetComponent<HandleNetworkFunctions>().CmdTranslate(GetIndex(g), dir);
+                foreach (var index in MainController.control.objSelected)
+                    this.gameObject.GetComponent<HandleNetworkFunctions>().CmdTranslate(index, dir);
             } else if (mode == Utils.Transformations.Rotation) { // rotate the object around the 3rd axis
                 float angle = LeanGesture.GetTwistDegrees(fingers)*0.3f;
                 Vector3 axis = Camera.main.transform.forward;
-                foreach (GameObject g in MainController.control.objSelectedNow)
-                    this.gameObject.GetComponent<HandleNetworkFunctions>().Rotate(GetIndex(g), avg, axis, angle);
+                foreach (int index in MainController.control.objSelected)
+                    this.gameObject.GetComponent<HandleNetworkFunctions>().Rotate(index, avg, axis, angle);
             } else if (mode == Utils.Transformations.Scale) { // pinch to scale up and down
                 float scale = LeanGesture.GetPinchScale(fingers);
-                foreach (GameObject g in MainController.control.objSelectedNow) {
+                foreach (var index in MainController.control.objSelected) {
+                    var g = Utils.GetByIndex(index);
                     Vector3 dir = g.transform.position - avg;
                     this.gameObject.GetComponent<HandleNetworkFunctions>().CmdScale(GetIndex(g), scale, dir);
                 }
             }
         }
 
-        private Vector3 avgCenterOfObjects(List<GameObject> objects) {
+        private Vector3 avgCenterOfObjects(List<int> objects) {
             Vector3 avg = Vector3.zero;
-            foreach (GameObject g in objects)
+            foreach (var index in objects) {
+                var g = Utils.GetByIndex(index);
                 avg += g.transform.position;
+            }
             return avg /= objects.Count;
         }
 

@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Networking;
 
-public class NetHandleGroup : MonoBehaviour {
+public class NetHandleGroup : NetworkBehaviour {
 
-    DataSync DataSyncRef;
-
+    DataSync dataSync;
     public void Start() {
-        DataSyncRef = GameObject.Find("MainHandler").GetComponent<DataSync>();
+        dataSync = GameObject.Find("MainHandler").GetComponent<DataSync>();
     }
 
     public int GetIndex(GameObject g) {
@@ -14,22 +14,40 @@ public class NetHandleGroup : MonoBehaviour {
     }
 
     public void CreateGroup() {
-        foreach (GameObject g in MainController.control.objSelectedNow) {
-            DataSyncRef.CmdNewGroup(GetIndex(g));
+        foreach (int index in MainController.control.objSelected) {
+            CmdNewGroup(index);
         }
-        DataSyncRef.CmdIncrementGroupCount();
+        CmdIncrementGroupCount();
         MainController.control.isMultipleSelection = false;
     }
 
 
     public void UnGroup() {
         
-        foreach (GameObject g in MainController.control.objSelectedNow) {
-            DataSyncRef.CmdSetGroup(GetIndex(g), -1);
-            g.GetComponent<Renderer>().material.color = Color.white;
+        foreach (int index in MainController.control.objSelected) {
+            CmdSetGroup(index, -1);
+            var g = Utils.GetByIndex(index);
+            g.GetComponent<Renderer>().material = g.GetComponent<ObjectGroupId>().material;
         }
         
-        MainController.control.objSelectedNow.Clear();
+        MainController.control.objSelected.Clear();
         MainController.control.isMultipleSelection = false;
     }
+
+    [Command]
+    public void CmdSetGroup(int index, int group) {
+        dataSync.Groups[index] = group;
+    }
+
+    [Command]
+    public void CmdNewGroup(int index) {
+        dataSync.Groups[index] = dataSync.GroupCount;
+    }
+
+    [Command]
+    public void CmdIncrementGroupCount() {
+        dataSync.GroupCount++;
+    }
+
+
 }

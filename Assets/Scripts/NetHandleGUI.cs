@@ -46,7 +46,6 @@ public class NetHandleGUI : NetworkBehaviour {
     }
 
     public void toggleGroup() {
-        
         if (!btnGroup.activeInHierarchy) {
             //MainController.control.groupButtonActive = false;
             //btnGroup.SetActive(true);
@@ -68,12 +67,12 @@ public class NetHandleGUI : NetworkBehaviour {
     }
 
     private void Update() {
-        if (MainController.control.objSelectedNow.Count > 1 ) {
+        if (MainController.control.objSelected.Count > 1 ) {
 
             int groupSelected = -2;
             bool sigleGroup = true;
-            foreach (GameObject g in MainController.control.objSelectedNow) {
-                int group = DataSyncRef.Groups[Utils.GetIndex(g)];
+            foreach (var index in MainController.control.objSelected) {
+                int group = DataSyncRef.Groups[index];
                 if(group < 0) {
                     sigleGroup = false;
                     break;
@@ -91,8 +90,8 @@ public class NetHandleGUI : NetworkBehaviour {
                 for (int i = 0; i < trackedObjects.transform.childCount; i++) {
                     if (DataSyncRef.Groups[i] != groupSelected) continue;
                     bool selected = false;
-                    foreach (GameObject g in MainController.control.objSelectedNow) {
-                        if (g == trackedObjects.transform.GetChild(i).transform.gameObject) {
+                    foreach (var index in MainController.control.objSelected) {
+                        if (index == i) {
                             selected = true;
                             break;
                         }

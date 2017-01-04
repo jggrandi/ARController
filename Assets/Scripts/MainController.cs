@@ -16,9 +16,10 @@ public class MainController : MonoBehaviour {
     public Utils.Transformations transformationNow = 0;
     public bool lockTransform = false;
     public bool groupButtonActive = false;
-    public List<GameObject> objSelectedNow = new List<GameObject>();
+    public List<int> objSelected = new List<int>();
 
     public int idAvaiableNow = 0;
+    
 
     void Awake() {
 

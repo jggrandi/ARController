@@ -47,19 +47,19 @@ namespace Lean.Touch {
         }*/
 
 
-        public List<GameObject> objSelected = new List<GameObject>();
+        public List<int> objSelectedShared = new List<int>();
 
         [ClientRpc]
-        void RpcAddSelected(GameObject g) {
-            objSelected.Add(g);
+        void RpcAddSelected(int index) {
+            objSelectedShared.Add(index);
         }
         [Command]
-        void CmdAddSelected(GameObject g) {
-            RpcAddSelected(g);
+        void CmdAddSelected(int index) {
+            RpcAddSelected(index);
         }
         [ClientRpc]
         void RpcClearSelected() {
-            objSelected.Clear();
+            objSelectedShared.Clear();
         }
         [Command]
         void CmdClearSelected() {
@@ -67,8 +67,8 @@ namespace Lean.Touch {
         }
         public void CmdSyncSelected() {
             CmdClearSelected();
-            foreach (GameObject g in MainController.control.objSelectedNow) {
-                CmdAddSelected(g);
+            foreach (var i in MainController.control.objSelected) {
+                CmdAddSelected(i);
             }
         }
 
@@ -138,12 +138,12 @@ namespace Lean.Touch {
 
             foreach (var player in GameObject.FindGameObjectsWithTag("player")) {
                 //if (player.GetComponent<NetworkIdentity>().isLocalPlayer) continue;
-                var selected = new List<GameObject>(player.GetComponent<NetHandleSelectionTouch>().objSelected);
+                var selected = new List<int>(player.GetComponent<NetHandleSelectionTouch>().objSelectedShared);
 
                 if (selected.Count == 0) continue;
 
                 float minDist = float.MaxValue;
-                GameObject minObj = null;
+                int minObj = -1;
                 var camera = player.transform.GetChild(0).gameObject.transform.position;
 
 
@@ -153,17 +153,18 @@ namespace Lean.Touch {
                     color = new Color(0 / 255.0f, 118 / 255.0f, 255 / 255.0f);
                 }
 
-                    foreach (var g in selected) {
+                foreach (var index in selected) {
+                    var g = Utils.GetByIndex(index);
                     var dist = Vector3.Magnitude(g.transform.position - camera);
                     if (dist < minDist) {
                         minDist = dist;
-                        minObj = g;
+                        minObj = index;
                     }
                 }
 
-                AddLine(camera, minObj.transform.position, color);
+                AddLine(camera, Utils.GetByIndex(minObj).transform.position, color);
                 
-                List<GameObject> visited = new List<GameObject>();
+                List<int> visited = new List<int>();
                 visited.Add(minObj);
                 selected.Remove(minObj);
 
@@ -171,12 +172,12 @@ namespace Lean.Touch {
                 while (selected.Count > 0) {
 
                     minDist = float.MaxValue;
-                    GameObject minObjA = null;
-                    GameObject minObjB = null;
+                    int minObjA = -1;
+                    int minObjB = -1;
 
                     foreach (var a in visited) {
                         foreach (var b in selected) {
-                            var dist = Vector3.Magnitude(a.transform.position - b.transform.position);
+                            var dist = Vector3.Magnitude(Utils.GetByIndex(a).transform.position - Utils.GetByIndex(b).transform.position);
                             if (dist < minDist) {
                                 minDist = dist;
                                 minObjA = a;
@@ -184,7 +185,7 @@ namespace Lean.Touch {
                             }
                         }
                     }
-                    AddLine(minObjA.transform.position, minObjB.transform.position, color);
+                    AddLine(Utils.GetByIndex(minObjA).transform.position, Utils.GetByIndex(minObjB).transform.position, color);
 
                     selected.Remove(minObjB);
                     visited.Add(minObjB);
@@ -220,7 +221,7 @@ namespace Lean.Touch {
                 Select(finger, component);
                 CmdSyncSelected();
             } else {
-                if (MainController.control.objSelectedNow.Count > 0) {
+                if (MainController.control.objSelected.Count > 0) {
                     UnselectAll();
                     CmdSyncSelected();
                 }
@@ -241,7 +242,7 @@ namespace Lean.Touch {
             bool sync = false;
             if (Physics.Raycast(ray, out hit, float.PositiveInfinity, LayerMask) == true) { // se tocou em um objeto
                 component = hit.collider;
-                if (MainController.control.objSelectedNow.Count > 0) { // only multiple selection when there is at least one object in the selectednow list
+                if (MainController.control.objSelected.Count > 0) { // only multiple selection when there is at least one object in the selectednow list
                     MainController.control.isMultipleSelection = true;
                     Select(finger, component);
                     sync = true;
@@ -253,59 +254,58 @@ namespace Lean.Touch {
 
         public void UnselectAll() {
             MainController.control.isMultipleSelection = false;
-            foreach (GameObject g in MainController.control.objSelectedNow)
+            foreach (int i in MainController.control.objSelected) {
+                GameObject g = Utils.GetByIndex(i);
                 g.transform.GetComponent<Renderer>().material = g.transform.GetComponent<ObjectGroupId>().material;
-
-            MainController.control.objSelectedNow.Clear();
+            }
+            MainController.control.objSelected.Clear();
         }
 
-        public void Select(GameObject obj) {
-            obj.GetComponent<Renderer>().material = selectedMaterial;
-            
-           
-            
-            MainController.control.objSelectedNow.Add(obj);
+        public void Select(int index) {
+            Utils.GetByIndex(index).GetComponent<Renderer>().material = selectedMaterial;
+            MainController.control.objSelected.Add(index);
         }
 
         public void Select(LeanFinger finger, Component obj) {
+
+            int index = Utils.GetIndex(obj.transform.gameObject);
 
             if (!MainController.control.isMultipleSelection) {
                 UnselectAll();
             }
 
-            GameObject objToRemove = null;
+            int objToRemove = -1;
             bool objIsSelected = false;
-            foreach (GameObject g in MainController.control.objSelectedNow) {
-                if (g == obj.transform.gameObject) {
+            foreach (var i in MainController.control.objSelected) {
+                if (i == index) {
                     objIsSelected = true;
-                    objToRemove = g;
+                    objToRemove = i;
                     break;
                 }
             }
 
             if (objIsSelected) {
-                MainController.control.objSelectedNow.Remove(objToRemove);
+                MainController.control.objSelected.Remove(objToRemove);
                 obj.transform.GetComponent<Renderer>().material = obj.transform.GetComponent<ObjectGroupId>().material;
-                if (MainController.control.objSelectedNow.Count == 0)
+                if (MainController.control.objSelected.Count == 0)
                     MainController.control.isMultipleSelection = false;
                 return;
             }
 
-            if (DataSyncRef.Groups[Utils.GetIndex(obj.transform.gameObject)] != -1) { // if the object is in a group
-                int idToSelect = DataSyncRef.Groups[Utils.GetIndex(obj.transform.gameObject)]; // take the obj id
-                if (MainController.control.objSelectedNow.Count > 0 && DataSyncRef.Groups[Utils.GetIndex(MainController.control.objSelectedNow[0])] == idToSelect)
-                    Select(obj.transform.gameObject);
+            if (DataSyncRef.Groups[index] != -1) { // if the object is in a group
+                int idToSelect = DataSyncRef.Groups[index]; // take the obj id
+                if (MainController.control.objSelected.Count > 0 && DataSyncRef.Groups[MainController.control.objSelected[0]] == idToSelect)
+                    Select(index);
                 else {
                     for (int i = 0; i < trackedObjects.transform.childCount; i++) { // and find the other objects in the same group
                         if (DataSyncRef.Groups[i] == idToSelect) {
-                            Debug.Log(trackedObjects.transform.GetChild(i).transform.gameObject.name);
-                            Select(trackedObjects.transform.GetChild(i).transform.gameObject); // select them
+                            Select(i); // select them
                         }
                     }
                 }
 
             } else {
-                Select(obj.transform.gameObject);
+                Select(index);
             }
 
         }

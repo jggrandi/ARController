@@ -5,7 +5,7 @@ using UnityEngine.Networking;
 
 namespace Lean.Touch {
 
-    public class HandleTransformations : MonoBehaviour {
+    /*public class HandleTransformations : MonoBehaviour {
 
 
         public GameObject trackedObjetecs;
@@ -128,5 +128,5 @@ namespace Lean.Touch {
             
         }
 
-    }
+    }*/
 }

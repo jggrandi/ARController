@@ -87,6 +87,12 @@ public static class Utils {
         return g.GetComponent<ObjectGroupId>().index;
     }
 
+    static GameObject TrackedObjects = null;
+    static public GameObject GetByIndex(int index) {
+        if (TrackedObjects == null) TrackedObjects = GameObject.Find("TrackedObjects").gameObject;
+        return TrackedObjects.transform.GetChild(index).gameObject;
+    }
+
     public static float distMatrices(Matrix4x4 a, Matrix4x4 b)
 	{
 		float r = 0;
