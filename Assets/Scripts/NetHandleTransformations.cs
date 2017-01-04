@@ -45,7 +45,7 @@ namespace Lean.Touch {
 
             prevMatrix = camMatrix;
             mode = MainController.control.transformationNow;
-            this.gameObject.transform.GetComponent<HandleNetworkFunctions>().CmdSyncCamPosition(Camera.main.transform.position);
+            this.gameObject.transform.GetComponent<HandleNetworkFunctions>().SyncCamPosition(Camera.main.transform.position);
             
         }
 

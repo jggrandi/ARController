@@ -31,7 +31,7 @@ Shader "VolumetricLine/VolumetricLineAdditive 1" {
             Cull Off 
             ZWrite Off
             ZTest LEqual
-            Blend One One
+            Blend SrcAlpha One
             Lighting On
  
             CGPROGRAM
@@ -90,11 +90,11 @@ Shader "VolumetricLine/VolumetricLineAdditive 1" {
                                 
                 if (tx.a > _LightSaberFactor)
                 {
-                	return float4(1.0, 1.0, 1.0, tx.a);
+                	return (_Color- float4(0.1,0.1,0.1,0))/1.0*float4(1.0, 1.0, 1.0, tx.a*0.5);
                 }
                 else 
                 {
-                	return tx * _Color; 
+                	return tx * (_Color - float4(0.1, 0.1, 0.1, 0))*1.0;
                 }
             }
  

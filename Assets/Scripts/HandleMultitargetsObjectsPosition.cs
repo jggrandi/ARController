@@ -17,6 +17,7 @@ public class HandleMultitargetsObjectsPosition : MonoBehaviour
             cube.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
             
             cube.transform.GetComponent<BoxCollider>().enabled = false;
+            cube.transform.GetComponent<MeshRenderer>().enabled = false;
             //imageTargets.transform.GetChild(i).GetChild(0).transform.position = Vector3.zero;
             //imageTargets.transform.GetChild(i).GetChild(0).transform.rotation = Quaternion.identity;
         }

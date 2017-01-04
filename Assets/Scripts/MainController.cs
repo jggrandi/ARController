@@ -31,8 +31,11 @@ public class MainController : MonoBehaviour {
         }
 
 
-        for (int i = 0; i < trackedObjects.transform.childCount; i++)
-            trackedObjects.transform.GetChild(i).transform.gameObject.AddComponent<ObjectGroupId>();
+        for (int i = 0; i < trackedObjects.transform.childCount; i++) {
+            GameObject obj = trackedObjects.transform.GetChild(i).transform.gameObject;
+            obj.AddComponent<ObjectGroupId>();
+            obj.GetComponent<ObjectGroupId>().material = obj.GetComponent<Renderer>().material;
+        }
             
 
             // Handle the screen orientation

@@ -38,7 +38,7 @@ public class HandleNetworkFunctions : NetworkBehaviour {
 
     [ClientRpc]
     public void RpcRotate(GameObject g, Vector3 avg, Vector3 axis, float mag) {
-        g.transform.RotateAround(avg, axis, mag * 0.1f);
+        g.transform.RotateAround(avg, axis, mag);
     }
 
     [Command]
@@ -72,9 +72,17 @@ public class HandleNetworkFunctions : NetworkBehaviour {
         MainController.control.idAvaiableNow++;
     }
 
+    [ClientRpc]
+    public void RpcSyncCamPosition(Vector3 pos) {
+        gameObject.transform.GetChild(0).transform.position = pos;
+    }
     [Command]
     public void CmdSyncCamPosition(Vector3 pos) {
+        RpcSyncCamPosition(pos);
+    }
+    public void SyncCamPosition(Vector3 pos) {
         gameObject.transform.GetChild(0).transform.position = pos;
+        CmdSyncCamPosition(pos);
     }
 
 }

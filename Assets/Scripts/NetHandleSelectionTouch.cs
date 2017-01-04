@@ -23,6 +23,9 @@ namespace Lean.Touch {
 
         bool isFingerMoving = false;
 
+        Color greyColor = new Color(150 / 255.0f, 150 / 255.0f, 150 / 255.0f);
+        Color blueColor = new Color(0 / 255.0f, 118 / 255.0f, 255 / 255.0f);
+
         /*public class SyncGameObject : SyncList<GameObject> {
             protected override GameObject DeserializeItem(NetworkReader reader) {
                 return reader.ReadGameObject();
@@ -82,8 +85,14 @@ namespace Lean.Touch {
         }
 
         public GameObject lines;
+        public Material selectedMaterial = null;
+
         void Start() {
+           // if (selectedMaterial == null)
+                selectedMaterial = (Material)Resources.Load("Light Blue");
+
             if (!isLocalPlayer) return;
+
             trackedObjects = GameObject.Find("TrackedObjects");
             lines = GameObject.Find("Lines");
             var obj = GameObject.Find("VolumetricLinePrefab");
@@ -97,17 +106,22 @@ namespace Lean.Touch {
 
 
         int linesUsed = 0;
-        void AddLine(Vector3 a, Vector3 b) {
-            if (linesUsed > lines.transform.childCount) return;
+        void AddLine(Vector3 a, Vector3 b, Color c) {
+            if (linesUsed >= lines.transform.childCount) return;
             var g = lines.transform.GetChild(linesUsed++).gameObject;
             var line = g.GetComponent<VolumetricLines.VolumetricLineBehavior>();
-            line.SetStartAndEndPoints(a, b);
+            //line.SetStartAndEndPoints(a, b);
+            line.transform.position = a;
+            line.transform.rotation = Quaternion.FromToRotation(new Vector3(0, 0, 1), (b - a).normalized);
+            line.transform.localScale = new Vector3(1, 1, (b - a).magnitude);
+            line.LineColor = c;
         }
         void ClearLines() {
             for (int i = linesUsed; i < lines.transform.childCount; i++) {
                 var g = lines.transform.GetChild(i).gameObject;
                 var line = g.GetComponent<VolumetricLines.VolumetricLineBehavior>();
-                line.SetStartAndEndPoints(new Vector3(5000.0f, 5000.0f, 5000.0f), new Vector3(5000.0f, 5000.0f, 5000.0f));
+                //line.SetStartAndEndPoints(new Vector3(5000.0f, 5000.0f, 5000.0f), new Vector3(5000.0f, 5000.0f, 5000.0f));
+                line.transform.position = new Vector3(500, 500, 500);
             }
             linesUsed = 0;
         }
@@ -120,17 +134,23 @@ namespace Lean.Touch {
             linesUsed = 0;
 
             foreach (var player in GameObject.FindGameObjectsWithTag("player")) {
-                if (player.GetComponent<NetworkIdentity>().isLocalPlayer) continue;
-                var selected = player.GetComponent<NetHandleSelectionTouch>().objSelected;
+                //if (player.GetComponent<NetworkIdentity>().isLocalPlayer) continue;
+                var selected = new List<GameObject>(player.GetComponent<NetHandleSelectionTouch>().objSelected);
 
                 if (selected.Count == 0) continue;
-
 
                 float minDist = float.MaxValue;
                 GameObject minObj = null;
                 var camera = player.transform.GetChild(0).gameObject.transform.position;
 
-                foreach(var g in selected) {
+
+                Color color = greyColor;
+                if (player.GetComponent<NetworkIdentity>().isLocalPlayer) {
+                    camera -= new Vector3(0, 0.3f, 0);
+                    color = new Color(0 / 255.0f, 118 / 255.0f, 255 / 255.0f);
+                }
+
+                    foreach (var g in selected) {
                     var dist = Vector3.Magnitude(g.transform.position - camera);
                     if (dist < minDist) {
                         minDist = dist;
@@ -138,7 +158,7 @@ namespace Lean.Touch {
                     }
                 }
 
-                AddLine(camera, minObj.transform.position);
+                AddLine(camera, minObj.transform.position, color);
                 
                 List<GameObject> visited = new List<GameObject>();
                 visited.Add(minObj);
@@ -161,7 +181,8 @@ namespace Lean.Touch {
                             }
                         }
                     }
-                    AddLine(minObjA.transform.position, minObjB.transform.position);
+                    AddLine(minObjA.transform.position, minObjB.transform.position, color);
+
                     selected.Remove(minObjB);
                     visited.Add(minObjB);
                 }
@@ -175,8 +196,7 @@ namespace Lean.Touch {
             } else {
                 isFingerMoving = false;
             }
-
-            CmdSyncSelected();
+            
         }
 
         private void OnFingerTap(LeanFinger finger) {
@@ -195,8 +215,12 @@ namespace Lean.Touch {
             if (Physics.Raycast(ray, out hit, float.PositiveInfinity, LayerMask) == true) { // if the finger touched an object
                 component = hit.collider;
                 Select(finger, component);
+                CmdSyncSelected();
             } else {
-                UnselectAll();
+                if (MainController.control.objSelectedNow.Count > 0) {
+                    UnselectAll();
+                    CmdSyncSelected();
+                }
             }
         }
 
@@ -210,26 +234,33 @@ namespace Lean.Touch {
             var hit = default(RaycastHit);// Stores the raycast hit info
             var component = default(Component);// Stores the component we hit (Collider)
 
+
+            bool sync = false;
             if (Physics.Raycast(ray, out hit, float.PositiveInfinity, LayerMask) == true) { // se tocou em um objeto
                 component = hit.collider;
                 if (MainController.control.objSelectedNow.Count > 0) { // only multiple selection when there is at least one object in the selectednow list
                     MainController.control.isMultipleSelection = true;
                     Select(finger, component);
+                    sync = true;
                 }
             }
+            if(sync) CmdSyncSelected();
 
         }
 
         public void UnselectAll() {
             MainController.control.isMultipleSelection = false;
             foreach (GameObject g in MainController.control.objSelectedNow)
-                g.transform.GetComponent<Renderer>().material.color = Color.white;
+                g.transform.GetComponent<Renderer>().material = g.transform.GetComponent<ObjectGroupId>().material;
 
             MainController.control.objSelectedNow.Clear();
         }
 
         public void Select(GameObject obj) {
-            obj.GetComponent<Renderer>().material.color = Color.yellow;
+            obj.GetComponent<Renderer>().material = selectedMaterial;
+            
+           
+            
             MainController.control.objSelectedNow.Add(obj);
         }
 
@@ -251,7 +282,7 @@ namespace Lean.Touch {
 
             if (objIsSelected) {
                 MainController.control.objSelectedNow.Remove(objToRemove);
-                obj.transform.GetComponent<Renderer>().material.color = Color.white;
+                obj.transform.GetComponent<Renderer>().material = obj.transform.GetComponent<ObjectGroupId>().material;
                 if (MainController.control.objSelectedNow.Count == 0)
                     MainController.control.isMultipleSelection = false;
                 return;
