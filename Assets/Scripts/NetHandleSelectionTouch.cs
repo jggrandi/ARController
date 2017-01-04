@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace Lean.Touch {
     public class NetHandleSelectionTouch : NetworkBehaviour {
 
-        public GameObject trackedObjects;
+        public GameObject trackedObjects = null;
 
         [Tooltip("Ignore fingers with StartedOverGui?")]
         public bool IgnoreGuiFingers = true;
@@ -129,10 +129,25 @@ namespace Lean.Touch {
             linesUsed = 0;
         }
 
+        Vector3 CameraPosition;
+
+        [ClientRpc]
+        public void RpcSetCameraPosition(Vector3 p) {
+
+            if(trackedObjects == null) trackedObjects = GameObject.Find("TrackedObjects");
+            p = trackedObjects.transform.TransformPoint(p);
+            CameraPosition = p;
+        }
+        [Command]
+        public void CmdSetCameraPosition(Vector3 p) {
+            RpcSetCameraPosition(p);
+        }
 
         void Update() {
 
             if (!isLocalPlayer) return;
+
+            CmdSetCameraPosition(trackedObjects.transform.InverseTransformPoint(Camera.main.transform.position)); 
 
             linesUsed = 0;
 
@@ -144,12 +159,11 @@ namespace Lean.Touch {
 
                 float minDist = float.MaxValue;
                 int minObj = -1;
-                var camera = player.transform.GetChild(0).gameObject.transform.position;
-
-
+                var camera = player.GetComponent<NetHandleSelectionTouch>().CameraPosition;
+                
                 Color color = greyColor;
                 if (player.GetComponent<NetworkIdentity>().isLocalPlayer) {
-                    camera -= new Vector3(0, 0.3f, 0);
+                    camera = Camera.main.transform.position - Camera.main.transform.up.normalized * 0.4f + new Vector3(0.031f, 0.021f, 0.01f);
                     color = new Color(0 / 255.0f, 118 / 255.0f, 255 / 255.0f);
                 }
 

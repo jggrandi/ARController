@@ -4,7 +4,7 @@ using UnityEngine.Networking;
 
 public class HandleNetworkFunctions : NetworkBehaviour {
 
-    public GameObject TrackedObjects;
+    public GameObject TrackedObjects = null;
 
     public Transform GetLocalTransform() {
         return TrackedObjects.transform.parent;
@@ -26,6 +26,14 @@ public class HandleNetworkFunctions : NetworkBehaviour {
         RpcSyncObj(index, p, r, s);
     }
 
+    [Command]
+    public void CmdSyncAll() {
+        if(TrackedObjects == null) TrackedObjects = GameObject.Find("TrackedObjects");
+        for (int i = 0; i < TrackedObjects.transform.childCount; i++) {
+            SyncObj(i);
+        }
+    }
+
     [ClientRpc]
     public void RpcSyncObj(int index, Vector3 pos, Quaternion rot, Vector3 scale) {
         var g = GetByIndex(index);
@@ -41,6 +49,8 @@ public class HandleNetworkFunctions : NetworkBehaviour {
     [ClientRpc]
     public void RpcLockTransform(int index, Vector3 position, Quaternion rotation) {
         if (isLocalPlayer) return;
+        position = GetLocalTransform().TransformPoint(position);
+        rotation = rotation * GetLocalTransform().rotation;
         GetByIndex(index).transform.position = position;
         GetByIndex(index).transform.rotation = rotation;
     }
@@ -48,6 +58,11 @@ public class HandleNetworkFunctions : NetworkBehaviour {
     [Command]
     public void CmdLockTransform(int index, Vector3 position, Quaternion rotation) {
         RpcLockTransform(index, position, rotation);
+    }
+    public void LockTransform(int index, Vector3 position, Quaternion rotation) {
+        position = GetLocalTransform().InverseTransformPoint(position);
+        rotation = Quaternion.Inverse(GetLocalTransform().rotation) * rotation;
+        CmdLockTransform(index, position, rotation);
     }
 
     public void Translate(int index, Vector3 vec) {
@@ -114,7 +129,7 @@ public class HandleNetworkFunctions : NetworkBehaviour {
     public void CmdIncrementCount() {
         MainController.control.idAvaiableNow++;
     }*/
-
+    /*
     [ClientRpc]
     public void RpcSyncCamPosition(Vector3 pos) {
         gameObject.transform.GetChild(0).transform.position = pos;
@@ -126,6 +141,11 @@ public class HandleNetworkFunctions : NetworkBehaviour {
     public void SyncCamPosition(Vector3 pos) {
         gameObject.transform.GetChild(0).transform.position = pos;
         CmdSyncCamPosition(pos);
+    }*/
+
+
+    public override void OnStartClient() {
+        CmdSyncAll();
     }
 
 }

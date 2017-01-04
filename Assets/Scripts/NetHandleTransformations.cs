@@ -18,7 +18,6 @@ namespace Lean.Touch {
         void Start() {
             trackedObjects = GameObject.Find("TrackedObjects");
             lockedObjects = GameObject.Find("LockedObjects");
-            
         }
 
         void Update() {
@@ -40,13 +39,13 @@ namespace Lean.Touch {
                     g.transform.position = Utils.GetPosition(modelMatrix);
                     g.transform.rotation = Utils.GetRotation(modelMatrix);
 
-                    this.gameObject.transform.GetComponent<HandleNetworkFunctions>().CmdLockTransform(GetIndex(g), Utils.GetPosition(modelMatrix), Utils.GetRotation(modelMatrix));
+                    this.gameObject.transform.GetComponent<HandleNetworkFunctions>().LockTransform(GetIndex(g), Utils.GetPosition(modelMatrix), Utils.GetRotation(modelMatrix));
                 }
             }
 
             prevMatrix = camMatrix;
             mode = MainController.control.transformationNow;
-            this.gameObject.transform.GetComponent<HandleNetworkFunctions>().SyncCamPosition(Camera.main.transform.position);
+            //this.gameObject.transform.GetComponent<HandleNetworkFunctions>().SyncCamPosition(Camera.main.transform.position);
             
         }
 
@@ -96,7 +95,7 @@ namespace Lean.Touch {
                 foreach (var index in MainController.control.objSelected)
                     this.gameObject.GetComponent<HandleNetworkFunctions>().CmdTranslate(index, dir);
             } else if (mode == Utils.Transformations.Rotation) { // rotate the object around the 3rd axis
-                float angle = LeanGesture.GetTwistDegrees(fingers)*0.3f;
+                float angle = LeanGesture.GetTwistDegrees(fingers)*0.8f;
                 Vector3 axis = Camera.main.transform.forward;
                 foreach (int index in MainController.control.objSelected)
                     this.gameObject.GetComponent<HandleNetworkFunctions>().Rotate(index, avg, axis, angle);
