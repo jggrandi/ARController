@@ -87,9 +87,12 @@ namespace Lean.Touch {
         public GameObject lines;
         public Material selectedMaterial = null;
 
-        void Start() {
-           // if (selectedMaterial == null)
-                selectedMaterial = (Material)Resources.Load("Light Blue");
+        DataSync DataSyncRef;
+        public void Start() {
+            DataSyncRef = GameObject.Find("MainHandler").GetComponent<DataSync>();
+
+            // if (selectedMaterial == null)
+            selectedMaterial = (Material)Resources.Load("Light Blue");
 
             if (!isLocalPlayer) return;
 
@@ -288,13 +291,13 @@ namespace Lean.Touch {
                 return;
             }
 
-            if (obj.transform.gameObject.GetComponent<ObjectGroupId>().id != -1) { // if the object is in a group
-                int idToSelect = obj.transform.gameObject.GetComponent<ObjectGroupId>().id; // take the obj id
-                if (MainController.control.objSelectedNow.Count > 0 && MainController.control.objSelectedNow[0].gameObject.GetComponent<ObjectGroupId>().id == idToSelect)
+            if (DataSyncRef.Groups[Utils.GetIndex(obj.transform.gameObject)] != -1) { // if the object is in a group
+                int idToSelect = DataSyncRef.Groups[Utils.GetIndex(obj.transform.gameObject)]; // take the obj id
+                if (MainController.control.objSelectedNow.Count > 0 && DataSyncRef.Groups[Utils.GetIndex(MainController.control.objSelectedNow[0])] == idToSelect)
                     Select(obj.transform.gameObject);
                 else {
                     for (int i = 0; i < trackedObjects.transform.childCount; i++) { // and find the other objects in the same group
-                        if (trackedObjects.transform.GetChild(i).transform.gameObject.GetComponent<ObjectGroupId>().id == idToSelect) {
+                        if (DataSyncRef.Groups[i] == idToSelect) {
                             Debug.Log(trackedObjects.transform.GetChild(i).transform.gameObject.name);
                             Select(trackedObjects.transform.GetChild(i).transform.gameObject); // select them
                         }

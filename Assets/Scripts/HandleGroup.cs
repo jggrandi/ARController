@@ -17,7 +17,7 @@ public class HandleGroup : MonoBehaviour {
         //}
     }
 
-
+    /*
     public void CreateGroup() {
         foreach (GameObject g in MainController.control.objSelectedNow) {
             g.GetComponent<ObjectGroupId>().id = MainController.control.idAvaiableNow;
@@ -37,5 +37,5 @@ public class HandleGroup : MonoBehaviour {
 
         MainController.control.objSelectedNow.Clear();
         MainController.control.isMultipleSelection = false;
-    }
+    }*/
 }

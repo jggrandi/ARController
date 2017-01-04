@@ -83,9 +83,11 @@ public static class Utils {
         return v.normalized * length;
     }
 
+    public static int GetIndex(GameObject g) {
+        return g.GetComponent<ObjectGroupId>().index;
+    }
 
-
-	public static float distMatrices(Matrix4x4 a, Matrix4x4 b)
+    public static float distMatrices(Matrix4x4 a, Matrix4x4 b)
 	{
 		float r = 0;
 		for (int i = 0; i < 4; i++) {

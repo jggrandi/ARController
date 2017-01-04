@@ -3,11 +3,21 @@ using System.Collections;
 
 public class NetHandleGroup : MonoBehaviour {
 
+    DataSync DataSyncRef;
+
+    public void Start() {
+        DataSyncRef = GameObject.Find("MainHandler").GetComponent<DataSync>();
+    }
+
+    public int GetIndex(GameObject g) {
+        return g.GetComponent<ObjectGroupId>().index;
+    }
+
     public void CreateGroup() {
         foreach (GameObject g in MainController.control.objSelectedNow) {
-            this.gameObject.transform.GetComponent<HandleNetworkFunctions>().CmdSetGroup(g);
+            DataSyncRef.CmdNewGroup(GetIndex(g));
         }
-        this.gameObject.transform.GetComponent<HandleNetworkFunctions>().CmdIncrementCount();
+        DataSyncRef.CmdIncrementGroupCount();
         MainController.control.isMultipleSelection = false;
     }
 
@@ -15,7 +25,7 @@ public class NetHandleGroup : MonoBehaviour {
     public void UnGroup() {
         
         foreach (GameObject g in MainController.control.objSelectedNow) {
-            this.gameObject.transform.GetComponent<HandleNetworkFunctions>().CmdSetGroup2(g, -1);
+            DataSyncRef.CmdSetGroup(GetIndex(g), -1);
             g.GetComponent<Renderer>().material.color = Color.white;
         }
         

@@ -39,7 +39,7 @@ namespace Lean.Touch {
                     g.transform.position = Utils.GetPosition(modelMatrix);
                     g.transform.rotation = Utils.GetRotation(modelMatrix);
 
-                    this.gameObject.transform.GetComponent<HandleNetworkFunctions>().CmdLockTransform(g, Utils.GetPosition(modelMatrix), Utils.GetRotation(modelMatrix));
+                    this.gameObject.transform.GetComponent<HandleNetworkFunctions>().CmdLockTransform(GetIndex(g), Utils.GetPosition(modelMatrix), Utils.GetRotation(modelMatrix));
                 }
             }
 
@@ -59,6 +59,10 @@ namespace Lean.Touch {
             LeanTouch.OnGesture -= OnGesture;
         }
 
+        public int GetIndex(GameObject g) {
+            return g.GetComponent<ObjectGroupId>().index;
+        }
+
         public void OnFingerSet(LeanFinger finger) {  // one finger on the screen
             if (!isLocalPlayer) return;
             if (IgnoreGuiFingers == true && finger.StartedOverGui == true) return;
@@ -66,17 +70,18 @@ namespace Lean.Touch {
 
             if (mode == Utils.Transformations.Translation) {  // translate in x and y axis
                 foreach (GameObject g in MainController.control.objSelectedNow) {
+                    
                     Vector3 right = Camera.main.transform.right * finger.ScreenDelta.x * 0.005f;
                     Vector3 up = Camera.main.transform.up * finger.ScreenDelta.y * 0.005f;
-                    this.gameObject.transform.GetComponent<HandleNetworkFunctions>().Translate(g, Utils.PowVec3(right+up, 1.2f));
+                    this.gameObject.transform.GetComponent<HandleNetworkFunctions>().Translate(GetIndex(g), Utils.PowVec3(right+up, 1.2f));
                     
                 }
             } else if (mode == Utils.Transformations.Rotation) { // rotate in the x and y axis
                 Vector3 avg = avgCenterOfObjects(MainController.control.objSelectedNow);
                 Vector3 axis = Camera.main.transform.right * finger.ScreenDelta.y + Camera.main.transform.up * -finger.ScreenDelta.x;
-                float magnitude = finger.ScreenDelta.magnitude;
+                float magnitude = finger.ScreenDelta.magnitude*0.3f;
                 foreach (GameObject g in MainController.control.objSelectedNow)
-                    this.gameObject.GetComponent<HandleNetworkFunctions>().CmdRotate(g, avg, axis, magnitude);
+                    this.gameObject.GetComponent<HandleNetworkFunctions>().Rotate(GetIndex(g), avg, axis, magnitude);
             }
         }
         
@@ -88,17 +93,17 @@ namespace Lean.Touch {
             if (mode == Utils.Transformations.Translation) { // translate the object near or far away from the camera position
                 Vector3 dir = (avg - Camera.main.transform.position) * LeanGesture.GetScreenDelta(fingers).y * 0.005f;
                 foreach (GameObject g in MainController.control.objSelectedNow)
-                    this.gameObject.GetComponent<HandleNetworkFunctions>().CmdTranslate(g, dir);
+                    this.gameObject.GetComponent<HandleNetworkFunctions>().CmdTranslate(GetIndex(g), dir);
             } else if (mode == Utils.Transformations.Rotation) { // rotate the object around the 3rd axis
-                float angle = LeanGesture.GetTwistDegrees(fingers);
+                float angle = LeanGesture.GetTwistDegrees(fingers)*0.3f;
                 Vector3 axis = Camera.main.transform.forward;
                 foreach (GameObject g in MainController.control.objSelectedNow)
-                    this.gameObject.GetComponent<HandleNetworkFunctions>().CmdRotate(g, avg, axis, angle);
+                    this.gameObject.GetComponent<HandleNetworkFunctions>().Rotate(GetIndex(g), avg, axis, angle);
             } else if (mode == Utils.Transformations.Scale) { // pinch to scale up and down
                 float scale = LeanGesture.GetPinchScale(fingers);
                 foreach (GameObject g in MainController.control.objSelectedNow) {
                     Vector3 dir = g.transform.position - avg;
-                    this.gameObject.GetComponent<HandleNetworkFunctions>().CmdScale(g, scale, dir);
+                    this.gameObject.GetComponent<HandleNetworkFunctions>().CmdScale(GetIndex(g), scale, dir);
                 }
             }
         }

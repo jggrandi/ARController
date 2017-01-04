@@ -62,13 +62,18 @@ public class NetHandleGUI : NetworkBehaviour {
         }
     }
 
+    DataSync DataSyncRef;
+    public void Start() {
+        DataSyncRef = GameObject.Find("MainHandler").GetComponent<DataSync>();
+    }
+
     private void Update() {
         if (MainController.control.objSelectedNow.Count > 1 ) {
 
             int groupSelected = -2;
             bool sigleGroup = true;
             foreach (GameObject g in MainController.control.objSelectedNow) {
-                int group = g.transform.gameObject.GetComponent<ObjectGroupId>().id;
+                int group = DataSyncRef.Groups[Utils.GetIndex(g)];
                 if(group < 0) {
                     sigleGroup = false;
                     break;
@@ -84,7 +89,7 @@ public class NetHandleGUI : NetworkBehaviour {
 
             if (sigleGroup) {
                 for (int i = 0; i < trackedObjects.transform.childCount; i++) {
-                    if (trackedObjects.transform.GetChild(i).transform.GetComponent<ObjectGroupId>().id != groupSelected) continue;
+                    if (DataSyncRef.Groups[i] != groupSelected) continue;
                     bool selected = false;
                     foreach (GameObject g in MainController.control.objSelectedNow) {
                         if (g == trackedObjects.transform.GetChild(i).transform.gameObject) {

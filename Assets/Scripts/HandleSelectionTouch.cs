@@ -4,7 +4,7 @@ using System;
 
 namespace Lean.Touch {
     public class HandleSelectionTouch : MonoBehaviour {
-
+        /*
         public GameObject trackedObjects;
 
         [Tooltip("Ignore fingers with StartedOverGui?")]
@@ -142,7 +142,7 @@ namespace Lean.Touch {
 
 
 
-        }
+        }*/
     }
 }
 

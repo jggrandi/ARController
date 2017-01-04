@@ -3,7 +3,7 @@ using System.Collections;
 
 
 public class HandleGUI : MonoBehaviour {
-
+/*
     public GameObject selectTranslate;
     public GameObject selectRotate;
     public GameObject selectScale;
@@ -103,7 +103,7 @@ public class HandleGUI : MonoBehaviour {
             guiGroupUngroup.SetActive(false);
         }
 
-    }
+    }*/
 
 
 }
