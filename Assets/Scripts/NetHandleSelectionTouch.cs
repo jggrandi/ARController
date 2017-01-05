@@ -270,13 +270,17 @@ namespace Lean.Touch {
             MainController.control.isMultipleSelection = false;
             foreach (int i in MainController.control.objSelected) {
                 GameObject g = Utils.GetByIndex(i);
-                g.transform.GetComponent<Renderer>().material = g.transform.GetComponent<ObjectGroupId>().material;
+                if (g.GetComponent<ParticleSystem>() == null) {
+                    g.transform.GetComponent<Renderer>().material = g.transform.GetComponent<ObjectGroupId>().material;
+                }
             }
             MainController.control.objSelected.Clear();
         }
 
         public void Select(int index) {
-            Utils.GetByIndex(index).GetComponent<Renderer>().material = selectedMaterial;
+            if (Utils.GetByIndex(index).GetComponent<ParticleSystem>() == null) {
+                Utils.GetByIndex(index).GetComponent<Renderer>().material = selectedMaterial;
+            }
             MainController.control.objSelected.Add(index);
         }
 
@@ -300,7 +304,9 @@ namespace Lean.Touch {
 
             if (objIsSelected) {
                 MainController.control.objSelected.Remove(objToRemove);
-                obj.transform.GetComponent<Renderer>().material = obj.transform.GetComponent<ObjectGroupId>().material;
+                if (obj.transform.GetComponent<ParticleSystem>() == null) {
+                    obj.transform.GetComponent<Renderer>().material = obj.transform.GetComponent<ObjectGroupId>().material;
+                }
                 if (MainController.control.objSelected.Count == 0)
                     MainController.control.isMultipleSelection = false;
                 return;

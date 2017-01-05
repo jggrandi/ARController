@@ -115,6 +115,28 @@ public class HandleNetworkFunctions : NetworkBehaviour {
         RpcScale(index, scale, dir);
     }
 
+    [ClientRpc]
+    public void RpcSetParticle(int index, float lifeTime, float rate) {
+        ParticleSystem particle = GetByIndex(index).GetComponent<ParticleSystem>();
+        particle.startLifetime = lifeTime;
+        var r = particle.emission.rate;
+        r.constant = rate;
+    }
+    [Command]
+    public void CmdSetParticle(int index, float scalarLlifeTime, float scalarRate) {
+
+        ParticleSystem particle = GetByIndex(index).GetComponent<ParticleSystem>();
+        particle.startLifetime *= scalarLlifeTime;
+        var r = particle.emission.rate;
+        r.constant *= scalarRate;
+
+        particle.startLifetime = Mathf.Min(Mathf.Max(particle.startLifetime, 0.1f), 5.0f);
+        r.constant = Mathf.Min(Mathf.Max(r.constant, 0.1f), 3.0f);
+        RpcSetParticle(index, particle.startLifetime, r.constant);
+    }
+
+    
+
     /*[Command]
     public void CmdSetGroup(GameObject obj) {
         obj.transform.gameObject.GetComponent<ObjectGroupId>().id = MainController.control.idAvaiableNow;

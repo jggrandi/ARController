@@ -91,9 +91,12 @@ namespace Lean.Touch {
 
             Vector3 avg = avgCenterOfObjects(MainController.control.objSelected);
             if (mode == Utils.Transformations.Translation) { // translate the object near or far away from the camera position
-                Vector3 dir = (avg - Camera.main.transform.position) * LeanGesture.GetScreenDelta(fingers).y * 0.005f;
+                float scale = LeanGesture.GetPinchScale(fingers);
+                Vector3 translate = (avg - Camera.main.transform.position) * LeanGesture.GetScreenDelta(fingers).y * 0.005f;
+                translate += (avg - Camera.main.transform.position) * (1-scale) * 0.8f;
+
                 foreach (var index in MainController.control.objSelected)
-                    this.gameObject.GetComponent<HandleNetworkFunctions>().CmdTranslate(index, dir);
+                    this.gameObject.GetComponent<HandleNetworkFunctions>().CmdTranslate(index, translate);
             } else if (mode == Utils.Transformations.Rotation) { // rotate the object around the 3rd axis
                 float angle = LeanGesture.GetTwistDegrees(fingers)*0.8f;
                 Vector3 axis = Camera.main.transform.forward;
@@ -101,11 +104,28 @@ namespace Lean.Touch {
                     this.gameObject.GetComponent<HandleNetworkFunctions>().Rotate(index, avg, axis, angle);
             } else if (mode == Utils.Transformations.Scale) { // pinch to scale up and down
                 float scale = LeanGesture.GetPinchScale(fingers);
+                float translate = LeanGesture.GetScreenDelta(fingers).y;
+                float angle = LeanGesture.GetTwistDegrees(fingers);
+
+
                 foreach (var index in MainController.control.objSelected) {
                     var g = Utils.GetByIndex(index);
+
+                    if (g.GetComponent<ParticleSystem>() != null) {
+
+                        float lifeTime = 1+translate * 0.01f;
+                        float rate = 1+angle * 0.05f;
+
+                        this.gameObject.GetComponent<HandleNetworkFunctions>().CmdSetParticle(index, lifeTime, rate);
+
+
+
+                    }
                     Vector3 dir = g.transform.position - avg;
-                    this.gameObject.GetComponent<HandleNetworkFunctions>().CmdScale(GetIndex(g), scale, dir);
-                }
+                    this.gameObject.GetComponent<HandleNetworkFunctions>().CmdScale(index, scale, dir);
+                    
+               }
+
             }
         }
 
