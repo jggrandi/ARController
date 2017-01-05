@@ -136,7 +136,7 @@ namespace Lean.Touch {
 
             if(trackedObjects == null) trackedObjects = GameObject.Find("TrackedObjects");
             p = trackedObjects.transform.TransformPoint(p);
-            CameraPosition = p;
+            CameraPosition = CameraPosition*0.5f + p*0.5f;
         }
         [Command]
         public void CmdSetCameraPosition(Vector3 p) {

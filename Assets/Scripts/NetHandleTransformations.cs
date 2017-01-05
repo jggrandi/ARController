@@ -19,6 +19,10 @@ namespace Lean.Touch {
             trackedObjects = GameObject.Find("TrackedObjects");
             lockedObjects = GameObject.Find("LockedObjects");
         }
+        private void OnConnectedToServer() {
+            //this.gameObject.GetComponent<HandleNetworkFunctions>().SyncAll();
+        }
+        bool firstUpdate = true;
 
         void Update() {
             if (!isLocalPlayer) return;
@@ -44,9 +48,17 @@ namespace Lean.Touch {
             }
 
             prevMatrix = camMatrix;
+            
+            if (mode != MainController.control.transformationNow) {
+                this.gameObject.GetComponent<HandleNetworkFunctions>().SyncAll();
+            }
+
             mode = MainController.control.transformationNow;
             //this.gameObject.transform.GetComponent<HandleNetworkFunctions>().SyncCamPosition(Camera.main.transform.position);
-            
+            if (firstUpdate) {
+                this.gameObject.GetComponent<HandleNetworkFunctions>().SyncAll();
+                firstUpdate = false;
+            }
         }
 
        protected virtual void OnEnable() {
@@ -96,7 +108,7 @@ namespace Lean.Touch {
                 translate += (avg - Camera.main.transform.position) * (1-scale) * 0.8f;
 
                 foreach (var index in MainController.control.objSelected)
-                    this.gameObject.GetComponent<HandleNetworkFunctions>().CmdTranslate(index, translate);
+                    this.gameObject.GetComponent<HandleNetworkFunctions>().TranslateLocal(index, translate);
             } else if (mode == Utils.Transformations.Rotation) { // rotate the object around the 3rd axis
                 float angle = LeanGesture.GetTwistDegrees(fingers)*0.8f;
                 Vector3 axis = Camera.main.transform.forward;
