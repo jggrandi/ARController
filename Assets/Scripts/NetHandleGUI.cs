@@ -14,7 +14,22 @@ public class NetHandleGUI : NetworkBehaviour {
 
     public GameObject playerObject;
 
-    // Use this for initialization
+
+	// activates surface constraints
+	public void buttonProjectObj ( ) {
+		MainController.control.project = true;
+	}
+
+	// deactivates surface constraints
+	public void buttonFreeObj ( ) {
+		MainController.control.project = false;
+	}
+
+	// recenter the object in front of the device
+	public void buttonRecenter ( ) {
+		MainController.control.recenter = true;
+	}
+
     public void buttonLock () {
         MainController.control.lockTransform = true;
     }

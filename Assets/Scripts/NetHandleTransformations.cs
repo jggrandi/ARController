@@ -29,7 +29,33 @@ namespace Lean.Touch {
             
             Matrix4x4 camMatrix = Camera.main.worldToCameraMatrix; 
 
-            if (MainController.control.lockTransform) {
+			if (MainController.control.recenter) {
+				MainController.control.recenter = false;
+				foreach (int index in MainController.control.objSelected) {
+					var g = Utils.GetByIndex (index);
+					Matrix4x4 recenter = Matrix4x4.identity;
+					recenter.SetColumn (3, new Vector4 (0, 0, -1.5f, 1f));
+					recenter = camMatrix.inverse * recenter;
+					g.transform.position = Utils.GetPosition(recenter);
+					g.transform.rotation =  Camera.main.transform.rotation;
+					this.gameObject.transform.GetComponent<HandleNetworkFunctions>().LockTransform(GetIndex(g), Utils.GetPosition(recenter), Camera.main.transform.rotation);
+				}
+			}
+
+			if (MainController.control.project) {
+				foreach (int index in MainController.control.objSelected) {
+					var g = Utils.GetByIndex (index);
+
+					Ray camRay = new Ray (Camera.main.transform.position, Camera.main.transform.forward);
+					RaycastHit camRayHit;
+					if (Physics.Raycast (camRay, out camRayHit)) {
+						g.transform.position = camRayHit.point;
+
+						//this.gameObject.transform.GetComponent<HandleNetworkFunctions> ().LockTransform (GetIndex (g), Utils.GetPosition (modelMatrix), g.transform.rotation);
+						this.gameObject.transform.GetComponent<HandleNetworkFunctions> ().Translate (GetIndex (g), g.transform.position);
+					}
+				}
+			} else if (MainController.control.lockTransform) {
 
                 Matrix4x4 step = prevMatrix * camMatrix.inverse;
 
@@ -42,6 +68,7 @@ namespace Lean.Touch {
                     
                     g.transform.position = Utils.GetPosition(modelMatrix);
                     g.transform.rotation = Utils.GetRotation(modelMatrix);
+
 
                     this.gameObject.transform.GetComponent<HandleNetworkFunctions>().LockTransform(GetIndex(g), Utils.GetPosition(modelMatrix), Utils.GetRotation(modelMatrix));
                 }

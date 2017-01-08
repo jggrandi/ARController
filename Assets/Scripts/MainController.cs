@@ -20,6 +20,10 @@ public class MainController : MonoBehaviour {
 
     public int idAvaiableNow = 0;
     
+	// project selected object int surface
+	public bool project = false;
+	public bool recenter = false;
+
 
     void Awake() {
 
