@@ -89,7 +89,8 @@ namespace Lean.Touch {
             if (!isLocalPlayer) return;
             if (LeanTouch.Fingers.Count != 2) return;
 
-            Vector3 avg = avgCenterOfObjects(MainController.control.objSelected);
+
+                    Vector3 avg = avgCenterOfObjects(MainController.control.objSelected);
             if (mode == Utils.Transformations.Translation) { // translate the object near or far away from the camera position
                 float scale = LeanGesture.GetPinchScale(fingers);
                 Vector3 translate = (avg - Camera.main.transform.position) * LeanGesture.GetScreenDelta(fingers).y * 0.005f;
@@ -118,6 +119,16 @@ namespace Lean.Touch {
 
                         this.gameObject.GetComponent<HandleNetworkFunctions>().CmdSetParticle(index, lifeTime, rate);
 
+                        if (g.transform.GetComponent<ParameterBars>() != null) {
+
+                            ParticleSystem particle = g.GetComponent<ParticleSystem>();
+                            var r = particle.emission.rate;
+
+                            g.transform.GetComponent<ParameterBars>().active();
+                            g.transform.GetComponent<ParameterBars>().values[0] = g.transform.localScale.x * scale / 4.0f ;
+                            g.transform.GetComponent<ParameterBars>().values[1] = particle.startLifetime * lifeTime / 5.0f;
+                            g.transform.GetComponent<ParameterBars>().values[2] = r.constant * rate / 12.0f;
+                        }
 
 
                     }

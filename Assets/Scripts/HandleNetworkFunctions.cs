@@ -107,7 +107,13 @@ public class HandleNetworkFunctions : NetworkBehaviour {
     public void RpcScale(int index, float scale, Vector3 dir) {
         var g = GetByIndex(index);
         g.transform.position += dir * (-1 + scale);
+
         g.transform.localScale *= scale;
+
+        var s = g.transform.localScale.x;
+        s = Mathf.Min(Mathf.Max(s, 0.1f), 4.0f);
+
+        g.transform.localScale = new Vector3(s,s,s);
     }
 
     [Command]
@@ -120,7 +126,12 @@ public class HandleNetworkFunctions : NetworkBehaviour {
         ParticleSystem particle = GetByIndex(index).GetComponent<ParticleSystem>();
         particle.startLifetime = lifeTime;
         var r = particle.emission.rate;
+
         r.constant = rate;
+
+        var em = particle.emission;
+        em.rate = new ParticleSystem.MinMaxCurve(rate);
+
     }
     [Command]
     public void CmdSetParticle(int index, float scalarLlifeTime, float scalarRate) {
@@ -131,7 +142,12 @@ public class HandleNetworkFunctions : NetworkBehaviour {
         r.constant *= scalarRate;
 
         particle.startLifetime = Mathf.Min(Mathf.Max(particle.startLifetime, 0.1f), 5.0f);
-        r.constant = Mathf.Min(Mathf.Max(r.constant, 0.1f), 3.0f);
+        r.constant = Mathf.Min(Mathf.Max(r.constant, 0.1f), 12.0f);
+
+
+        var em = particle.emission;
+        em.rate = new ParticleSystem.MinMaxCurve(r.constant);
+
         RpcSetParticle(index, particle.startLifetime, r.constant);
     }
 
