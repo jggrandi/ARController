@@ -90,7 +90,7 @@ Shader "VolumetricLine/VolumetricLineAdditive 1" {
                                 
                 if (tx.a > _LightSaberFactor)
                 {
-                	return (_Color- float4(0.1,0.1,0.1,0))/1.0*float4(1.0, 1.0, 1.0, tx.a*0.6);
+                	return (_Color- float4(0.1,0.1,0.1,0))/1.0*float4(1.0, 1.0, 1.0, tx.a*0.5);
                 }
                 else 
                 {

@@ -15,7 +15,7 @@ public class HandleNetworkFunctions : NetworkBehaviour {
     }
 
     
-    public void SyncObj(NetworkInstanceId id, int index, bool pos = true, bool rot = true, bool scale = true) {
+    public void SyncObj(int index, bool pos = true, bool rot = true, bool scale = true) {
         Vector3 p = Vector3.zero;
         Quaternion r = new Quaternion(0, 0, 0, 0);
         Vector3 s = Vector3.zero;
@@ -23,27 +23,19 @@ public class HandleNetworkFunctions : NetworkBehaviour {
         if (pos) p = g.transform.localPosition;
         if (rot) r = g.transform.localRotation;
         if (scale) s = g.transform.localScale;
-        RpcSyncObj(id, index, p, r, s);
-    }
-
-    //public bool syncFlag = false;
-    public void SyncAll() {
-        //syncFlag = true;
-        CmdSyncAll(netId);
-        //syncFlag = false;
+        RpcSyncObj(index, p, r, s);
     }
 
     [Command]
-    public void CmdSyncAll(NetworkInstanceId id) {
+    public void CmdSyncAll() {
         if(TrackedObjects == null) TrackedObjects = GameObject.Find("TrackedObjects");
         for (int i = 0; i < TrackedObjects.transform.childCount; i++) {
-            SyncObj(id, i);
+            SyncObj(i);
         }
     }
 
     [ClientRpc]
-    public void RpcSyncObj(NetworkInstanceId id, int index, Vector3 pos, Quaternion rot, Vector3 scale) {
-        if (id != netId) return;
+    public void RpcSyncObj(int index, Vector3 pos, Quaternion rot, Vector3 scale) {
         var g = GetByIndex(index);
         if (pos != Vector3.zero) g.transform.localPosition = pos;
         if (rot != new Quaternion(0,0,0,0)) g.transform.localRotation = rot;
@@ -83,11 +75,6 @@ public class HandleNetworkFunctions : NetworkBehaviour {
 
     }
 
-    public void TranslateLocal(int index, Vector3 vec) {
-        vec = GetLocalTransform().InverseTransformVector(vec);
-        CmdTranslate(index, vec);
-    }
-
     [Command]
     public void CmdTranslate(int index, Vector3 vec) {
         var g = GetByIndex(index);
@@ -107,16 +94,8 @@ public class HandleNetworkFunctions : NetworkBehaviour {
         avg = GetLocalTransform().TransformPoint(avg);
         axis = GetLocalTransform().TransformVector(axis);
         g.transform.RotateAround(avg, axis, mag);
-        RpcRotate(index, g.transform.localPosition, g.transform.localRotation);
+        SyncObj(index);
     }
-
-    [ClientRpc]
-    public void RpcRotate(int index, Vector3 pos, Quaternion rot) {
-        var g = GetByIndex(index);
-        g.transform.localPosition = pos;
-        g.transform.localRotation = rot;
-    }
-
     public void Rotate(int index, Vector3 avg, Vector3 axis, float mag) {
         avg = GetLocalTransform().InverseTransformPoint(avg);
         axis = GetLocalTransform().InverseTransformVector(axis);
@@ -188,7 +167,7 @@ public class HandleNetworkFunctions : NetworkBehaviour {
 
 
     public override void OnStartClient() {
-        
+        CmdSyncAll();
     }
 
 }
