@@ -23,9 +23,20 @@ public class ParameterBars : MonoBehaviour {
 	// Update is called once per frame
 
     void UpdateImageColor(GameObject obj) {
-        Color color = obj.transform.GetComponent<Image>().color;
-        color.a = alpha;
-        obj.transform.GetComponent<Image>().color = color;
+        Color color;
+
+        if (obj.transform.GetComponent<Image>() != null) {
+            color = obj.transform.GetComponent<Image>().color;
+            color.a = alpha;
+            obj.transform.GetComponent<Image>().color = color;
+        }
+
+        if (obj.transform.GetComponent<Text>() != null) {
+            color = obj.transform.GetComponent<Text>().color;
+            color.a = alpha;
+            obj.transform.GetComponent<Text>().color = color;
+        }
+            
     }
 
     void updateValue(int i) {
@@ -45,7 +56,6 @@ public class ParameterBars : MonoBehaviour {
         fadeOutCount--;
         alpha = 0.93f * alpha + (fadeOutCount > 0 ? 0.07f:0.0f);
 
-
         canvas.transform.LookAt(Camera.main.transform);
         canvas.transform.localPosition = Vector3.zero;
         canvas.transform.position = transform.position;
@@ -55,6 +65,12 @@ public class ParameterBars : MonoBehaviour {
             UpdateImageColor(canvas.transform.GetChild(i).gameObject.transform.GetChild(0).gameObject);
             updateValue(i);
         }
+
+        for (int i = 3; i < 6; i++) {
+            UpdateImageColor(canvas.transform.GetChild(i).gameObject);
+            UpdateImageColor(canvas.transform.GetChild(i).gameObject.transform.GetChild(0).gameObject);
+        }
+
         /*
         var scaleinv = 1.0f / transform.parent.transform.localScale.x;
 
