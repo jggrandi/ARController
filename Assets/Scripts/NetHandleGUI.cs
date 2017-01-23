@@ -88,17 +88,19 @@ public class NetHandleGUI : NetworkBehaviour {
 
             if (sigleGroup) {
                 for (int i = 0; i < trackedObjects.transform.childCount; i++) {
-                    if (DataSyncRef.Groups[i] != groupSelected) continue;
-                    bool selected = false;
-                    foreach (var index in MainController.control.objSelected) {
-                        if (index == i) {
-                            selected = true;
+                    for (int j = 0; i < trackedObjects.transform.GetChild(i).childCount; j++) {
+                        if (DataSyncRef.Groups[j] != groupSelected) continue;
+                        bool selected = false;
+                        foreach (var index in MainController.control.objSelected) {
+                            if (index == j) {
+                                selected = true;
+                                break;
+                            }
+                        }
+                        if (!selected) {
+                            sigleGroup = false;
                             break;
                         }
-                    }
-                    if (!selected) {
-                        sigleGroup = false;
-                        break;
                     }
                 }
             }

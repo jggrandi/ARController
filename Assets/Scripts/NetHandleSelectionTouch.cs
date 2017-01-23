@@ -96,7 +96,7 @@ namespace Lean.Touch {
 
             if (!isLocalPlayer) return;
 
-            trackedObjects = GameObject.Find("TrackedObjects");
+            trackedObjects = GameObject.Find("Moving");
             lines = GameObject.Find("Lines");
             var obj = GameObject.Find("VolumetricLinePrefab");
             /*for (int i = 0; i < 100; i++) {
@@ -270,17 +270,13 @@ namespace Lean.Touch {
             MainController.control.isMultipleSelection = false;
             foreach (int i in MainController.control.objSelected) {
                 GameObject g = Utils.GetByIndex(i);
-                if (g.GetComponent<ParticleSystem>() == null) {
-                    g.transform.GetComponent<Renderer>().material = g.transform.GetComponent<ObjectGroupId>().material;
-                }
+                //g.transform.GetComponent<Renderer>().material = g.transform.GetComponent<ObjectGroupId>().material;
             }
             MainController.control.objSelected.Clear();
         }
 
         public void Select(int index) {
-            if (Utils.GetByIndex(index).GetComponent<ParticleSystem>() == null) {
-                Utils.GetByIndex(index).GetComponent<Renderer>().material = selectedMaterial;
-            }
+            //Utils.GetByIndex(index).GetComponent<Renderer>().material = selectedMaterial;
             MainController.control.objSelected.Add(index);
         }
 
@@ -304,9 +300,8 @@ namespace Lean.Touch {
 
             if (objIsSelected) {
                 MainController.control.objSelected.Remove(objToRemove);
-                if (obj.transform.GetComponent<ParticleSystem>() == null) {
-                    obj.transform.GetComponent<Renderer>().material = obj.transform.GetComponent<ObjectGroupId>().material;
-                }
+                //obj.transform.GetComponent<Renderer>().material = obj.transform.GetComponent<ObjectGroupId>().material;
+            
                 if (MainController.control.objSelected.Count == 0)
                     MainController.control.isMultipleSelection = false;
                 return;

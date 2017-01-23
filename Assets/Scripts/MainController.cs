@@ -35,7 +35,7 @@ public class MainController : MonoBehaviour {
         for (int i = 0; i < trackedObjects.transform.childCount; i++) {
             GameObject obj = trackedObjects.transform.GetChild(i).transform.gameObject;
             obj.AddComponent<ObjectGroupId>();
-            obj.GetComponent<ObjectGroupId>().material = obj.GetComponent<Renderer>().material;
+            //obj.GetComponent<ObjectGroupId>().material = obj.GetComponent<Renderer>().material;
             obj.GetComponent<ObjectGroupId>().index = i;
         }
             

@@ -28,7 +28,7 @@ public class HandleNetworkFunctions : NetworkBehaviour {
 
     [Command]
     public void CmdSyncAll() {
-        if(TrackedObjects == null) TrackedObjects = GameObject.Find("TrackedObjects");
+        if(TrackedObjects == null) TrackedObjects = GameObject.Find("Moving");
         for (int i = 0; i < TrackedObjects.transform.childCount; i++) {
             SyncObj(i);
         }
@@ -43,7 +43,7 @@ public class HandleNetworkFunctions : NetworkBehaviour {
     }
 
     public void Start() {
-        TrackedObjects = GameObject.Find("TrackedObjects");
+        TrackedObjects = GameObject.Find("Moving");
     }
 
     [ClientRpc]
@@ -121,35 +121,7 @@ public class HandleNetworkFunctions : NetworkBehaviour {
         RpcScale(index, scale, dir);
     }
 
-    [ClientRpc]
-    public void RpcSetParticle(int index, float lifeTime, float rate) {
-        ParticleSystem particle = GetByIndex(index).GetComponent<ParticleSystem>();
-        particle.startLifetime = lifeTime;
-        var r = particle.emission.rate;
 
-        r.constant = rate;
-
-        var em = particle.emission;
-        em.rate = new ParticleSystem.MinMaxCurve(rate);
-
-    }
-    [Command]
-    public void CmdSetParticle(int index, float scalarLlifeTime, float scalarRate) {
-
-        ParticleSystem particle = GetByIndex(index).GetComponent<ParticleSystem>();
-        particle.startLifetime *= scalarLlifeTime;
-        var r = particle.emission.rate;
-        r.constant *= scalarRate;
-
-        particle.startLifetime = Mathf.Min(Mathf.Max(particle.startLifetime, 0.1f), 5.0f);
-        r.constant = Mathf.Min(Mathf.Max(r.constant, 0.1f), 12.0f);
-
-
-        var em = particle.emission;
-        em.rate = new ParticleSystem.MinMaxCurve(r.constant);
-
-        RpcSetParticle(index, particle.startLifetime, r.constant);
-    }
 
     
 

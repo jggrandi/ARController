@@ -16,7 +16,7 @@ namespace Lean.Touch {
 
         Matrix4x4 prevMatrix;
         void Start() {
-            trackedObjects = GameObject.Find("TrackedObjects");
+            trackedObjects = GameObject.Find("Moving");
             lockedObjects = GameObject.Find("LockedObjects");
         }
 
@@ -111,27 +111,6 @@ namespace Lean.Touch {
 
                 foreach (var index in MainController.control.objSelected) {
                     var g = Utils.GetByIndex(index);
-
-                    if (g.GetComponent<ParticleSystem>() != null) {
-
-                        float lifeTime = 1+translate * 0.01f;
-                        float rate = 1+angle * 0.05f;
-
-                        this.gameObject.GetComponent<HandleNetworkFunctions>().CmdSetParticle(index, lifeTime, rate);
-
-                        if (g.transform.GetComponent<ParameterBars>() != null) {
-
-                            ParticleSystem particle = g.GetComponent<ParticleSystem>();
-                            var r = particle.emission.rate;
-
-                            g.transform.GetComponent<ParameterBars>().active();
-                            g.transform.GetComponent<ParameterBars>().values[0] = g.transform.localScale.x * scale / 4.0f ;
-                            g.transform.GetComponent<ParameterBars>().values[1] = particle.startLifetime * lifeTime / 5.0f;
-                            g.transform.GetComponent<ParameterBars>().values[2] = r.constant * rate / 12.0f;
-                        }
-
-
-                    }
                     Vector3 dir = g.transform.position - avg;
                     this.gameObject.GetComponent<HandleNetworkFunctions>().CmdScale(index, scale, dir);
                     
