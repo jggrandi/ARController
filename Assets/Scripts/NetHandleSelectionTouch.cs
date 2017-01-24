@@ -96,7 +96,7 @@ namespace Lean.Touch {
 
             if (!isLocalPlayer) return;
 
-            trackedObjects = GameObject.Find("Moving");
+            trackedObjects = GameObject.Find("TrackedObjects");
             lines = GameObject.Find("Lines");
             var obj = GameObject.Find("VolumetricLinePrefab");
             /*for (int i = 0; i < 100; i++) {
@@ -220,6 +220,8 @@ namespace Lean.Touch {
         private void OnFingerTap(LeanFinger finger) {
             // Ignore this tap?
             if (!isLocalPlayer) return;
+            //Debug.Log(MainController.control.isTapForTransform);
+            //if (MainController.control.isTapForTransform) return;
 
             if (LeanTouch.Fingers.Count > 1) return;
             if (IgnoreGuiFingers == true && finger.StartedOverGui == true) return;
@@ -235,6 +237,7 @@ namespace Lean.Touch {
                 Select(finger, component);
                 CmdSyncSelected();
             } else {
+                if (MainController.control.isTapForTransform) return;
                 if (MainController.control.objSelected.Count > 0) {
                     UnselectAll();
                     CmdSyncSelected();

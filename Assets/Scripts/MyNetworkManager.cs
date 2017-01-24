@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class MyNetworkManager : NetworkManager {
 
@@ -21,9 +22,15 @@ public class MyNetworkManager : NetworkManager {
         }
     }
 
+    public override void ServerChangeScene(string newSceneName) {
+        SceneManager.LoadScene(newSceneName);
+        base.ServerChangeScene(newSceneName);
+    }
+
     public void StartMyHost() {
         SetPort();
         NetworkManager.singleton.StartHost();
+        
     }
 
     public void SetPort() {

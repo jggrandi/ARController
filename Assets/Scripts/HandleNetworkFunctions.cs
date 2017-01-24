@@ -28,7 +28,7 @@ public class HandleNetworkFunctions : NetworkBehaviour {
 
     [Command]
     public void CmdSyncAll() {
-        if(TrackedObjects == null) TrackedObjects = GameObject.Find("Moving");
+        if(TrackedObjects == null) TrackedObjects = GameObject.Find("TrackedObjects");
         for (int i = 0; i < TrackedObjects.transform.childCount; i++) {
             SyncObj(i);
         }
@@ -43,7 +43,7 @@ public class HandleNetworkFunctions : NetworkBehaviour {
     }
 
     public void Start() {
-        TrackedObjects = GameObject.Find("Moving");
+        TrackedObjects = GameObject.Find("TrackedObjects");
     }
 
     [ClientRpc]

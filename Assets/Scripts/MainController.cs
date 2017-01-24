@@ -19,7 +19,8 @@ public class MainController : MonoBehaviour {
     public List<int> objSelected = new List<int>();
 
     public int idAvaiableNow = 0;
-    
+
+    public bool isTapForTransform = false;
 
     void Awake() {
 
