@@ -11,11 +11,14 @@ public class MyNetworkManager : NetworkManager {
     //    GameObject.Find("MainHandler").GetComponent<NetworkIdentity>().AssignClientAuthority(conn);
     //}
 
+   
     public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId) {
         base.OnServerAddPlayer(conn,playerControllerId);
+        //GameObject player = (GameObject)Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
+        //NetworkServer.AddPlayerForConnection(conn, player, playerControllerId);
         GameObject player = null;
-        foreach(PlayerController p in conn.playerControllers) {
-            if(p.playerControllerId == playerControllerId) {
+        foreach (PlayerController p in conn.playerControllers) {
+            if (p.playerControllerId == playerControllerId) {
                 player = p.gameObject;
                 break;
             }
@@ -23,7 +26,7 @@ public class MyNetworkManager : NetworkManager {
     }
 
     public override void ServerChangeScene(string newSceneName) {
-        SceneManager.LoadScene(newSceneName);
+        //SceneManager.LoadScene(newSceneName);
         base.ServerChangeScene(newSceneName);
     }
 

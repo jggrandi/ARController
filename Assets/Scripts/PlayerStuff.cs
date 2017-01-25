@@ -10,6 +10,7 @@ public class PlayerStuff : NetworkBehaviour {
         GameObject go = GameObject.Find("MainHandler");
         go.GetComponent<NetHandleGUI>().playerObject = this.gameObject;
         go.GetComponent<DataSync>().playerObject = this.gameObject;
+
     }
 	
 }

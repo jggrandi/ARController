@@ -46,11 +46,11 @@ public class NetHandleGUI : NetworkBehaviour {
     }
 
     public void toggleGroup() {
-        if (!btnGroup.activeInHierarchy) {
+        if (btnGroup.activeInHierarchy) {
             //MainController.control.groupButtonActive = false;
             //btnGroup.SetActive(true);
             //btnUngroup.SetActive(false);
-            playerObject.GetComponent<NetHandleGroup>().UnGroup();
+            playerObject.GetComponent<StackController>().SetNextPiece();
 
         } else {
             //MainController.control.groupButtonActive = true;
@@ -67,49 +67,55 @@ public class NetHandleGUI : NetworkBehaviour {
     }
 
     private void Update() {
-        if (MainController.control.objSelected.Count > 1 ) {
-
-            int groupSelected = -2;
-            bool sigleGroup = true;
-            foreach (var index in MainController.control.objSelected) {
-                int group = DataSyncRef.Groups[index];
-                if(group < 0) {
-                    sigleGroup = false;
-                    break;
-                }
-                if (groupSelected == -2) {
-                    groupSelected = group;
-                }else if(group != groupSelected) {
-                    sigleGroup = false;
-                    break;
-                }
-            }
+        if (MainController.control.objSelected.Count > 0) {
             guiGroupUngroup.SetActive(true);
-
-            if (sigleGroup) {
-                for (int i = 0; i < trackedObjects.transform.childCount; i++) {
-                    for (int j = 0; i < trackedObjects.transform.GetChild(i).childCount; j++) {
-                        if (DataSyncRef.Groups[j] != groupSelected) continue;
-                        bool selected = false;
-                        foreach (var index in MainController.control.objSelected) {
-                            if (index == j) {
-                                selected = true;
-                                break;
-                            }
-                        }
-                        if (!selected) {
-                            sigleGroup = false;
-                            break;
-                        }
-                    }
-                }
-            }
-            btnGroup.SetActive(!sigleGroup);
-
+            btnGroup.SetActive(true);
         } else {
             guiGroupUngroup.SetActive(false);
+            btnGroup.SetActive(false);
         }
+            //        int groupSelected = -2;
+            //        bool sigleGroup = true;
+            //        foreach (var index in MainController.control.objSelected) {
+            //            int group = DataSyncRef.Groups[index];
+            //            if(group < 0) {
+            //                sigleGroup = false;
+            //                break;
+            //            }
+            //            if (groupSelected == -2) {
+            //                groupSelected = group;
+            //            }else if(group != groupSelected) {
+            //                sigleGroup = false;
+            //                break;
+            //            }
+            //        }
+            //        guiGroupUngroup.SetActive(true);
 
+            //        if (sigleGroup) {
+            //            for (int i = 0; i < trackedObjects.transform.childCount; i++) {
+            //                for (int j = 0; i < trackedObjects.transform.GetChild(i).childCount; j++) {
+            //                    if (DataSyncRef.Groups[j] != groupSelected) continue;
+            //                    bool selected = false;
+            //                    foreach (var index in MainController.control.objSelected) {
+            //                        if (index == j) {
+            //                            selected = true;
+            //                            break;
+            //                        }
+            //                    }
+            //                    if (!selected) {
+            //                        sigleGroup = false;
+            //                        break;
+            //                    }
+            //                }
+            //            }
+            //        }
+            //        btnGroup.SetActive(!sigleGroup);
+
+            //    } else {
+            //        guiGroupUngroup.SetActive(false);
+            //    }
+
+       
     }
 
 
