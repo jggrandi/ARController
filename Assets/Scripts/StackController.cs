@@ -44,8 +44,8 @@ public class StackController : NetworkBehaviour {
             }
         }
 
-        childMoving = trackedObjects.transform.GetChild(dataSync.pieceActiveNow); // take the moving object 
-        childStatic = trackedObjects.transform.GetChild(dataSync.pieceActiveNow + halfObjects); // and its ghost
+        childMoving = trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]); // take the moving object 
+        childStatic = trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow] + halfObjects); // and its ghost
         //Debug.Log(objIndex + halfObjects);
         //Debug.Log(objectsOrder[objIndex] + " " + objectsOrder[objIndex] + halfObjects);
 
@@ -63,10 +63,7 @@ public class StackController : NetworkBehaviour {
 
 
     }
-
-
-
-
+    
     [Command]
     void CmdChangeScene() {
         MyNetworkManager.singleton.ServerChangeScene("SetupScene");
@@ -97,17 +94,12 @@ public class StackController : NetworkBehaviour {
 
 
     public void SetNextPiece() {
-
-
-        Debug.Log("SPACE");
         CmdPieceActiveNow();
 
         MainController.control.objSelected.Clear();
         CmdClearSelection();
 
-
         if (dataSync.pieceActiveNow == halfObjects - 1) {
-            Debug.Log("AAAAA");
             CmdChangeScene();
         }
     }

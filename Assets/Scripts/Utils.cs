@@ -216,5 +216,23 @@ public static class Utils {
         result.SetPixels(pix);
         result.Apply();
         return result;
-    }	
+    }
+
+    static public List<int> randomizeVector(int size) {
+
+        var randomNumbers = new List<int>();
+        var numbers = new List<int>();
+
+
+        for (int i = 0; i < size; i++) // numbers  to be randomized
+            numbers.Add(i);
+
+        for (int i = 0; i < size; i++) {
+            var thisNumber = UnityEngine.Random.Range(0, numbers.Count);
+            randomNumbers.Add(numbers[thisNumber]);
+            numbers.RemoveAt(thisNumber);
+        }
+        return randomNumbers;
+    }
+
 }

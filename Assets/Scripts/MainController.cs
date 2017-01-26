@@ -24,13 +24,14 @@ public class MainController : MonoBehaviour {
 
     void Awake() {
 
-        if (control == null) {
-            DontDestroyOnLoad(gameObject);
-            control = this;
+        control = this;
+        //if (control == null) {
+        //    DontDestroyOnLoad(gameObject);
+        //    control = this;
 
-        } else if (control != this) {
-            Destroy(gameObject);
-        }
+        //} else if (control != this) {
+        //    Destroy(gameObject);
+        //}
 
 
         for (int i = 0; i < trackedObjects.transform.childCount; i++) {

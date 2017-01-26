@@ -6,7 +6,7 @@ using UnityEngine.Networking;
 namespace Lean.Touch {
 
     public class NetHandleTransformations : NetworkBehaviour {
-
+        
         public GameObject trackedObjects;
         public LayerMask LayerMask = Physics.DefaultRaycastLayers;
         [Tooltip("Ignore fingers with StartedOverGui?")]
