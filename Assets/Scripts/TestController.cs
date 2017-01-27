@@ -7,15 +7,11 @@ public class TestController : MonoBehaviour {
 
     public static TestController tcontrol;
 
-    int[] taskOrder = { 1, 2, 3,
-                        1, 3, 2,
-                        2, 1, 3,
-                        2, 3, 1,
-                        3, 1, 2,
-                        3, 2, 1,
-    };
+	int tasksToPermute = 3;
 
-    public string userID;
+	int[] taskOrder;
+
+    public string userID = "325";
     public string sceneID;
 
 
@@ -30,7 +26,14 @@ public class TestController : MonoBehaviour {
         }
         //for(int i = 0; i<15;i++)
         //    Debug.Log(i % 6 );
+
+
+		taskOrder = Utils.selectUserTaskSequence (int.Parse(userID), tasksToPermute);
+		for (int i = 0; i < tasksToPermute; i++)
+			Debug.Log (taskOrder[i]);
+
     }
+
 
 
 
@@ -40,7 +43,12 @@ public class TestController : MonoBehaviour {
         //    Debug.Log(g.name);
         //}
         //Debug.Log("tracked now: " + targetsTrackedNow);
+
+
     }
 
+
+
 }
+	
 

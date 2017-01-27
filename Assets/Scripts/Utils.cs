@@ -235,4 +235,46 @@ public static class Utils {
         return randomNumbers;
     }
 
+	public static List<int> allPermutations = new List<int>();
+
+	public static int[] selectUserTaskSequence(int uid, int tasks){
+		allPermutations.Clear ();
+		int[] elements = new int[tasks];
+		for (int i = 0; i < tasks; i++)
+			elements [i] = i;
+		permute (elements, 0, elements.Length);
+
+		int permutationIndex = uid % (allPermutations.Count / tasks);
+
+
+		int[] thePermutation = new int[tasks];
+		for (int i = 0; i < tasks; i++)
+			thePermutation [i] = allPermutations [permutationIndex * tasks + i];
+
+		return thePermutation;
+	}
+
+	public static void permute(int[] arry, int i, int n)
+	{
+		int j;
+		if (i == n)
+			for (int k = 0; k < arry.Length; k++)
+				allPermutations.Add (arry [k]);
+		else {
+			for (j = i; j < n; j++) {
+				swap (ref arry [i], ref arry [j]);
+				permute (arry, i + 1, n);
+				swap (ref arry [i], ref arry [j]); //backtrack
+			}
+		}
+	}
+
+	public static void swap(ref int a, ref int b)
+	{
+		int tmp;
+		tmp = a;
+		a = b;
+		b = tmp;
+	}
+
 }
