@@ -54,10 +54,9 @@ public class MainController : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-        //foreach(GameObject g in objSelectedNow) {
-        //    Debug.Log(g.name);
-        //}
-        //Debug.Log("tracked now: " + targetsTrackedNow);
+        if (Input.GetKey("space")) {
+            MyNetworkManager.singleton.ServerChangeScene("SetupScene");
+        }
 	}
 
 }

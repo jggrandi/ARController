@@ -13,11 +13,7 @@ public class SetupScene : NetworkBehaviour {
     void Start() {
         foreach (var player in GameObject.FindGameObjectsWithTag("player")) {
             player.gameObject.SetActive(false);
-            //player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().gameObject.SetActive(false);
-            //player.GetComponent<Lean.Touch.NetHandleTransformations>().gameObject.SetActive(false);
-            //player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().gameObject.SetActive(false);
-            //player.GetComponent<HandleNetworkFunctions>().gameObject.SetActive(false);
-            //player.GetComponent<NetHandleGroup>().gameObject.SetActive(false);
+
         }
     }
 
@@ -39,11 +35,12 @@ public class SetupScene : NetworkBehaviour {
     }
 
     public void SetSceneID() {
-        TestController.tcontrol.sceneID = GameObject.Find("InputFieldSceneID").transform.FindChild("Text").GetComponent<Text>().text;
+        TestController.tcontrol.sceneID = GameObject.Find("InputFieldSceneID").GetComponent<InputField>().text;
+
     }
 
     public void SetUSerID() {
-        TestController.tcontrol.userID = GameObject.Find("InputFieldUSerID").transform.FindChild("Text").GetComponent<Text>().text;
+        TestController.tcontrol.userID = GameObject.Find("InputFieldUserID").GetComponent<InputField>().text;
     }
 
 }

@@ -237,19 +237,18 @@ public static class Utils {
 
 	public static List<int> allPermutations = new List<int>();
 
-	public static int[] selectUserTaskSequence(int uid, int tasks){
+	public static int[] selectUserTaskSequence(int uid, int tasks){ //Select an permutation based on the ID given
 		allPermutations.Clear ();
 		int[] elements = new int[tasks];
 		for (int i = 0; i < tasks; i++)
 			elements [i] = i;
-		permute (elements, 0, elements.Length);
+		permute (elements, 0, tasks); // Generate all permutations
 
-		int permutationIndex = uid % (allPermutations.Count / tasks);
-
+		int permutationIndex = uid % (allPermutations.Count / tasks); // the beginning of the sequence to be taken from the list of all permutations
 
 		int[] thePermutation = new int[tasks];
 		for (int i = 0; i < tasks; i++)
-			thePermutation [i] = allPermutations [permutationIndex * tasks + i];
+			thePermutation [i] = allPermutations [permutationIndex * tasks + i]; //store the permutation selected
 
 		return thePermutation;
 	}
@@ -259,7 +258,7 @@ public static class Utils {
 		int j;
 		if (i == n)
 			for (int k = 0; k < arry.Length; k++)
-				allPermutations.Add (arry [k]);
+				allPermutations.Add (arry [k]);  // Acumulate all permutations in an List
 		else {
 			for (j = i; j < n; j++) {
 				swap (ref arry [i], ref arry [j]);
