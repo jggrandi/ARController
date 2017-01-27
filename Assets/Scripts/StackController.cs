@@ -20,7 +20,6 @@ public class StackController : NetworkBehaviour {
     Matrix4x4 staticObjMatrixTrans;
     Matrix4x4 staticObjMatrixRot;
 
-    //int pieceActiveNow;
 
     DataSync dataSync;
 
@@ -67,6 +66,7 @@ public class StackController : NetworkBehaviour {
     [Command]
     void CmdChangeScene() {
         MyNetworkManager.singleton.ServerChangeScene("SetupScene");
+        TestController.tcontrol.idNow++;
     }
 
 
