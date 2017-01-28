@@ -34,8 +34,8 @@ public class SetupScene : NetworkBehaviour {
 
     void Update() {
         if (!isServer) return;
-        if (int.Parse(GameObject.Find("InputFieldSceneID").GetComponent<InputField>().text) != TestController.tcontrol.taskOrder[TestController.tcontrol.idNow])    
-            GameObject.Find("InputFieldSceneID").GetComponent<InputField>().text = TestController.tcontrol.taskOrder[TestController.tcontrol.idNow].ToString();
+        if (int.Parse(GameObject.Find("InputFieldSceneID").GetComponent<InputField>().text) != TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIdNow])    
+            GameObject.Find("InputFieldSceneID").GetComponent<InputField>().text = TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIdNow].ToString();
 
         if (int.Parse(GameObject.Find("InputFieldUserID").GetComponent<InputField>().text) != TestController.tcontrol.userID) {
             GameObject.Find("InputFieldUserID").GetComponent<InputField>().text = TestController.tcontrol.userID.ToString();
@@ -75,7 +75,7 @@ public class SetupScene : NetworkBehaviour {
 
     [Command]
     void CmdUpdateScene() {
-        TestController.tcontrol.sceneID = TestController.tcontrol.taskOrder[TestController.tcontrol.idNow];
+        TestController.tcontrol.sceneID = TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIdNow];
     }
 
     [Command]

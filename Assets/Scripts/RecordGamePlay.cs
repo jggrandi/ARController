@@ -9,26 +9,17 @@ using System.IO;
 public class Log{
 
 	StreamWriter f;
-	int numberOfClients;
 	String filename = "";
-	int numberOfCheckpoints;
+	
 
-	public Log(string team, int n, int c)
+	public Log(string user)
 	{
 
-		numberOfClients = n;
-		numberOfCheckpoints = c;
+        Debug.Log(Application.persistentDataPath);
+		f = File.CreateText(Application.persistentDataPath + "/User-" + user + "---" + System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".csv");
+		//f.WriteLine(n + ";" + c + ";" + team);
 
-		f = File.CreateText(Application.persistentDataPath + "/" + team + "-" + System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".csv");
-		f.WriteLine(n + "," + c + "," + team);
-
-		string header = "Time,Translation X,Translation Y,Translation Z,Rotation X,Rotation Y,Rotation Z,Rotation W,Scalling,Camera X,Camera Y,Camera Z,Camera W,IsInCollision,CollisionForce X,CollisionForce Y,CollisionForce Z";
-		for (int i = 0; i < c; i++) {
-			header += ",Checkpoint" + i.ToString();
-		}
-		for (int i = 0; i < n; i++){
-			header += ",User,Connected,Translation X,Translation Y,Translation Z,Rotation X,Rotation Y,Rotation Z,Rotation W,Scalling,Camera X,Camera Y,Camera Z,Camera W";
-		}
+		string header = "Time;PieceID;DistanceToTarget;Translation X;Translation Y;Translation Z;Rotation X;Rotation Y;Rotation Z;Rotation W;Camera X;Camera Y;Camera Z;Error Trans;Error Rot";
 		f.WriteLine(header);
 	}
 
@@ -41,53 +32,55 @@ public class Log{
 		filename = name;
 	}
 
-	//public void save( List<Client> clients, GameObject t, Quaternion cameraRotation, bool isInCollision, Vector3 collisionForce, float[] stackDist)
-	//{
+	public void save(int pieceID, GameObject piece, Vector3 cameraPosition, float errorTrans, float errorRot) //, float distToTarget, GameObject t, Quaternion cameraRotation, float errorTrans, float errorRot)
+	{
 
 	//	//if (clients.Count < numberOfClients) return;
 
-	//	String line = "";
+	    String line = "";
 
-	//	line += Time.realtimeSinceStartup + "";
+    	line += Time.realtimeSinceStartup + "";
+        line += ";" + pieceID + ";" /*Add the distance here*/;
+        line += ";" + piece.transform.localPosition.x + ";" + piece.transform.localPosition.y + ";" + piece.transform.localPosition.z;
+        line += ";" + piece.transform.localRotation.x + ";" + piece.transform.localRotation.y + ";" + piece.transform.localRotation.z + ";" + piece.transform.localRotation.w;
+        line += ";" + cameraPosition.x + ";" + cameraPosition.y + ";" + cameraPosition.z;
+        line += ";" + errorTrans + ";" + errorRot;
+        //	line += ";" + Convert.ToInt32(isInCollision) + ";" + collisionForce.x + ";" + collisionForce.y + ";" + collisionForce.z;
 
-	//	line += "," + t.transform.position.x + "," + t.transform.position.y + "," + t.transform.position.z;
-	//	line += "," + t.transform.rotation.x + "," + t.transform.rotation.y + "," + t.transform.rotation.z + "," + t.transform.rotation.w;
-	//	line += "," + t.transform.localScale.x;
-	//	line += "," + cameraRotation.x + "," + cameraRotation.y + "," + cameraRotation.z + "," + cameraRotation.w;
-	//	line += "," + Convert.ToInt32(isInCollision) + "," + collisionForce.x + "," + collisionForce.y + "," + collisionForce.z;
+        //	for (int j = 0; j < numberOfCheckpoints; j++) {
+        //		line += ";" + stackDist [j];
+        //	}
 
-	//	for (int j = 0; j < numberOfCheckpoints; j++) {
-	//		line += "," + stackDist [j];
-	//	}
+        //	for (int j = 0; j < numberOfClients; j++) {
 
-	//	for (int j = 0; j < numberOfClients; j++) {
+        //		bool connected = false;
 
-	//		bool connected = false;
+        //		foreach (Client i in clients) {
+        //			if (i.id != j) continue;
+        //			line += ";" + i.id + ",1";
+        //			line += ";" + i.totalTranslation.x + ";" + i.totalTranslation.y + ";" + i.totalTranslation.z;
+        //			i.totalTranslation = Vector3.zero;
+        //			line += ";" + i.totalRotation.x + ";" + i.totalRotation.y + ";" + i.totalRotation.z + ";" + i.totalRotation.w;
+        //			i.totalRotation = Quaternion.identity;
+        //			line += ";" + i.totalScaling;
+        //			i.totalScaling = 1;
+        //			line += ";" + i.totalRotationCamera.x + ";" + i.totalRotationCamera.y + ";" + i.totalRotationCamera.z + ";" + i.totalRotationCamera.w;
+        //			i.totalRotationCamera = Quaternion.identity;
+        //			connected = true;
+        //			break;
 
-	//		foreach (Client i in clients) {
-	//			if (i.id != j) continue;
-	//			line += "," + i.id + ",1";
-	//			line += "," + i.totalTranslation.x + "," + i.totalTranslation.y + "," + i.totalTranslation.z;
-	//			i.totalTranslation = Vector3.zero;
-	//			line += "," + i.totalRotation.x + "," + i.totalRotation.y + "," + i.totalRotation.z + "," + i.totalRotation.w;
-	//			i.totalRotation = Quaternion.identity;
-	//			line += "," + i.totalScaling;
-	//			i.totalScaling = 1;
-	//			line += "," + i.totalRotationCamera.x + "," + i.totalRotationCamera.y + "," + i.totalRotationCamera.z + "," + i.totalRotationCamera.w;
-	//			i.totalRotationCamera = Quaternion.identity;
-	//			connected = true;
-	//			break;
+        //		}
 
-	//		}
+        //		if (!connected) {
 
-	//		if (!connected) {
+        //			line += ";"+j+",0,0,0,0,0,0,0,1,1,0,0,0,1";
 
-	//			line += ","+j+",0,0,0,0,0,0,0,1,1,0,0,0,1";
+        //		}
 
-	//		}
-
-	//	}
-	//	f.WriteLine(line);
-	//}
+        //	}
+        //Debug.Log(line);
+        f.WriteLine(line);
+        f.Flush();
+	}
 }
 

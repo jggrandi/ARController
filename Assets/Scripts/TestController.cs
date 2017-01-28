@@ -17,7 +17,9 @@ public class TestController : NetworkBehaviour {
     [SyncVar]
     public int sceneID = 0;
     [SyncVar]
-    public int idNow = 0;
+    public int sceneIdNow = 0;
+    [SyncVar]
+    public int pieceIdNow = 0;
 
     void Awake() {
 

@@ -9,7 +9,7 @@ public class StackController : NetworkBehaviour {
 
     GameObject trackedObjects;
     //int[] objectsOrder;
-    int objIndex;
+    
     int halfObjects;
     Transform childMoving;
     Transform childStatic;
@@ -57,16 +57,17 @@ public class StackController : NetworkBehaviour {
         staticObjMatrixTrans = Matrix4x4.TRS(childStatic.transform.position, Quaternion.identity, new Vector3(1.0f, 1.0f, 1.0f));
         staticObjMatrixRot = Matrix4x4.TRS(new Vector3(0, 0, 0), childStatic.transform.rotation, new Vector3(1.0f, 1.0f, 1.0f));
 
-        //Debug.Log(Utils.distMatrices(movingObjMatrixTrans, staticObjMatrixTrans));
-        //Debug.Log(Utils.distMatrices(movingObjMatrixRot, staticObjMatrixRot));
+        dataSync.errorTranslation = Utils.distMatrices(movingObjMatrixTrans, staticObjMatrixTrans);
+        dataSync.errorRotation = Utils.distMatrices(movingObjMatrixRot, staticObjMatrixRot);
 
 
     }
     
     [Command]
     void CmdChangeScene() {
+        
         MyNetworkManager.singleton.ServerChangeScene("SetupScene");
-        TestController.tcontrol.idNow++;
+        //TestController.tcontrol.sceneIdNow++;
     }
 
 
@@ -100,6 +101,9 @@ public class StackController : NetworkBehaviour {
         CmdClearSelection();
 
         if (dataSync.pieceActiveNow == halfObjects - 1) {
+            if(isServer)
+                GameObject.Find("MainHandler").gameObject.GetComponent<HandleLog>().log.close();
+
             CmdChangeScene();
         }
     }
