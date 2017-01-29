@@ -10,15 +10,17 @@ public class HandleLog : NetworkBehaviour {
     GameObject trackedObjects;
     public bool closeRecord = false;
 
+	int previousPiece = -1;
+
     // Use this for initialization
     void Start () {
-
-        
         if (!isServer ) return;
 
         dataSync = gameObject.GetComponent<DataSync>();
         trackedObjects = GameObject.Find("TrackedObjects").gameObject;
         log = new Log(TestController.tcontrol.userID.ToString());
+
+		previousPiece = dataSync.pieceActiveNow;
 	}
 	
 
@@ -27,15 +29,22 @@ public class HandleLog : NetworkBehaviour {
         if (!isServer ) return;
         
         if (countFrames % 5 == 0) {
-            //foreach (var player in GameObject.FindGameObjectsWithTag("player"))
-            //    if(player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelectedShared.Count == 0) return;
-
-
-            log.save(dataSync.piecesList[dataSync.pieceActiveNow], trackedObjects.transform.GetChild(0).gameObject, Camera.main.transform.position, dataSync.errorTranslation, dataSync.errorRotation);
+            foreach (var player in GameObject.FindGameObjectsWithTag("player"))
+				if(!player.GetComponent<NetworkIdentity>().isLocalPlayer)
+                	if(player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelectedShared.Count != 0) 
+						log.saveVerbose(dataSync.piecesList[dataSync.pieceActiveNow], trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]).gameObject, player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().CameraPosition, dataSync.errorTranslation, dataSync.errorRotation);
         }
+		Debug.Log (dataSync.pieceActiveNow + " -- " + previousPiece);
+		if (previousPiece != dataSync.pieceActiveNow) {
+			Debug.Log ("Saving...");
+			log.saveResume (dataSync.piecesList [dataSync.pieceActiveNow], dataSync.errorTranslation, dataSync.errorRotation);
+			previousPiece = dataSync.pieceActiveNow;
+		}
         countFrames++;
     }
 
-   
+	void OnApplicationQuit(){
+		log.close ();
+	}
 
 }

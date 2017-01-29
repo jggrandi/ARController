@@ -24,6 +24,7 @@ public class StackController : NetworkBehaviour {
     DataSync dataSync;
 
     void Start() {
+		if (!isLocalPlayer) return;
         dataSync = GameObject.Find("MainHandler").GetComponent<DataSync>();
 
         trackedObjects = GameObject.Find("TrackedObjects");
@@ -71,14 +72,14 @@ public class StackController : NetworkBehaviour {
     }
 
 
-    [ClientRpc]
-    void RpcIncrementPieceActiveNow() {
-        dataSync.pieceActiveNow++;
-    }
+//    [ClientRpc]
+//    void RpcIncrementPieceActiveNow() {
+//        dataSync.pieceActiveNow++;
+//    }
 
     [Command]
     void CmdPieceActiveNow() {
-        RpcIncrementPieceActiveNow();
+		dataSync.pieceActiveNow++;
     }
 
     [ClientRpc]
@@ -95,15 +96,16 @@ public class StackController : NetworkBehaviour {
 
 
     public void SetNextPiece() {
-        CmdPieceActiveNow();
-
+		CmdPieceActiveNow();
         MainController.control.objSelected.Clear();
         CmdClearSelection();
 
         if (dataSync.pieceActiveNow == halfObjects - 1) {
-            if(isServer)
-                GameObject.Find("MainHandler").gameObject.GetComponent<HandleLog>().log.close();
-
+			Debug.Log ("SAAAINNDOOO");
+			if (isServer) {
+				GameObject.Find ("MainHandler").gameObject.GetComponent<HandleLog> ().log.close ();
+				Debug.Log ("AQE");
+			}
             CmdChangeScene();
         }
     }

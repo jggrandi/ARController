@@ -129,7 +129,7 @@ namespace Lean.Touch {
             linesUsed = 0;
         }
 
-        Vector3 CameraPosition;
+        public Vector3 CameraPosition;
 
         [ClientRpc]
         public void RpcSetCameraPosition(Vector3 p) {
