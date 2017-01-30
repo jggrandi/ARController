@@ -9,8 +9,8 @@ public class StackController : NetworkBehaviour {
 
     GameObject trackedObjects;
     //int[] objectsOrder;
-    
-    int halfObjects;
+
+    public int halfObjects;
     Transform childMoving;
     Transform childStatic;
 
@@ -24,7 +24,6 @@ public class StackController : NetworkBehaviour {
     DataSync dataSync;
 
     void Start() {
-		if (!isLocalPlayer) return;
         dataSync = GameObject.Find("MainHandler").GetComponent<DataSync>();
 
         trackedObjects = GameObject.Find("TrackedObjects");
@@ -37,6 +36,8 @@ public class StackController : NetworkBehaviour {
 
     void Update() {
         if (!isLocalPlayer) return;
+        if (dataSync.pieceActiveNow == halfObjects) return;
+
         for (int i = 0; i < halfObjects; i++) {
             if (i != dataSync.pieceActiveNow) {
                 trackedObjects.transform.GetChild(i).gameObject.SetActive(false);
@@ -63,23 +64,29 @@ public class StackController : NetworkBehaviour {
 
 
     }
-    
+
+
+    [ClientRpc]
+    void RpcIncrementSceneID() {
+        TestController.tcontrol.sceneIndex++;
+    }
+
     [Command]
     void CmdChangeScene() {
-        
+        //RpcIncrementSceneID();
+        TestController.tcontrol.sceneIndex++;
         MyNetworkManager.singleton.ServerChangeScene("SetupScene");
-        //TestController.tcontrol.sceneIdNow++;
     }
 
 
-//    [ClientRpc]
-//    void RpcIncrementPieceActiveNow() {
-//        dataSync.pieceActiveNow++;
-//    }
+    [ClientRpc]
+    void RpcIncrementPieceActiveNow() {
+        dataSync.pieceActiveNow++;
+    }
 
     [Command]
     void CmdPieceActiveNow() {
-		dataSync.pieceActiveNow++;
+        RpcIncrementPieceActiveNow();
     }
 
     [ClientRpc]
@@ -96,16 +103,15 @@ public class StackController : NetworkBehaviour {
 
 
     public void SetNextPiece() {
-		CmdPieceActiveNow();
+        CmdPieceActiveNow();
+
         MainController.control.objSelected.Clear();
         CmdClearSelection();
-
+        
         if (dataSync.pieceActiveNow == halfObjects - 1) {
-			Debug.Log ("SAAAINNDOOO");
-			if (isServer) {
-				GameObject.Find ("MainHandler").gameObject.GetComponent<HandleLog> ().log.close ();
-				Debug.Log ("AQE");
-			}
+            if (isServer)
+                GameObject.Find("MainHandler").gameObject.GetComponent<HandleLog>().log.close();
+            
             CmdChangeScene();
         }
     }

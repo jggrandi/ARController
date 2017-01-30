@@ -76,6 +76,7 @@ namespace Lean.Touch {
         }
 
         private void OnFingerTap(LeanFinger finger) {
+            if (TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIndex] == 1) return;
             translationZ = 1;
             if (MainController.control.objSelected.Count != 0)
                 MainController.control.isTapForTransform = true;
@@ -86,6 +87,7 @@ namespace Lean.Touch {
             if (!isLocalPlayer) return;
             if (IgnoreGuiFingers == true && finger.StartedOverGui == true) return;
             if (LeanTouch.Fingers.Count != 1) return;
+            if (TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIndex] == 1) return;
 
             if (translationZ == 1)
                 translationZ = 2;
@@ -110,7 +112,9 @@ namespace Lean.Touch {
         public void OnGesture(List<LeanFinger> fingers) {  // two fingers on screen
             if (!isLocalPlayer) return;
             if (LeanTouch.Fingers.Count != 2) return;
-            
+            if (TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIndex] == 1) return;
+
+
             Vector3 avg = avgCenterOfObjects(MainController.control.objSelected);
             float angle = LeanGesture.GetTwistDegrees(fingers) * 0.8f;
             Vector3 axis;

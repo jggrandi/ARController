@@ -15,13 +15,21 @@ public class SetupScene : NetworkBehaviour {
             player.gameObject.SetActive(false);
 
         }
+
+
         if (isServer) {
             GameObject.Find("PanelClient").gameObject.SetActive(false);
             GameObject.Find("PanelServer").gameObject.SetActive(true);
 
             GameObject.Find("InputFieldUserID").GetComponent<InputField>().text = TestController.tcontrol.userID.ToString();
             TestController.tcontrol.taskOrder = Utils.selectUserTaskSequence(TestController.tcontrol.userID, TestController.tcontrol.tasksToPermute);
-            GameObject.Find("InputFieldSceneID").GetComponent<InputField>().text = TestController.tcontrol.taskOrder[TestController.tcontrol.sceneID].ToString();
+
+            Debug.Log(TestController.tcontrol.sceneIndex + " --- " + TestController.tcontrol.taskOrder.Length);
+            if (TestController.tcontrol.sceneIndex > TestController.tcontrol.taskOrder.Length - 1)
+                MyNetworkManager.singleton.ServerChangeScene("EndTest");
+
+            GameObject.Find("InputFieldSceneID").GetComponent<InputField>().text = TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIndex].ToString();
+            GameObject.Find("InputFieldSceneNow").GetComponent<InputField>().text = TestController.tcontrol.sceneIndex.ToString();
 
         } else {
             GameObject.Find("PanelClient").gameObject.SetActive(true);
@@ -32,30 +40,26 @@ public class SetupScene : NetworkBehaviour {
 
     }
 
-    void Update() {
-        if (!isServer) return;
-        if (int.Parse(GameObject.Find("InputFieldSceneID").GetComponent<InputField>().text) != TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIdNow])    
-            GameObject.Find("InputFieldSceneID").GetComponent<InputField>().text = TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIdNow].ToString();
+    //void Update() {
+    //    if (!isServer) return;
+    //    if (int.Parse(GameObject.Find("InputFieldSceneID").GetComponent<InputField>().text) != TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIdNow])    
+    //        GameObject.Find("InputFieldSceneID").GetComponent<InputField>().text = TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIdNow].ToString();
 
-        if (int.Parse(GameObject.Find("InputFieldUserID").GetComponent<InputField>().text) != TestController.tcontrol.userID) {
-            GameObject.Find("InputFieldUserID").GetComponent<InputField>().text = TestController.tcontrol.userID.ToString();
-        }
+    //    if (int.Parse(GameObject.Find("InputFieldUserID").GetComponent<InputField>().text) != TestController.tcontrol.userID) {
+    //        GameObject.Find("InputFieldUserID").GetComponent<InputField>().text = TestController.tcontrol.userID.ToString();
+    //    }
 
-    }
+    //}
 
     public void StartScene() {
-        CmdStartScene();
+        if(isServer)
+            CmdStartScene();
 
     }
-
-    public void ManuallyChangeScene() {
-        TestController.tcontrol.sceneID = int.Parse(GameObject.Find("InputFieldSceneID").GetComponent<InputField>().text);
-    }
-
 
     public void UpdataUserId() {
         if (GameObject.Find("InputFieldUserID").GetComponent<InputField>().text == "") return;
-        
+
         CmdUpdateUser();
         UpdateScene();
 
@@ -64,8 +68,9 @@ public class SetupScene : NetworkBehaviour {
     void UpdateScene() {
         TestController.tcontrol.taskOrder = Utils.selectUserTaskSequence(TestController.tcontrol.userID, TestController.tcontrol.tasksToPermute);
 
+        GameObject.Find("InputFieldSceneID").GetComponent<InputField>().text = TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIndex].ToString();
+        GameObject.Find("InputFieldSceneNow").GetComponent<InputField>().text = TestController.tcontrol.sceneIndex.ToString();
         CmdUpdateScene();
-        GameObject.Find("InputFieldSceneID").GetComponent<InputField>().text = TestController.tcontrol.sceneID.ToString();
     }
 
     [Command]
@@ -75,24 +80,39 @@ public class SetupScene : NetworkBehaviour {
 
     [Command]
     void CmdUpdateScene() {
-        TestController.tcontrol.sceneID = TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIdNow];
+        TestController.tcontrol.sceneIndex = int.Parse(GameObject.Find("InputFieldSceneNow").GetComponent<InputField>().text);
     }
 
     [Command]
     void CmdStartScene() {
-        if(TestController.tcontrol.sceneID == 0)
-            MyNetworkManager.singleton.ServerChangeScene("workingWithNetNew");
-        else if (TestController.tcontrol.sceneID == 1)
-            MyNetworkManager.singleton.ServerChangeScene("workingWithNetNew2");
+        MyNetworkManager.singleton.ServerChangeScene("workingWithNetNew");
     }
 
-    public void SetSceneID() {
-        TestController.tcontrol.sceneID = int.Parse(GameObject.Find("InputFieldSceneID").GetComponent<InputField>().text);
-
+    [Command]
+    void CmdIncrementSceneID() {
+        TestController.tcontrol.sceneIndex++;
     }
 
-    public void SetUSerID() {
-        TestController.tcontrol.userID = int.Parse(GameObject.Find("InputFieldUserID").GetComponent<InputField>().text);
+    [Command]
+    void CmdDecrementSceneID() {
+        TestController.tcontrol.sceneIndex--;
     }
 
+    public void ButtonNextScene() {
+        if (TestController.tcontrol.sceneIndex < 2) {
+            CmdIncrementSceneID();
+            GameObject.Find("InputFieldSceneNow").GetComponent<InputField>().text = TestController.tcontrol.sceneIndex.ToString();
+            GameObject.Find("InputFieldSceneID").GetComponent<InputField>().text = TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIndex].ToString();
+            CmdUpdateScene();
+        }
+    }
+
+    public void ButtonPreviousScene() {
+        if (TestController.tcontrol.sceneIndex > 0) {
+            CmdDecrementSceneID();
+            GameObject.Find("InputFieldSceneNow").GetComponent<InputField>().text = TestController.tcontrol.sceneIndex.ToString();
+            GameObject.Find("InputFieldSceneID").GetComponent<InputField>().text = TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIndex].ToString();
+            CmdUpdateScene();
+        }
+    }
 }

@@ -15,7 +15,7 @@ public class TestController : NetworkBehaviour {
     [SyncVar]
     public int userID = 0;
     [SyncVar]
-    public int sceneID = 0;
+    public int sceneIndex = 0;
     [SyncVar]
     public int sceneIdNow = 0;
     [SyncVar]

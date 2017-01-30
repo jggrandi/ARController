@@ -34,9 +34,9 @@ public class HandleLog : NetworkBehaviour {
                 	if(player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelectedShared.Count != 0) 
 						log.saveVerbose(dataSync.piecesList[dataSync.pieceActiveNow], trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]).gameObject, player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().CameraPosition, dataSync.errorTranslation, dataSync.errorRotation);
         }
-		Debug.Log (dataSync.pieceActiveNow + " -- " + previousPiece);
-		if (previousPiece != dataSync.pieceActiveNow) {
-			Debug.Log ("Saving...");
+
+		if (previousPiece != dataSync.pieceActiveNow && dataSync.pieceActiveNow < dataSync.piecesList.Count) { 
+			Debug.Log ("Saving..." + dataSync.pieceActiveNow + " -- " + dataSync.piecesList.Count);
 			log.saveResume (dataSync.piecesList [dataSync.pieceActiveNow], dataSync.errorTranslation, dataSync.errorRotation);
 			previousPiece = dataSync.pieceActiveNow;
 		}

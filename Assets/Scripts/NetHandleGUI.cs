@@ -14,7 +14,7 @@ public class NetHandleGUI : NetworkBehaviour {
 
     public GameObject playerObject;
 
-    // Use this for initialization
+   
     public void buttonLock () {
         MainController.control.lockTransform = true;
     }
@@ -64,6 +64,9 @@ public class NetHandleGUI : NetworkBehaviour {
     DataSync DataSyncRef;
     public void Start() {
         DataSyncRef = GameObject.Find("MainHandler").GetComponent<DataSync>();
+        if (TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIndex] == 0) {
+            GameObject.Find("lock").gameObject.SetActive(false);
+        }
     }
 
     private void Update() {
