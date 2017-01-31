@@ -22,9 +22,12 @@ public class SetupScene : NetworkBehaviour {
             GameObject.Find("PanelServer").gameObject.SetActive(true);
 
             GameObject.Find("InputFieldUserID").GetComponent<InputField>().text = TestController.tcontrol.userID.ToString();
-            TestController.tcontrol.taskOrder = Utils.selectUserTaskSequence(TestController.tcontrol.userID, TestController.tcontrol.tasksToPermute);
+            int[] order = Utils.selectUserTaskSequence(TestController.tcontrol.userID, TestController.tcontrol.tasksToPermute);
+            TestController.tcontrol.taskOrder.Clear();
+            for (int i = 0; i < order.Length; i++)
+                TestController.tcontrol.taskOrder.Add(order[i]);
 
-            if (TestController.tcontrol.sceneIndex > TestController.tcontrol.taskOrder.Length - 1)
+            if (TestController.tcontrol.sceneIndex > TestController.tcontrol.taskOrder.Count - 1)
                 MyNetworkManager.singleton.ServerChangeScene("EndTest");
 
             GameObject.Find("InputFieldSceneID").GetComponent<InputField>().text = TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIndex].ToString();
@@ -50,7 +53,11 @@ public class SetupScene : NetworkBehaviour {
     }
 
     void UpdateScene() {
-        TestController.tcontrol.taskOrder = Utils.selectUserTaskSequence(TestController.tcontrol.userID, TestController.tcontrol.tasksToPermute);
+        int[] order = Utils.selectUserTaskSequence(TestController.tcontrol.userID, TestController.tcontrol.tasksToPermute);
+        TestController.tcontrol.taskOrder.Clear();
+        for (int i = 0; i < order.Length; i++)
+            TestController.tcontrol.taskOrder.Add(order[i]);
+        
 
         GameObject.Find("InputFieldSceneID").GetComponent<InputField>().text = TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIndex].ToString();
         GameObject.Find("InputFieldSceneNow").GetComponent<InputField>().text = TestController.tcontrol.sceneIndex.ToString();
