@@ -13,12 +13,12 @@ public class Log{
 
 	float previousTime = 0.0f;
 
-	public Log(string user)
+	public Log(string user, int task)
 	{
 
         Debug.Log(Application.persistentDataPath);
-		fVerbose = File.CreateText(Application.persistentDataPath + "/User-" + user + "---" + System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + "-Verbose.csv");
-		fResume = File.CreateText(Application.persistentDataPath + "/User-" + user + "---" + System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + "-Resume.csv");
+		fVerbose = File.CreateText(Application.persistentDataPath + "/User-" + user + "-Task-" + task + "---" + System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + "-Verbose.csv");
+		fResume = File.CreateText(Application.persistentDataPath + "/User-" + user + "-Task-" + task + "---" + System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + "-Resume.csv");
 		string header = "Time;PieceID;DistanceToTarget;Translation X;Translation Y;Translation Z;Rotation X;Rotation Y;Rotation Z;Rotation W;Camera X;Camera Y;Camera Z;Error Trans;Error Rot";
 		fVerbose.WriteLine(header);
 		header = "PieceID;DistanceToTarget;Time;Error Trans;Error Rot";
@@ -53,17 +53,16 @@ public class Log{
 	}
 
 
-	public void saveResume(int pieceID, float errorTrans, float errorRot) //, float distToTarget, GameObject t, Quaternion cameraRotation, float errorTrans, float errorRot)
+	public void saveResume(int pieceID, float time, float errorTrans, float errorRot) //, float distToTarget, GameObject t, Quaternion cameraRotation, float errorTrans, float errorRot)
 	{
 		String line = "";
-		float totalTime = Time.realtimeSinceStartup - previousTime;
 		//line += Time.realtimeSinceStartup + "";
 		line += pieceID + ";" /*Add the distance here*/;
-		line += ";" + totalTime;
+		line += ";" + time;
 		line += ";" + errorTrans + ";" + errorRot;
 		fResume.WriteLine(line);
 		fResume.Flush();
-		previousTime = Time.realtimeSinceStartup;
+		previousTime = time;
 	}
 
 }
