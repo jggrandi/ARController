@@ -24,7 +24,6 @@ public class SetupScene : NetworkBehaviour {
             GameObject.Find("InputFieldUserID").GetComponent<InputField>().text = TestController.tcontrol.userID.ToString();
             TestController.tcontrol.taskOrder = Utils.selectUserTaskSequence(TestController.tcontrol.userID, TestController.tcontrol.tasksToPermute);
 
-            Debug.Log(TestController.tcontrol.sceneIndex + " --- " + TestController.tcontrol.taskOrder.Length);
             if (TestController.tcontrol.sceneIndex > TestController.tcontrol.taskOrder.Length - 1)
                 MyNetworkManager.singleton.ServerChangeScene("EndTest");
 
@@ -34,27 +33,13 @@ public class SetupScene : NetworkBehaviour {
         } else {
             GameObject.Find("PanelClient").gameObject.SetActive(true);
             GameObject.Find("PanelServer").gameObject.SetActive(false);
-
         }
-
-
     }
 
-    //void Update() {
-    //    if (!isServer) return;
-    //    if (int.Parse(GameObject.Find("InputFieldSceneID").GetComponent<InputField>().text) != TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIdNow])    
-    //        GameObject.Find("InputFieldSceneID").GetComponent<InputField>().text = TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIdNow].ToString();
-
-    //    if (int.Parse(GameObject.Find("InputFieldUserID").GetComponent<InputField>().text) != TestController.tcontrol.userID) {
-    //        GameObject.Find("InputFieldUserID").GetComponent<InputField>().text = TestController.tcontrol.userID.ToString();
-    //    }
-
-    //}
 
     public void StartScene() {
         if(isServer)
             CmdStartScene();
-
     }
 
     public void UpdataUserId() {
@@ -62,7 +47,6 @@ public class SetupScene : NetworkBehaviour {
 
         CmdUpdateUser();
         UpdateScene();
-
     }
 
     void UpdateScene() {

@@ -36,7 +36,6 @@ public class HandleLog : NetworkBehaviour {
         }
 
 		if (previousPiece != dataSync.pieceActiveNow && dataSync.pieceActiveNow < dataSync.piecesList.Count) { 
-			Debug.Log ("Saving..." + dataSync.pieceActiveNow + " -- " + dataSync.piecesList.Count);
 			log.saveResume (dataSync.piecesList [dataSync.pieceActiveNow], dataSync.errorTranslation, dataSync.errorRotation);
 			previousPiece = dataSync.pieceActiveNow;
 		}

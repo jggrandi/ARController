@@ -11,6 +11,8 @@ public class Log{
 	StreamWriter fVerbose;
 	StreamWriter fResume;
 
+	float previousTime = 0.0f;
+
 	public Log(string user)
 	{
 
@@ -54,13 +56,14 @@ public class Log{
 	public void saveResume(int pieceID, float errorTrans, float errorRot) //, float distToTarget, GameObject t, Quaternion cameraRotation, float errorTrans, float errorRot)
 	{
 		String line = "";
-
+		float totalTime = Time.realtimeSinceStartup - previousTime;
 		//line += Time.realtimeSinceStartup + "";
 		line += pieceID + ";" /*Add the distance here*/;
-		line += ";" + ";" /*Add total time here*/;
+		line += ";" + totalTime;
 		line += ";" + errorTrans + ";" + errorRot;
 		fResume.WriteLine(line);
 		fResume.Flush();
+		previousTime = Time.realtimeSinceStartup;
 	}
 
 }
