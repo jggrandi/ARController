@@ -41,14 +41,13 @@ public class HandleLog : NetworkBehaviour {
                         time = Time.realtimeSinceStartup;
                 } else {
                     save = false;
-                    //time = 0.0f;
                 }
             }
         }
 
         if (countFrames % 5 == 0) {
-            if(save)
-                log.saveVerbose(dataSync.piecesList[dataSync.pieceActiveNow], trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]).gameObject, camPos, dataSync.errorTranslation, dataSync.errorRotation);
+            //if(save)
+                log.saveVerbose(dataSync.piecesList[dataSync.pieceActiveNow], dataSync.transformationModality, trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]).gameObject, camPos, dataSync.errorTranslation, dataSync.errorRotation);
         }
 
 		if (previousPiece != dataSync.pieceActiveNow && dataSync.pieceActiveNow <= dataSync.piecesList.Count) {

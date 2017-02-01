@@ -11,6 +11,7 @@ public class TestController : NetworkBehaviour {
 
 	public int tasksToPermute = 3;
 
+    
 
     public SyncListInt taskOrder = new SyncListInt();
     
@@ -20,8 +21,9 @@ public class TestController : NetworkBehaviour {
     public int sceneIndex = 0;
     [SyncVar]
     public int sceneIdNow = 0;
-    [SyncVar]
-    public int pieceIdNow = 0;
+
+
+
 
     void Awake() {
 

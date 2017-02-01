@@ -24,7 +24,7 @@ namespace Lean.Touch {
         bool isFingerMoving = false;
 
         Color greyColor = new Color(150 / 255.0f, 150 / 255.0f, 150 / 255.0f);
-        Color blueColor = new Color(0 / 255.0f, 118 / 255.0f, 255 / 255.0f);
+        //Color blueColor = new Color(0 / 255.0f, 118 / 255.0f, 255 / 255.0f);
 
         /*public class SyncGameObject : SyncList<GameObject> {
             protected override GameObject DeserializeItem(NetworkReader reader) {
@@ -98,7 +98,7 @@ namespace Lean.Touch {
 
             trackedObjects = GameObject.Find("TrackedObjects");
             lines = GameObject.Find("Lines");
-            var obj = GameObject.Find("VolumetricLinePrefab");
+            //var obj = GameObject.Find("VolumetricLinePrefab");
             /*for (int i = 0; i < 100; i++) {
                 var g = (Instantiate(obj) as GameObject);
                 g.transform.parent = lines.transform;
@@ -271,10 +271,10 @@ namespace Lean.Touch {
 
         public void UnselectAll() {
             MainController.control.isMultipleSelection = false;
-            foreach (int i in MainController.control.objSelected) {
-                GameObject g = Utils.GetByIndex(i);
+            //foreach (int i in MainController.control.objSelected) {
+                //GameObject g = Utils.GetByIndex(i);
                 //g.transform.GetComponent<Renderer>().material = g.transform.GetComponent<ObjectGroupId>().material;
-            }
+            //}
             MainController.control.objSelected.Clear();
         }
 

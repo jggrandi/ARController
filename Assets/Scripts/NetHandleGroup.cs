@@ -26,7 +26,7 @@ public class NetHandleGroup : NetworkBehaviour {
         
         foreach (int index in MainController.control.objSelected) {
             CmdSetGroup(index, -1);
-            var g = Utils.GetByIndex(index);
+            //var g = Utils.GetByIndex(index);
             //g.GetComponent<Renderer>().material = g.GetComponent<ObjectGroupId>().material;
             
         }

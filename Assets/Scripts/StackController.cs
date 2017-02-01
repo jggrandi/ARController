@@ -38,17 +38,13 @@ public class StackController : NetworkBehaviour {
         if (!isLocalPlayer) return;
         if (dataSync.pieceActiveNow == halfObjects) return;
 
-        for (int i = 0; i < halfObjects; i++) {
-            if (i != dataSync.pieceActiveNow) {
-                trackedObjects.transform.GetChild(i).gameObject.SetActive(false);
-                trackedObjects.transform.GetChild(i + halfObjects).gameObject.SetActive(false);
-            }
-        }
-
         childMoving = trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]); // take the moving object 
         childStatic = trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow] + halfObjects); // and its ghost
-        //Debug.Log(objIndex + halfObjects);
-        //Debug.Log(objectsOrder[objIndex] + " " + objectsOrder[objIndex] + halfObjects);
+
+        if (dataSync.pieceActiveNow > 0) {
+            trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow - 1]).gameObject.SetActive(false); // disable the previous object
+            trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow - 1] + halfObjects).gameObject.SetActive(false); //and its ghost
+        }
 
         childMoving.gameObject.SetActive(true);
         childStatic.gameObject.SetActive(true);
@@ -61,7 +57,6 @@ public class StackController : NetworkBehaviour {
 
         dataSync.errorTranslation = Utils.distMatrices(movingObjMatrixTrans, staticObjMatrixTrans);
         dataSync.errorRotation = Utils.distMatrices(movingObjMatrixRot, staticObjMatrixRot);
-
 
     }
 
@@ -115,5 +110,17 @@ public class StackController : NetworkBehaviour {
             CmdChangeScene();
         }
     }
+
+    [ClientRpc]
+    public void RpcUpdateModality(int value) {
+        dataSync.transformationModality = value;
+    }
+
+    [Command]
+    public void CmdUpdateModality(int value) {
+        RpcUpdateModality(value);
+    }
+
+
 }
 

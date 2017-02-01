@@ -11,24 +11,29 @@ namespace Lean.Touch {
         public LayerMask LayerMask = Physics.DefaultRaycastLayers;
         [Tooltip("Ignore fingers with StartedOverGui?")]
         public bool IgnoreGuiFingers = true;
-        Utils.Transformations mode = Utils.Transformations.Translation;
+        //Utils.Transformations mode = Utils.Transformations.Translation;
 
         int translationZ = 0;
         
         float countFrames = 0;
-
         Matrix4x4 prevMatrix;
+
+        
+
         void Start() {
             trackedObjects = GameObject.Find("TrackedObjects");
+            
         }
 
         void Update() {
             if (!isLocalPlayer) return;
-            
+
+            //TestController.tcontrol.transformationModality = -1;
+
             Matrix4x4 camMatrix = Camera.main.worldToCameraMatrix; 
 
             if (MainController.control.lockTransform) {
-
+                
                 Matrix4x4 step = prevMatrix * camMatrix.inverse;
 
                 foreach (int index in MainController.control.objSelected) {
@@ -46,13 +51,14 @@ namespace Lean.Touch {
             }
 
             prevMatrix = camMatrix;
-            mode = MainController.control.transformationNow;
+            //mode = MainController.control.transformationNow;
             //this.gameObject.transform.GetComponent<HandleNetworkFunctions>().SyncCamPosition(Camera.main.transform.position);
 
-            if (countFrames % 50 == 0 ) {
+            if (countFrames % 35 == 0 ) {
                 if (LeanTouch.Fingers.Count <= 0) {
                     translationZ = 0;
                     MainController.control.isTapForTransform = false;
+                    gameObject.GetComponent<StackController>().CmdUpdateModality(-1);
                 }
             }
             countFrames++;
@@ -62,6 +68,8 @@ namespace Lean.Touch {
             LeanTouch.OnFingerSet += OnFingerSet; // Hook into the events we need
             LeanTouch.OnGesture += OnGesture;
             LeanTouch.OnFingerTap += OnFingerTap;
+            LeanTouch.OnFingerUp += OnFingerUp;
+
 
         }
 
@@ -69,10 +77,17 @@ namespace Lean.Touch {
             LeanTouch.OnFingerSet -= OnFingerSet;    // Unhook the events
             LeanTouch.OnGesture -= OnGesture;
             LeanTouch.OnFingerTap -= OnFingerTap;
+            LeanTouch.OnFingerUp -= OnFingerUp;
         }
 
         public int GetIndex(GameObject g) {
             return g.GetComponent<ObjectGroupId>().index;
+        }
+
+        private void OnFingerUp(LeanFinger finger) {
+            translationZ = 0;
+            MainController.control.isTapForTransform = false;
+
         }
 
         private void OnFingerTap(LeanFinger finger) {
@@ -88,6 +103,8 @@ namespace Lean.Touch {
             if (IgnoreGuiFingers == true && finger.StartedOverGui == true) return;
             if (LeanTouch.Fingers.Count != 1) return;
             if (TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIndex] == 1) return;
+
+            gameObject.GetComponent<StackController>().CmdUpdateModality(1);
 
             if (translationZ == 1)
                 translationZ = 2;
@@ -114,6 +131,7 @@ namespace Lean.Touch {
             if (LeanTouch.Fingers.Count != 2) return;
             if (TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIndex] == 1) return;
 
+            gameObject.GetComponent<StackController>().CmdUpdateModality(1);
 
             Vector3 avg = avgCenterOfObjects(MainController.control.objSelected);
             float angle = LeanGesture.GetTwistDegrees(fingers) * 0.8f;
@@ -142,5 +160,8 @@ namespace Lean.Touch {
             obj.transform.position += dir * (-1 + scale);
             obj.transform.localScale *= scale;
         }
+
+
+            
     }
 }
