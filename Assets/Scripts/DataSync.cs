@@ -18,6 +18,8 @@ public class DataSync : NetworkBehaviour {
     public float errorTranslation;
     public float errorRotation;
 
+    public int targetsTrackedForLog;
+
     public override void OnStartServer() {
         GameObject trackedObjects = GameObject.Find("TrackedObjects");
         for (int i = 0; i< trackedObjects.transform.childCount; i++) {
@@ -37,7 +39,10 @@ public class DataSync : NetworkBehaviour {
         }
     }
 
-
+    [Command]
+    void CmdTargetsTracked() {
+        targetsTrackedForLog = MainController.control.targetsTrackedNow;
+    }
 
 
 

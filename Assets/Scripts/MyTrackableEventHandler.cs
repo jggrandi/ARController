@@ -74,6 +74,7 @@ namespace Vuforia {
                 component.enabled = true;
             
             MainController.control.targetsTrackedNow++;
+
         }
 
 

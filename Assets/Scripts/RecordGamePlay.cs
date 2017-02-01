@@ -17,7 +17,7 @@ public class Log{
         Debug.Log(Application.persistentDataPath);
 		fVerbose = File.CreateText(Application.persistentDataPath + "/User-" + user + "-Task-" + task + "---" + System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + "-Verbose.csv");
 		fResume = File.CreateText(Application.persistentDataPath + "/User-" + user + "-Task-" + task + "---" + System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + "-Resume.csv");
-		string header = "Time;PieceID;DistanceToTarget;Modality;Translation X;Translation Y;Translation Z;Rotation X;Rotation Y;Rotation Z;Rotation W;Camera X;Camera Y;Camera Z;Error Trans;Error Rot";
+		string header = "Time;PieceID;DistanceToTarget;Modality;Translation X;Translation Y;Translation Z;Rotation X;Rotation Y;Rotation Z;Rotation W;Camera X;Camera Y;Camera Z;Error Trans;Error Rot;Tracked Targets";
 		fVerbose.WriteLine(header);
 		header = "PieceID;DistanceToTarget;Time;Error Trans;Error Rot";
 		fResume.WriteLine(header);
@@ -32,7 +32,7 @@ public class Log{
 
 
 
-	public void saveVerbose(int pieceID, int modality, GameObject piece, Vector3 cameraPosition, float errorTrans, float errorRot) //, float distToTarget, GameObject t, Quaternion cameraRotation, float errorTrans, float errorRot)
+	public void saveVerbose(int pieceID, int modality, GameObject piece, Vector3 cameraPosition, float errorTrans, float errorRot, int trackedTargets) //, float distToTarget, GameObject t, Quaternion cameraRotation, float errorTrans, float errorRot)
 	{
 
 	//	//if (clients.Count < numberOfClients) return;
@@ -44,7 +44,7 @@ public class Log{
         line += ";" + piece.transform.localPosition.x + ";" + piece.transform.localPosition.y + ";" + piece.transform.localPosition.z;
         line += ";" + piece.transform.localRotation.x + ";" + piece.transform.localRotation.y + ";" + piece.transform.localRotation.z + ";" + piece.transform.localRotation.w;
         line += ";" + cameraPosition.x + ";" + cameraPosition.y + ";" + cameraPosition.z;
-        line += ";" + errorTrans + ";" + errorRot;
+        line += ";" + errorTrans + ";" + errorRot + ";" + trackedTargets;
 
         fVerbose.WriteLine(line);
         fVerbose.Flush();
