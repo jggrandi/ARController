@@ -111,15 +111,7 @@ public class StackController : NetworkBehaviour {
         }
     }
 
-    [ClientRpc]
-    public void RpcUpdateModality(int value) {
-        dataSync.transformationModality = value;
-    }
 
-    [Command]
-    public void CmdUpdateModality(int value) {
-        RpcUpdateModality(value);
-    }
 
 
 }

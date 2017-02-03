@@ -40,9 +40,9 @@ public class MainController : MonoBehaviour {
             //obj.GetComponent<ObjectGroupId>().material = obj.GetComponent<Renderer>().material;
             obj.GetComponent<ObjectGroupId>().index = i;
         }
-            
 
-            // Handle the screen orientation
+             
+        // Handle the screen orientation
         Screen.autorotateToLandscapeLeft = true;
         Screen.autorotateToLandscapeRight = true;
         Screen.autorotateToPortraitUpsideDown = false;
@@ -51,12 +51,14 @@ public class MainController : MonoBehaviour {
     }
 
 
+    public float dist = 0.75f;
 
+    Vector3 prevPos;
     // Update is called once per frame
     void Update () {
         if (Input.GetKey("space")) {
             MyNetworkManager.singleton.ServerChangeScene("SetupScene");
         }
-	}
+    }
 
 }

@@ -17,12 +17,10 @@ public class NetHandleGUI : NetworkBehaviour {
    
     public void buttonLock () {
         MainController.control.lockTransform = true;
-        playerObject.GetComponent<StackController>().CmdUpdateModality(0);
     }
 
     public void buttonUnlock() {
         MainController.control.lockTransform = false;
-        playerObject.GetComponent<StackController>().CmdUpdateModality(1);
     }
 
 

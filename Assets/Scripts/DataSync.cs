@@ -7,8 +7,6 @@ public class DataSync : NetworkBehaviour {
 
     [SyncVar]
     public int pieceActiveNow = 0;
-    [SyncVar]
-    public int transformationModality = -1;
 
     public SyncListInt Groups = new SyncListInt();
     public SyncListInt piecesList = new SyncListInt();
@@ -18,7 +16,6 @@ public class DataSync : NetworkBehaviour {
     public float errorTranslation;
     public float errorRotation;
 
-    public int targetsTrackedForLog;
 
     public override void OnStartServer() {
         GameObject trackedObjects = GameObject.Find("TrackedObjects");

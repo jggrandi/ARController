@@ -18,7 +18,7 @@ namespace Lean.Touch {
         float countFrames = 0;
         Matrix4x4 prevMatrix;
 
-        
+        public int modality = -1;
 
         void Start() {
             trackedObjects = GameObject.Find("TrackedObjects");
@@ -28,12 +28,10 @@ namespace Lean.Touch {
         void Update() {
             if (!isLocalPlayer) return;
 
-            //TestController.tcontrol.transformationModality = -1;
-
             Matrix4x4 camMatrix = Camera.main.worldToCameraMatrix; 
 
             if (MainController.control.lockTransform) {
-                
+                CmdUpdateModality(1);
                 Matrix4x4 step = prevMatrix * camMatrix.inverse;
 
                 foreach (int index in MainController.control.objSelected) {
@@ -54,11 +52,14 @@ namespace Lean.Touch {
             //mode = MainController.control.transformationNow;
             //this.gameObject.transform.GetComponent<HandleNetworkFunctions>().SyncCamPosition(Camera.main.transform.position);
 
+            
+
             if (countFrames % 35 == 0 ) {
                 if (LeanTouch.Fingers.Count <= 0) {
                     translationZ = 0;
                     MainController.control.isTapForTransform = false;
-                    gameObject.GetComponent<StackController>().CmdUpdateModality(-1);
+                    if (!MainController.control.lockTransform)
+                        CmdUpdateModality(-1);
                 }
             }
             countFrames++;
@@ -104,7 +105,10 @@ namespace Lean.Touch {
             if (LeanTouch.Fingers.Count != 1) return;
             if (TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIndex] == 1) return;
 
-            gameObject.GetComponent<StackController>().CmdUpdateModality(1);
+            if(MainController.control.lockTransform)
+                CmdUpdateModality(2);
+            else
+                CmdUpdateModality(0);
 
             if (translationZ == 1)
                 translationZ = 2;
@@ -131,7 +135,10 @@ namespace Lean.Touch {
             if (LeanTouch.Fingers.Count != 2) return;
             if (TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIndex] == 1) return;
 
-            gameObject.GetComponent<StackController>().CmdUpdateModality(1);
+            if (MainController.control.lockTransform)
+                CmdUpdateModality(2);
+            else
+                CmdUpdateModality(0);
 
             Vector3 avg = avgCenterOfObjects(MainController.control.objSelected);
             float angle = LeanGesture.GetTwistDegrees(fingers) * 0.8f;
@@ -161,7 +168,15 @@ namespace Lean.Touch {
             obj.transform.localScale *= scale;
         }
 
+        [ClientRpc]
+        void RpcUpdateModality(int m) {
+            modality = m;
+        }
 
+        [Command]
+        void CmdUpdateModality(int m) {
+            RpcUpdateModality(m);
+        }
             
     }
 }
