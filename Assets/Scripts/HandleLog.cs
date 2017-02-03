@@ -25,8 +25,9 @@ public class HandleLog : NetworkBehaviour {
 		previousPiece = dataSync.pieceActiveNow;
 	}
 
-    public bool save = false;
+    public bool isObjSelected = false;
     Vector3 camPos;
+    int targetsTracked;
 
     void FixedUpdate() {
         
@@ -34,20 +35,20 @@ public class HandleLog : NetworkBehaviour {
 
         foreach (var player in GameObject.FindGameObjectsWithTag("player")) {
             if (!player.GetComponent<NetworkIdentity>().isLocalPlayer) {
+                camPos = player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().CameraPosition;
+                targetsTracked = player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().targetsTracked;
                 if (player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelectedShared.Count != 0) {
-                    save = true;
-                    camPos = player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().CameraPosition;
+                    isObjSelected = true;
                     if (time == 0.0f)
                         time = Time.realtimeSinceStartup;
                 } else {
-                    save = false;
+                    isObjSelected = false;
                 }
             }
         }
-
+        
         if (countFrames % 5 == 0) {
-            //if(save)
-                log.saveVerbose(dataSync.piecesList[dataSync.pieceActiveNow], dataSync.transformationModality, trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]).gameObject, camPos, dataSync.errorTranslation, dataSync.errorRotation);
+            log.saveVerbose(dataSync.piecesList[dataSync.pieceActiveNow], isObjSelected, dataSync.transformationModality, trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]).gameObject, camPos, dataSync.errorTranslation, dataSync.errorRotation, targetsTracked);
         }
 
 		if (previousPiece != dataSync.pieceActiveNow && dataSync.pieceActiveNow <= dataSync.piecesList.Count) {

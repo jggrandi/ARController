@@ -39,10 +39,6 @@ public class DataSync : NetworkBehaviour {
         }
     }
 
-    [Command]
-    void CmdTargetsTracked() {
-        targetsTrackedForLog = MainController.control.targetsTrackedNow;
-    }
 
 
 

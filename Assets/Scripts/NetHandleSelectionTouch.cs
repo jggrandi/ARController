@@ -130,6 +130,7 @@ namespace Lean.Touch {
         }
 
         public Vector3 CameraPosition;
+        public int targetsTracked;
 
         [ClientRpc]
         public void RpcSetCameraPosition(Vector3 p) {
@@ -143,12 +144,23 @@ namespace Lean.Touch {
             RpcSetCameraPosition(p);
         }
 
+        [ClientRpc]
+        public void RpcTragetsTracked(int t) {
+            targetsTracked = t;
+        }
+
+        [Command]
+        public void CmdTargetsTracked(int t) {
+            RpcTragetsTracked(t);
+
+        }
+
         void Update() {
 
             if (!isLocalPlayer) return;
 
-            CmdSetCameraPosition(trackedObjects.transform.InverseTransformPoint(Camera.main.transform.position)); 
-
+            CmdSetCameraPosition(trackedObjects.transform.InverseTransformPoint(Camera.main.transform.position));
+            CmdTargetsTracked(MainController.control.targetsTrackedNow);
             linesUsed = 0;
 
             foreach (var player in GameObject.FindGameObjectsWithTag("player")) {
