@@ -11,8 +11,6 @@ public class TestController : NetworkBehaviour {
 
 	public int tasksToPermute = 3;
 
-    
-
     public SyncListInt taskOrder = new SyncListInt();
     
     [SyncVar]
