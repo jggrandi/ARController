@@ -10,6 +10,7 @@ public class DataSync : NetworkBehaviour {
 
     public SyncListInt Groups = new SyncListInt();
     public SyncListInt piecesList = new SyncListInt();
+	public SyncListInt distancesList = new SyncListInt();
     public int GroupCount = 0;
     public GameObject playerObject;
 
@@ -25,6 +26,11 @@ public class DataSync : NetworkBehaviour {
 
         List<int> randomizedList = Utils.randomizeVector(trackedObjects.transform.childCount/2); // Randomize the blocks order. Store it in an array.
         listToSyncList(ref randomizedList, ref piecesList);
+
+		randomizedList.Clear ();
+		randomizedList = Utils.randomizeVector(trackedObjects.transform.childCount/2); // Randomize the blocks order. Store it in an array.
+		listToSyncList(ref randomizedList, ref distancesList);
+
 
         
     }

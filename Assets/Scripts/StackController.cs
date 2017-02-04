@@ -29,8 +29,18 @@ public class StackController : NetworkBehaviour {
         trackedObjects = GameObject.Find("TrackedObjects");
         halfObjects = trackedObjects.transform.childCount / 2; // The objs/2 values are the moving objects.
 
-        foreach (Transform child in trackedObjects.transform) // Disable all objects.
+		for (int i = 0; i < halfObjects; i++) {
+			float x = TestController.tcontrol.spawnDistances [dataSync.distancesList [i] * 3];
+			float y = TestController.tcontrol.spawnDistances [dataSync.distancesList [i] * 3] + 1;
+			float z = TestController.tcontrol.spawnDistances [dataSync.distancesList [i] * 3] + 2;
+
+			trackedObjects.transform.GetChild (i).transform.position = new Vector3 (x, y, z);
+		}
+
+		foreach (Transform child in trackedObjects.transform) // Disable all objects.
             child.gameObject.SetActive(false);
+
+
 
     }
 
