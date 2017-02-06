@@ -31,9 +31,9 @@ public class StackController : NetworkBehaviour {
 
 		for (int i = 0; i < halfObjects; i++) {
 			float x = TestController.tcontrol.spawnDistances [dataSync.distancesList [i] * 3];
-			float y = TestController.tcontrol.spawnDistances [dataSync.distancesList [i] * 3] + 1;
-			float z = TestController.tcontrol.spawnDistances [dataSync.distancesList [i] * 3] + 2;
-
+			float y = TestController.tcontrol.spawnDistances [dataSync.distancesList [i] * 3 + 1] ;
+			float z = TestController.tcontrol.spawnDistances [dataSync.distancesList [i] * 3 + 2] ;
+            Debug.Log(x + "-"+ y+"-"+ z);
 			trackedObjects.transform.GetChild (i).transform.position = new Vector3 (x, y, z);
 		}
 

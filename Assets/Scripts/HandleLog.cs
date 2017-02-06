@@ -50,7 +50,7 @@ public class HandleLog : NetworkBehaviour {
         }
         
         if (countFrames % 5 == 0) {
-            log.saveVerbose(dataSync.piecesList[dataSync.pieceActiveNow], isObjSelected, modality, trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]).gameObject, camPos, dataSync.errorTranslation, dataSync.errorRotation, targetsTracked);
+            log.saveVerbose(dataSync.piecesList[dataSync.pieceActiveNow], isObjSelected, (int)dataSync.distancesList[dataSync.pieceActiveNow] / 4, dataSync.distancesList[dataSync.pieceActiveNow] * 3, modality, trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]).gameObject, camPos, dataSync.errorTranslation, dataSync.errorRotation, targetsTracked);
         }
 
 		if (previousPiece != dataSync.pieceActiveNow && dataSync.pieceActiveNow <= dataSync.piecesList.Count) {

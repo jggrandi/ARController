@@ -14,8 +14,14 @@ public class CalculateDistancesForTest : MonoBehaviour {
         sphereRef = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         sphereMoving = GameObject.CreatePrimitive(PrimitiveType.Sphere);
 
-        sphereRef.transform.position = new Vector3(0.0f, 0.0f, -0.85f);
-        sphereRef.transform.localScale = new Vector3(4.5f, 4.5f, 4.5f);
+        GameObject g = GameObject.Find("TrackedObjects");
+        sphereRef.transform.parent = g.transform;
+        sphereMoving.transform.parent = g.transform;
+
+        sphereRef.transform.position = new Vector3(0.0f, 0.5f, 0.0f);
+        sphereRef.transform.localScale = new Vector3(2.0f, 2.0f, 2.0f);
+        //        sphereRef.transform.localScale = new Vector3(3.0f, 3.0f, 3.0f);
+        //        sphereRef.transform.localScale = new Vector3(4.5f, 4.5f, 4.5f);
 
         sphereMoving.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
         dist = sphereRef.transform.localScale.x / 2;
@@ -26,7 +32,7 @@ public class CalculateDistancesForTest : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
+        dist = sphereRef.transform.localScale.x / 2;
         Vector3 diff = sphereMoving.transform.position - sphereRef.transform.position;
         sphereMoving.transform.position = sphereRef.transform.position + diff.normalized * dist;
 
