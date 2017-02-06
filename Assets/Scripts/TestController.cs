@@ -34,6 +34,12 @@ public class TestController : NetworkBehaviour {
         -1.909679f,   0.6670301f,   0.3865005f,
         -1.814323f,   0.6799691f,   -0.7294753f };
 
+    public float[] spawnRotations = {
+        -0.8f, -0.3f,  0.4f, 0.1f,
+        -0.6f, -0.1f, -0.7f, 0.4f,
+         0.4f,  0.5f,  0.6f, 0.4f,
+         0.6f, -0.8f,  0.1f, 0.3f,
+    };
 
 
     void Awake() {

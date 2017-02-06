@@ -33,9 +33,15 @@ public class StackController : NetworkBehaviour {
 			float x = TestController.tcontrol.spawnDistances [dataSync.distancesList [i] * 3];
 			float y = TestController.tcontrol.spawnDistances [dataSync.distancesList [i] * 3 + 1] ;
 			float z = TestController.tcontrol.spawnDistances [dataSync.distancesList [i] * 3 + 2] ;
-            Debug.Log(x + "-"+ y+"-"+ z);
-			trackedObjects.transform.GetChild (i).transform.position = new Vector3 (x, y, z);
-		}
+
+            float rx = TestController.tcontrol.spawnRotations[dataSync.rotationsList[i] * 4];
+            float ry = TestController.tcontrol.spawnRotations[dataSync.rotationsList[i] * 4 + 1];
+            float rz = TestController.tcontrol.spawnRotations[dataSync.rotationsList[i] * 4 + 2];
+            float rw = TestController.tcontrol.spawnRotations[dataSync.rotationsList[i] * 4 + 3];
+
+            trackedObjects.transform.GetChild (i).transform.position = new Vector3 (x, y, z);
+            trackedObjects.transform.GetChild(i).transform.rotation = new Quaternion(rx, ry, rz, rw);
+        }
 
 		foreach (Transform child in trackedObjects.transform) // Disable all objects.
             child.gameObject.SetActive(false);

@@ -235,7 +235,24 @@ public static class Utils {
         return randomNumbers;
     }
 
-	public static List<int> allPermutations = new List<int>();
+    static public List<int> randomizeVector(int[] vec) {
+
+        var randomNumbers = new List<int>();
+        var numbers = new List<int>();
+
+
+        for (int i = 0; i < vec.Length; i++) // numbers  to be randomized
+            numbers.Add(vec[i]);
+
+        for (int i = 0; i < vec.Length; i++) {
+            var thisNumber = UnityEngine.Random.Range(0, numbers.Count);
+            randomNumbers.Add(numbers[thisNumber]);
+            numbers.RemoveAt(thisNumber);
+        }
+        return randomNumbers;
+    }
+
+    public static List<int> allPermutations = new List<int>();
 
 	public static int[] selectUserTaskSequence(int uid, int tasks){ //Select an permutation based on the ID given
 		allPermutations.Clear ();

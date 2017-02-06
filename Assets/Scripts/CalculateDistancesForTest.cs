@@ -25,6 +25,8 @@ public class CalculateDistancesForTest : MonoBehaviour {
 
         sphereMoving.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
         dist = sphereRef.transform.localScale.x / 2;
+        for (int i = 0; i < 4; i++)
+            Debug.Log(Random.rotation);
 
         fPositions = File.CreateText(Application.persistentDataPath + "/Positions-Dist" + dist + ".csv");
 
