@@ -122,8 +122,8 @@ namespace Lean.Touch {
                     Vector3 up = Camera.main.transform.up * finger.ScreenDelta.y * 0.005f;
                     this.gameObject.transform.GetComponent<HandleNetworkFunctions>().Translate(index, Utils.PowVec3(right + up, 1.2f));
                 } else if (translationZ == 2) {
-
-                    Vector3 translate = Camera.main.transform.position * finger.ScreenDelta.y * 0.005f; ;
+                    Vector3 avg = avgCenterOfObjects(MainController.control.objSelected);
+                    Vector3 translate =  (avg - Camera.main.transform.position).normalized * finger.ScreenDelta.y * 0.005f; // obj pos - cam pos
                     this.gameObject.GetComponent<HandleNetworkFunctions>().Translate(index, translate);
                 }
             }
