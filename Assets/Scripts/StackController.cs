@@ -136,7 +136,6 @@ public class StackController : NetworkBehaviour {
             GameObject.Find("MainHandler").gameObject.GetComponent<HandleLog>().log.close();
         }
         CmdChangeScene();
-        print(Time.time);
     }
 
 

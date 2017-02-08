@@ -28,7 +28,6 @@ public class MyNetworkManager : NetworkManager {
     }
 
     public override void ServerChangeScene(string newSceneName) {
-        //SceneManager.LoadScene(newSceneName);
         base.ServerChangeScene(newSceneName);
     }
 
