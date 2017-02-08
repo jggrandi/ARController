@@ -51,11 +51,11 @@ public class Log{
 	}
 
 
-	public void saveResume(int pieceID, float time, float errorTrans, float errorRot) //, float distToTarget, GameObject t, Quaternion cameraRotation, float errorTrans, float errorRot)
+	public void saveResume(int pieceID, int distanceToTarget, float time, float errorTrans, float errorRot) //, float distToTarget, GameObject t, Quaternion cameraRotation, float errorTrans, float errorRot)
 	{
 		String line = "";
 		//line += Time.realtimeSinceStartup + "";
-		line += pieceID + ";" /*Add the distance here*/;
+		line += pieceID + ";" + distanceToTarget;
 		line += ";" + time;
 		line += ";" + errorTrans + ";" + errorRot;
 		fResume.WriteLine(line);
