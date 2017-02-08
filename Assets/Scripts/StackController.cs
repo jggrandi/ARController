@@ -92,7 +92,7 @@ public class StackController : NetworkBehaviour {
 
     [ClientRpc]
     void RpcIncrementPieceActiveNow() {
-        dataSync.pieceActiveNow++;
+            dataSync.pieceActiveNow++;
     }
 
     [Command]
@@ -120,14 +120,24 @@ public class StackController : NetworkBehaviour {
         CmdClearSelection();
         
         if (dataSync.pieceActiveNow == halfObjects - 1) {
-            if (isServer)
-                GameObject.Find("MainHandler").gameObject.GetComponent<HandleLog>().log.close();
+            StartCoroutine(Wait());
+
+                
             
-            CmdChangeScene();
+         
         }
     }
 
+    IEnumerator Wait() { // wait until saving the resumed log.
 
+        yield return new WaitForSeconds(1);
+        if (isServer) {
+
+            GameObject.Find("MainHandler").gameObject.GetComponent<HandleLog>().log.close();
+        }
+        CmdChangeScene();
+        print(Time.time);
+    }
 
 
 }
