@@ -55,7 +55,7 @@ public class HandleLog : NetworkBehaviour {
         
 		if (previousPiece != dataSync.pieceActiveNow ) {
             time = Time.realtimeSinceStartup - time;
-            log.saveResume (dataSync.piecesList [dataSync.pieceActiveNow -1], (int)dataSync.distancesList[dataSync.piecesList[previousPiece]] / 4, time, dataSync.errorTranslation, dataSync.errorRotation);
+            log.saveResume (dataSync.piecesList [dataSync.pieceActiveNow -1], (int)dataSync.distancesList[dataSync.piecesList[previousPiece]] / 4, dataSync.rotationsList[dataSync.pieceActiveNow], time, dataSync.errorTranslation, dataSync.errorRotation);
 			previousPiece = dataSync.pieceActiveNow;
             time = 0.0f;
 		}
