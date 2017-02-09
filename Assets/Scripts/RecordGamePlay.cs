@@ -30,6 +30,10 @@ public class Log{
 		fResume.Close();
 	}
 
+    public void flush() {
+        fVerbose.Flush();
+        fResume.Flush();
+    }
 
 
     public void saveVerbose(int pieceID, bool isSelected, int distanceToTarget, int distanceID, int rotationID, int modality, GameObject piece, Vector3 cameraPosition, float errorTrans, float errorRot, int trackedTargets) //, float distToTarget, GameObject t, Quaternion cameraRotation, float errorTrans, float errorRot)

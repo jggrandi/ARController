@@ -114,27 +114,20 @@ public class StackController : NetworkBehaviour {
 
 
     public void SetNextPiece() {
+
         CmdPieceActiveNow();
 
         MainController.control.objSelected.Clear();
         CmdClearSelection();
-        
+
         if (dataSync.pieceActiveNow == halfObjects - 1) {
             StartCoroutine(Wait());
-
-                
-            
-         
         }
     }
 
     IEnumerator Wait() { // wait until saving the resumed log.
 
-        yield return new WaitForSeconds(1);
-        if (isServer) {
-
-            GameObject.Find("MainHandler").gameObject.GetComponent<HandleLog>().log.close();
-        }
+        yield return new WaitForSeconds(2);
         CmdChangeScene();
     }
 

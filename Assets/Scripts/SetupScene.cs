@@ -13,7 +13,6 @@ public class SetupScene : NetworkBehaviour {
     void Start() {
         foreach (var player in GameObject.FindGameObjectsWithTag("player")) {
             player.gameObject.SetActive(false);
-
         }
 
 
@@ -36,6 +35,12 @@ public class SetupScene : NetworkBehaviour {
         } else {
             GameObject.Find("PanelClient").gameObject.SetActive(true);
             GameObject.Find("PanelServer").gameObject.SetActive(false);
+        }
+    }
+
+    void Update() {
+        foreach (var player in GameObject.FindGameObjectsWithTag("player")) {
+            player.gameObject.SetActive(false);
         }
     }
 

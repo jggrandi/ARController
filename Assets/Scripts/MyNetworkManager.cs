@@ -27,6 +27,16 @@ public class MyNetworkManager : NetworkManager {
 
     }
 
+    public override void OnClientSceneChanged(NetworkConnection conn) {
+        StartCoroutine(Wait(conn));
+    }
+
+
+    IEnumerator Wait(NetworkConnection conn) { // wait until saving the resumed log.
+        yield return new WaitForSeconds(1);
+        base.OnClientSceneChanged(conn);
+    }
+
     public override void ServerChangeScene(string newSceneName) {
         base.ServerChangeScene(newSceneName);
     }
