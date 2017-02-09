@@ -55,7 +55,6 @@ public class HandleLog : NetworkBehaviour {
             log.saveVerbose(dataSync.piecesList[dataSync.pieceActiveNow], isObjSelected, (int)dataSync.distancesList[dataSync.piecesList[dataSync.pieceActiveNow]] / 4, dataSync.distancesList[dataSync.pieceActiveNow] * 3, dataSync.rotationsList[dataSync.pieceActiveNow], modality, trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]).gameObject, camPos, dataSync.errorTranslation, dataSync.errorRotation, targetsTracked);
         }
 
-        Debug.Log(previousPiece + " - " + dataSync.pieceActiveNow);
         if (previousPiece != dataSync.pieceActiveNow) {
             SaveResumed(previousPiece);
             previousPiece = dataSync.pieceActiveNow;
