@@ -36,13 +36,17 @@ namespace Lean.Touch {
 
                 foreach (int index in MainController.control.objSelected) {
                     var g = Utils.GetByIndex(index);
-                    Matrix4x4 modelMatrix = Matrix4x4.TRS(g.transform.position, g.transform.rotation, new Vector3(1,1,1)); // get the object matrix
+                    var gSharp = g;
+                    Matrix4x4 modelMatrix = Matrix4x4.TRS(gSharp.transform.position, gSharp.transform.rotation, new Vector3(1,1,1)); // get the object matrix
                     modelMatrix = prevMatrix * modelMatrix; // transform the model matrix to the camera space matrix
                     modelMatrix = step * modelMatrix; // transform the object's position and orientation
                     modelMatrix = prevMatrix.inverse * modelMatrix; // put the object in the world coordinates
                     
-                    g.transform.position = Utils.GetPosition(modelMatrix);
-                    g.transform.rotation = Utils.GetRotation(modelMatrix);
+                    gSharp.transform.position = Utils.GetPosition(modelMatrix);
+                    gSharp.transform.rotation = Utils.GetRotation(modelMatrix);
+
+                    g.transform.position = Vector3.Lerp(g.transform.position, gSharp.transform.position, 0.5f);
+                    g.transform.rotation = Quaternion.Lerp(g.transform.rotation, gSharp.transform.rotation, 0.5f);
 
                     this.gameObject.transform.GetComponent<HandleNetworkFunctions>().LockTransform(GetIndex(g), Utils.GetPosition(modelMatrix), Utils.GetRotation(modelMatrix));
                 }
