@@ -36,7 +36,9 @@ namespace Lean.Touch {
 
                 foreach (int index in MainController.control.objSelected) {
                     var g = Utils.GetByIndex(index);
-                    var gSharp = g;
+                    var gSharp = new GameObject();
+                    gSharp.transform.position = g.transform.position;
+                    gSharp.transform.rotation = g.transform.rotation;
                     Matrix4x4 modelMatrix = Matrix4x4.TRS(gSharp.transform.position, gSharp.transform.rotation, new Vector3(1,1,1)); // get the object matrix
                     modelMatrix = prevMatrix * modelMatrix; // transform the model matrix to the camera space matrix
                     modelMatrix = step * modelMatrix; // transform the object's position and orientation
@@ -143,7 +145,7 @@ namespace Lean.Touch {
                 CmdUpdateModality(2);
             else
                 CmdUpdateModality(0);
-
+            
             Vector3 avg = avgCenterOfObjects(MainController.control.objSelected);
             float angle = LeanGesture.GetTwistDegrees(fingers) * 0.8f;
             Vector3 axis;
