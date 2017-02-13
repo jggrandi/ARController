@@ -123,15 +123,15 @@ namespace Lean.Touch {
                 MainController.control.isTapForTransform = true;
 
             foreach (var index in MainController.control.objSelected) {
-                if (translationZ < 2) {
+                //if (translationZ < 2) {
                     Vector3 right = Camera.main.transform.right * finger.ScreenDelta.x * 0.005f;
                     Vector3 up = Camera.main.transform.up * finger.ScreenDelta.y * 0.005f;
                     this.gameObject.transform.GetComponent<HandleNetworkFunctions>().Translate(index, Utils.PowVec3(right + up, 1.2f));
-                } else if (translationZ == 2) {
-                    Vector3 avg = avgCenterOfObjects(MainController.control.objSelected);
-                    Vector3 translate =  (avg - Camera.main.transform.position).normalized * finger.ScreenDelta.y * 0.005f; // obj pos - cam pos
-                    this.gameObject.GetComponent<HandleNetworkFunctions>().Translate(index, translate);
-                }
+                //} else if (translationZ == 2) {
+                //    Vector3 avg = avgCenterOfObjects(MainController.control.objSelected);
+                //    Vector3 translate =  (avg - Camera.main.transform.position).normalized * finger.ScreenDelta.y * 0.005f; // obj pos - cam pos
+                //    this.gameObject.GetComponent<HandleNetworkFunctions>().Translate(index, translate);
+                //}
             }
 
         }
