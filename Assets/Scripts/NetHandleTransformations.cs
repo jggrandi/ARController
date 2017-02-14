@@ -104,6 +104,8 @@ namespace Lean.Touch {
 
         }
 
+        float transFactor = 0.001f;
+
         public void OnFingerSet(LeanFinger finger) {  // one finger on the screen
             if (!isLocalPlayer) return;
             if (IgnoreGuiFingers == true && finger.StartedOverGui == true) return;
@@ -123,12 +125,12 @@ namespace Lean.Touch {
 
             foreach (var index in MainController.control.objSelected) {
                 if (translationZ < 2) {
-                    Vector3 right = Camera.main.transform.right.normalized * finger.ScreenDelta.x * 0.003f;
-                    Vector3 up = Camera.main.transform.up.normalized * finger.ScreenDelta.y * 0.003f;
+                    Vector3 right = Camera.main.transform.right.normalized * finger.ScreenDelta.x * transFactor;
+                    Vector3 up = Camera.main.transform.up.normalized * finger.ScreenDelta.y * transFactor;
                     this.gameObject.transform.GetComponent<HandleNetworkFunctions>().Translate(index, Utils.PowVec3(right + up, 1.2f));
                 } else if (translationZ == 2) {
                     Vector3 avg = avgCenterOfObjects(MainController.control.objSelected);
-                    Vector3 translate =  (avg - Camera.main.transform.position).normalized * finger.ScreenDelta.y * 0.003f; // obj pos - cam pos
+                    Vector3 translate =  (avg - Camera.main.transform.position).normalized * finger.ScreenDelta.y * transFactor; // obj pos - cam pos
                     
                     this.gameObject.GetComponent<HandleNetworkFunctions>().Translate(index, translate);
                 }
@@ -147,19 +149,16 @@ namespace Lean.Touch {
                 CmdUpdateModality(0);
             
             Vector3 avg = avgCenterOfObjects(MainController.control.objSelected);
-            float angle = LeanGesture.GetTwistDegrees(fingers) * 0.8f;
-            Vector3 axis;
-			Debug.Log (LeanGesture.GetScreenDelta());
-			if (Mathf.Abs(LeanGesture.GetTwistDegrees(fingers)) > 0.5f)
-                axis = Camera.main.transform.forward.normalized;
-            else {
-				
-				axis = Camera.main.transform.right.normalized * LeanGesture.GetScreenDelta (fingers).y + Camera.main.transform.up.normalized * -LeanGesture.GetScreenDelta (fingers).x;
-				angle = fingers[0].ScreenDelta.magnitude * 0.3f;
-            }
-            foreach (int index in MainController.control.objSelected)
+            Vector3 axis, axisTwist;
+            float angleTwist = LeanGesture.GetTwistDegrees(fingers) * 0.8f;
+            axisTwist = Camera.main.transform.forward.normalized;
+			axis = Camera.main.transform.right.normalized * LeanGesture.GetScreenDelta (fingers).y + Camera.main.transform.up.normalized * -LeanGesture.GetScreenDelta (fingers).x;
+			float angle = LeanGesture.GetScreenDelta(fingers).magnitude * 0.3f;
+            
+            foreach (int index in MainController.control.objSelected) {
+                this.gameObject.GetComponent<HandleNetworkFunctions>().Rotate(index, avg, axisTwist, angleTwist);
                 this.gameObject.GetComponent<HandleNetworkFunctions>().Rotate(index, avg, axis, angle);
-
+            }
         }
 
         private Vector3 avgCenterOfObjects(List<int> objects) {
