@@ -94,7 +94,6 @@ namespace Lean.Touch {
         private void OnFingerUp(LeanFinger finger) {
             translationZ = 0;
             MainController.control.isTapForTransform = false;
-
         }
 
         private void OnFingerTap(LeanFinger finger) {
@@ -124,12 +123,13 @@ namespace Lean.Touch {
 
             foreach (var index in MainController.control.objSelected) {
                 if (translationZ < 2) {
-                    Vector3 right = Camera.main.transform.right * finger.ScreenDelta.x * 0.005f;
-                    Vector3 up = Camera.main.transform.up * finger.ScreenDelta.y * 0.005f;
+                    Vector3 right = Camera.main.transform.right.normalized * finger.ScreenDelta.x * 0.003f;
+                    Vector3 up = Camera.main.transform.up.normalized * finger.ScreenDelta.y * 0.003f;
                     this.gameObject.transform.GetComponent<HandleNetworkFunctions>().Translate(index, Utils.PowVec3(right + up, 1.2f));
                 } else if (translationZ == 2) {
                     Vector3 avg = avgCenterOfObjects(MainController.control.objSelected);
-                    Vector3 translate =  (avg - Camera.main.transform.position).normalized * finger.ScreenDelta.y * 0.005f; // obj pos - cam pos
+                    Vector3 translate =  (avg - Camera.main.transform.position).normalized * finger.ScreenDelta.y * 0.003f; // obj pos - cam pos
+                    
                     this.gameObject.GetComponent<HandleNetworkFunctions>().Translate(index, translate);
                 }
             }
@@ -151,10 +151,10 @@ namespace Lean.Touch {
             Vector3 axis;
 			Debug.Log (LeanGesture.GetScreenDelta());
 			if (Mathf.Abs(LeanGesture.GetTwistDegrees(fingers)) > 0.5f)
-                axis = Camera.main.transform.forward;
+                axis = Camera.main.transform.forward.normalized;
             else {
 				
-				axis = Camera.main.transform.right * LeanGesture.GetScreenDelta (fingers).y + Camera.main.transform.up * -LeanGesture.GetScreenDelta (fingers).x;
+				axis = Camera.main.transform.right.normalized * LeanGesture.GetScreenDelta (fingers).y + Camera.main.transform.up.normalized * -LeanGesture.GetScreenDelta (fingers).x;
 				angle = fingers[0].ScreenDelta.magnitude * 0.3f;
             }
             foreach (int index in MainController.control.objSelected)
