@@ -149,11 +149,13 @@ namespace Lean.Touch {
             Vector3 avg = avgCenterOfObjects(MainController.control.objSelected);
             float angle = LeanGesture.GetTwistDegrees(fingers) * 0.8f;
             Vector3 axis;
-            if (Mathf.Abs(angle) > 0.5f)
+			Debug.Log (LeanGesture.GetScreenDelta());
+			if (Mathf.Abs(LeanGesture.GetTwistDegrees(fingers)) > 0.5f)
                 axis = Camera.main.transform.forward;
             else {
-                axis = Camera.main.transform.right * fingers[0].ScreenDelta.y + Camera.main.transform.up * -fingers[0].ScreenDelta.x;
-                angle = fingers[0].ScreenDelta.magnitude * 0.3f;
+				
+				axis = Camera.main.transform.right * LeanGesture.GetScreenDelta (fingers).y + Camera.main.transform.up * -LeanGesture.GetScreenDelta (fingers).x;
+				angle = fingers[0].ScreenDelta.magnitude * 0.3f;
             }
             foreach (int index in MainController.control.objSelected)
                 this.gameObject.GetComponent<HandleNetworkFunctions>().Rotate(index, avg, axis, angle);
