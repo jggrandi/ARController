@@ -23,6 +23,7 @@ public class SetupScene : NetworkBehaviour {
             GameObject.Find("InputFieldUserID").GetComponent<InputField>().text = TestController.tcontrol.userID.ToString();
             int[] order = Utils.selectUserTaskSequence(TestController.tcontrol.userID, TestController.tcontrol.tasksToPermute);
             TestController.tcontrol.taskOrder.Clear();
+			TestController.tcontrol.taskOrder.Add (-1);
             for (int i = 0; i < order.Length; i++)
                 TestController.tcontrol.taskOrder.Add(order[i]);
 
@@ -58,9 +59,12 @@ public class SetupScene : NetworkBehaviour {
     }
 
     void UpdateScene() {
+		
         int[] order = Utils.selectUserTaskSequence(TestController.tcontrol.userID, TestController.tcontrol.tasksToPermute);
         TestController.tcontrol.taskOrder.Clear();
-        for (int i = 0; i < order.Length; i++)
+
+		TestController.tcontrol.taskOrder.Add (-1);
+		for (int i = 0; i < order.Length; i++)
             TestController.tcontrol.taskOrder.Add(order[i]);
         
 
@@ -95,7 +99,7 @@ public class SetupScene : NetworkBehaviour {
     }
 
     public void ButtonNextScene() {
-        if (TestController.tcontrol.sceneIndex < 2) {
+        if (TestController.tcontrol.sceneIndex < 3) {
             CmdIncrementSceneID();
             GameObject.Find("InputFieldSceneNow").GetComponent<InputField>().text = TestController.tcontrol.sceneIndex.ToString();
             GameObject.Find("InputFieldSceneID").GetComponent<InputField>().text = TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIndex].ToString();

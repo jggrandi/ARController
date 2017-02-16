@@ -29,23 +29,27 @@ public class StackController : NetworkBehaviour {
         trackedObjects = GameObject.Find("TrackedObjects");
         halfObjects = trackedObjects.transform.childCount / 2; // The objs/2 values are the moving objects.
 
-		for (int i = 0; i < halfObjects; i++) {
-			float x = TestController.tcontrol.spawnDistances [dataSync.distancesList [i] * 3];
-			float y = TestController.tcontrol.spawnDistances [dataSync.distancesList [i] * 3 + 1] ;
-			float z = TestController.tcontrol.spawnDistances [dataSync.distancesList [i] * 3 + 2] ;
+		if (TestController.tcontrol.sceneIndex != 0) { // if it is not the howtouse scene
+			for (int i = 0; i < halfObjects; i++) {
+				float x = TestController.tcontrol.spawnDistances [dataSync.distancesList [i] * 3];
+				float y = TestController.tcontrol.spawnDistances [dataSync.distancesList [i] * 3 + 1];
+				float z = TestController.tcontrol.spawnDistances [dataSync.distancesList [i] * 3 + 2];
 
-            float rx = TestController.tcontrol.spawnRotations[dataSync.rotationsList[i] * 4];
-            float ry = TestController.tcontrol.spawnRotations[dataSync.rotationsList[i] * 4 + 1];
-            float rz = TestController.tcontrol.spawnRotations[dataSync.rotationsList[i] * 4 + 2];
-            float rw = TestController.tcontrol.spawnRotations[dataSync.rotationsList[i] * 4 + 3];
+				float rx = TestController.tcontrol.spawnRotations [dataSync.rotationsList [i] * 4];
+				float ry = TestController.tcontrol.spawnRotations [dataSync.rotationsList [i] * 4 + 1];
+				float rz = TestController.tcontrol.spawnRotations [dataSync.rotationsList [i] * 4 + 2];
+				float rw = TestController.tcontrol.spawnRotations [dataSync.rotationsList [i] * 4 + 3];
 
-            trackedObjects.transform.GetChild (i).transform.position = new Vector3 (x, y, z);
-            trackedObjects.transform.GetChild(i).transform.rotation = new Quaternion(rx, ry, rz, rw);
-        }
+				trackedObjects.transform.GetChild (i).transform.position = new Vector3 (x, y, z);
+				trackedObjects.transform.GetChild (i).transform.rotation = new Quaternion (rx, ry, rz, rw);
+			}
+		}
 
 		foreach (Transform child in trackedObjects.transform) // Disable all objects.
             child.gameObject.SetActive(false);
 
+		if(TestController.tcontrol.sceneIndex == 0) // if it is the howtouse scene, activate only one piece without their ghost
+			trackedObjects.transform.GetChild(0).gameObject.SetActive(true); 
 
 
     }
@@ -53,7 +57,8 @@ public class StackController : NetworkBehaviour {
     void Update() {
         if (!isLocalPlayer) return;
         if (dataSync.pieceActiveNow == halfObjects) return;
-
+		if (TestController.tcontrol.sceneIndex == 0) return;
+			
         childMoving = trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]); // take the moving object 
         childStatic = trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow] + halfObjects); // and its ghost
 
@@ -114,7 +119,9 @@ public class StackController : NetworkBehaviour {
 
 
     public void SetNextPiece() {
-
+		if(TestController.tcontrol.sceneIndex == 0) // if it is howtouse scene, after the first piece the setup scene is loaded.
+			StartCoroutine(Wait());
+		
         CmdPieceActiveNow();
 
         MainController.control.objSelected.Clear();
