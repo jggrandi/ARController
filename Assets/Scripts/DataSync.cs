@@ -7,6 +7,8 @@ public class DataSync : NetworkBehaviour {
 
     [SyncVar]
     public int pieceActiveNow = 0;
+    [SyncVar]
+    public int pieceTraining = 0;
 
     public SyncListInt Groups = new SyncListInt();
     public SyncListInt piecesList = new SyncListInt();
@@ -30,11 +32,11 @@ public class DataSync : NetworkBehaviour {
         listToSyncList(ref randomizedList, ref piecesList);
 
 		randomizedList.Clear ();
-		randomizedList = Utils.randomizeVector(trackedObjects.transform.childCount/2); // Randomize the blocks order. Store it in an array.
+		randomizedList = Utils.randomizeVector(trackedObjects.transform.childCount/2); // Randomize distances. Store it in an array.
 		listToSyncList(ref randomizedList, ref distancesList);
 
         randomizedList.Clear();
-        randomizedList = Utils.randomizeVector(vecRotIndex); // Randomize the blocks order. Store it in an array.
+        randomizedList = Utils.randomizeVector(vecRotIndex); // Randomize rotations. Store it in an array.
         listToSyncList(ref randomizedList, ref rotationsList);
 
 
