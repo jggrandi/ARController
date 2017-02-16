@@ -19,7 +19,7 @@ public class Log{
 		fResume = File.CreateText(Application.persistentDataPath + "/User-" + user + "-Task-" + task + "---" + System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + "-Resume.csv");
 		string header = "Time;PieceID;IsSelected;DistanceToTarget;DistanceID;RotationID;Modality;Translation X;Translation Y;Translation Z;Rotation X;Rotation Y;Rotation Z;Rotation W;Camera X;Camera Y;Camera Z;Error Trans;Error Rot;Tracked Targets";
 		fVerbose.WriteLine(header);
-		header = "PieceID;DistanceToTarget;RotationID,Time;Error Trans;Error Rot";
+		header = "PieceID;DistanceToTarget;RotationID;Time;Error Trans;Error Rot";
 		fResume.WriteLine(header);
 
 	}
