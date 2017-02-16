@@ -13,7 +13,7 @@ public class MyNetworkManager : NetworkManager {
 
    
     public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId) {
-        if (TestController.tcontrol.sceneIndex == TestController.tcontrol.tasksToPermute) return;
+        if (TestController.tcontrol.sceneIndex == TestController.tcontrol.tasksToPermute + 1) return; //The +1 is because of the howtouse initial task
         base.OnServerAddPlayer(conn,playerControllerId);
         //GameObject player = (GameObject)Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
         //NetworkServer.AddPlayerForConnection(conn, player, playerControllerId);
