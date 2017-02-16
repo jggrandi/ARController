@@ -47,8 +47,8 @@ namespace Lean.Touch {
                     gSharp.transform.position = Utils.GetPosition(modelMatrix);
                     gSharp.transform.rotation = Utils.GetRotation(modelMatrix);
 
-                    g.transform.position = Vector3.Lerp(g.transform.position, gSharp.transform.position, 0.8f);
-                    g.transform.rotation = Quaternion.Lerp(g.transform.rotation, gSharp.transform.rotation, 0.8f);
+                    g.transform.position = Vector3.Lerp(g.transform.position, gSharp.transform.position, 0.85f);
+                    g.transform.rotation = Quaternion.Lerp(g.transform.rotation, gSharp.transform.rotation, 0.85f);
 
                     this.gameObject.transform.GetComponent<HandleNetworkFunctions>().LockTransform(GetIndex(g), Utils.GetPosition(modelMatrix), Utils.GetRotation(modelMatrix));
                 }
