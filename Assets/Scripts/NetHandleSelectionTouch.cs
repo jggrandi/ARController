@@ -298,7 +298,7 @@ namespace Lean.Touch {
         public void Select(LeanFinger finger, Component obj) {
 
             int index = Utils.GetIndex(obj.transform.gameObject);
-
+            Debug.Log(index);
             if (!MainController.control.isMultipleSelection) {
                 UnselectAll();
             }

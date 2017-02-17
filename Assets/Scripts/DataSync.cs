@@ -28,6 +28,11 @@ public class DataSync : NetworkBehaviour {
             Groups.Add(-1);
         }
 
+        GameObject trainingObjects = GameObject.Find("TrainingObjects");
+        for (int i = 0; i < trainingObjects.transform.childCount; i++) {
+            Groups.Add(-1);
+        }
+
         List<int> randomizedList = Utils.randomizeVector(trackedObjects.transform.childCount/2); // Randomize the blocks order. Store it in an array.
         listToSyncList(ref randomizedList, ref piecesList);
 

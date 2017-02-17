@@ -30,8 +30,18 @@ public class StackController : NetworkBehaviour {
 
         trackedObjects = GameObject.Find("TrackedObjects");
         trainingObjects = GameObject.Find("TrainingObjects");
-        halfTrainingObjects = trainingObjects.transform.childCount / 2;
+        
         halfObjects = trackedObjects.transform.childCount / 2; // The objs/2 values are the moving objects.
+
+ 
+        for (int i = 0; i < trainingObjects.transform.childCount; i++) {
+
+            GameObject obj = trainingObjects.transform.GetChild(i).transform.gameObject;
+            obj.AddComponent<ObjectGroupId>();
+            //obj.GetComponent<ObjectGroupId>().material = obj.GetComponent<Renderer>().material;
+            obj.GetComponent<ObjectGroupId>().index = trackedObjects.transform.childCount;
+
+        }
 
         if (TestController.tcontrol.sceneIndex != 0) { // if it is not the howtouse scene
             for (int i = 0; i < halfObjects; i++) {
@@ -59,45 +69,22 @@ public class StackController : NetworkBehaviour {
         if (TestController.tcontrol.sceneIndex == 0) // if it is the howtouse scene, activate only one piece without their ghost
             trackedObjects.transform.GetChild(0).gameObject.SetActive(true);
 
-
+        if (TestController.tcontrol.sceneIndex != 0 && dataSync.pieceTraining == 0) { // if is not the howtouse scene and is the first piece, activate the first tranning piece.
+            trainingObjects.transform.GetChild(0).gameObject.SetActive(true); // activate the moving object 
+            trainingObjects.transform.GetChild(1).gameObject.SetActive(true); // and its ghost, here the ghost is the next piece
+            childMoving = trainingObjects.transform.GetChild(0); // take the moving object 
+            childStatic = trainingObjects.transform.GetChild(1); // and its ghost
+            childMoving.transform.parent = trackedObjects.transform; // put them as child of tracked objects to enable manipulations
+            childStatic.transform.parent = trackedObjects.transform;
+        }
     }
-    //
-    //
-    //   Need to put the training objects inside the trackedObjects!
-    //
-    //
-    //
+
 
     void Update() {
         if (!isLocalPlayer) return;
         if (dataSync.pieceActiveNow == halfObjects) return;
 		if (TestController.tcontrol.sceneIndex == 0) return;
 
-        if (dataSync.pieceTraining < 2) { //if user is in the training mode
-            childMoving = trainingObjects.transform.GetChild(dataSync.pieceTraining); // take the moving object 
-            childStatic = trainingObjects.transform.GetChild(dataSync.pieceTraining + halfTrainingObjects); // and its ghost
-            childMoving.transform.parent = trackedObjects.transform.parent; 
-            childStatic.transform.parent = trackedObjects.transform.parent;
-
-            if (dataSync.pieceTraining > 0) { // if is not the first training piece
-                trainingObjects.transform.GetChild(dataSync.pieceTraining - 1).gameObject.SetActive(false); // disable the previous object
-                trainingObjects.transform.GetChild(dataSync.pieceTraining - 1 + halfTrainingObjects).gameObject.SetActive(false); //and its ghost
-            }
-        } else { // if user is not in the training mode
-
-            foreach (Transform child in trainingObjects.transform) // Disable all training objects.
-                child.gameObject.SetActive(false);
-
-            childMoving = trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]); // take the moving object 
-            childStatic = trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow] + halfObjects); // and its ghost
-
-            if (dataSync.pieceActiveNow > 0) {
-                trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow - 1]).gameObject.SetActive(false); // disable the previous object
-                trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow - 1] + halfObjects).gameObject.SetActive(false); //and its ghost
-            }
-        }
-        childMoving.gameObject.SetActive(true);
-        childStatic.gameObject.SetActive(true);
 
         movingObjMatrixTrans = Matrix4x4.TRS(childMoving.transform.position, Quaternion.identity, new Vector3(1.0f, 1.0f, 1.0f));
         movingObjMatrixRot = Matrix4x4.TRS(new Vector3(0, 0, 0), childMoving.transform.rotation, new Vector3(1.0f, 1.0f, 1.0f));
@@ -136,12 +123,12 @@ public class StackController : NetworkBehaviour {
 
     [ClientRpc]
     void RpcPieceTrainingActiveNow() {
-        dataSync.pieceTraining++;
+        
     }
 
     [Command]
     void CmdPieceTrainingActiveNow() {
-        RpcPieceTrainingActiveNow();
+        dataSync.pieceTraining++;
     }
 
     [ClientRpc]
@@ -160,14 +147,52 @@ public class StackController : NetworkBehaviour {
     public void SetNextPiece() {
 		if(TestController.tcontrol.sceneIndex == 0) // if it is howtouse scene, after the first piece the setup scene is loaded.
 			StartCoroutine(Wait());
-		
-        if(dataSync.pieceTraining < 2) // if user in the training, go to next training piece.
-            CmdPieceTrainingActiveNow();
-        else
-            CmdPieceActiveNow();
 
         MainController.control.objSelected.Clear();
         CmdClearSelection();
+
+        if (dataSync.pieceTraining == 1) {
+            CmdPieceTrainingActiveNow();
+            trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 2).transform.parent = trainingObjects.transform; // they are gonna be index 2
+            trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 1).transform.parent = trainingObjects.transform; // and 3 now
+        }
+
+        if (dataSync.pieceTraining < 1) { //if user is in the training mode
+            CmdPieceTrainingActiveNow();
+            
+            trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 2).transform.parent = trainingObjects.transform; // they are gonna be index 2
+            trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 1).transform.parent = trainingObjects.transform; // and 3 now
+ 
+            trainingObjects.transform.GetChild(0).gameObject.SetActive(true); // activate the moving object 
+            trainingObjects.transform.GetChild(1).gameObject.SetActive(true); // and its ghost, here the ghost is the next piece
+
+            childMoving = trainingObjects.transform.GetChild(0); // take the moving object 
+            childStatic = trainingObjects.transform.GetChild(1); // and its ghost
+            childMoving.transform.parent = trackedObjects.transform;
+            childStatic.transform.parent = trackedObjects.transform;
+
+            foreach (Transform child in trainingObjects.transform) // Disable all training objects.
+                child.gameObject.SetActive(false);
+
+
+        } else { // if user is not in the training mode
+            CmdPieceActiveNow();
+            foreach (Transform child in trainingObjects.transform) // Disable all training objects.
+                child.gameObject.SetActive(false);
+
+            childMoving = trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]); // take the moving object 
+            childStatic = trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow] + halfObjects); // and its ghost
+
+            if (dataSync.pieceActiveNow > 0) {
+                trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow - 1]).gameObject.SetActive(false); // disable the previous object
+                trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow - 1] + halfObjects).gameObject.SetActive(false); //and its ghost
+            }
+        }
+        childMoving.gameObject.SetActive(true);
+        childStatic.gameObject.SetActive(true);
+
+        //MainController.control.objSelected.Clear();
+        //CmdClearSelection();
 
         if (dataSync.pieceActiveNow == halfObjects - 1) {
             StartCoroutine(Wait());
