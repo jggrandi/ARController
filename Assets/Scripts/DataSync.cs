@@ -7,7 +7,7 @@ public class DataSync : NetworkBehaviour {
 
     [SyncVar]
     public int pieceActiveNow = 0;
-    [SyncVar]
+    
     public int pieceTraining = 0;
 
     public SyncListInt Groups = new SyncListInt();

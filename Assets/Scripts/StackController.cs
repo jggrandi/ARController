@@ -26,6 +26,8 @@ public class StackController : NetworkBehaviour {
     DataSync dataSync;
 
     void Start() {
+		if (!isLocalPlayer) return;
+
         dataSync = GameObject.Find("MainHandler").GetComponent<DataSync>();
 
         trackedObjects = GameObject.Find("TrackedObjects");
@@ -44,7 +46,6 @@ public class StackController : NetworkBehaviour {
         halfObjects = trackedObjects.transform.childCount / 2; // The objs/2 values are the moving objects. -2 to discard the training pieces in the end
         if (TestController.tcontrol.sceneIndex != 0) { // if it is not the howtouse scene
             for (int i = 0; i < halfObjects; i++) {
-				Debug.Log (i);
                 float x = TestController.tcontrol.spawnDistances[dataSync.distancesList[i] * 3];
                 float y = TestController.tcontrol.spawnDistances[dataSync.distancesList[i] * 3 + 1];
                 float z = TestController.tcontrol.spawnDistances[dataSync.distancesList[i] * 3 + 2];
@@ -86,7 +87,7 @@ public class StackController : NetworkBehaviour {
         if (TestController.tcontrol.sceneIndex == 0) return;
 
 
-        if (dataSync.pieceTraining == 1) {
+		if (dataSync.pieceTraining == 1) { //if user is in the training mode
             trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 4).gameObject.SetActive(false);
             trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 3).gameObject.SetActive(false);
 
@@ -164,12 +165,12 @@ public class StackController : NetworkBehaviour {
 
     [ClientRpc]
     void RpcPieceTrainingActiveNow() {
-
+		dataSync.pieceTraining++;
     }
 
     [Command]
     void CmdPieceTrainingActiveNow() {
-        dataSync.pieceTraining++;
+		RpcPieceTrainingActiveNow ();
     }
 
     [ClientRpc]
