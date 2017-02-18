@@ -17,9 +17,9 @@ public class Log{
         Debug.Log(Application.persistentDataPath);
 		fVerbose = File.CreateText(Application.persistentDataPath + "/User-" + user + "-Task-" + task + "---" + System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + "-Verbose.csv");
 		fResume = File.CreateText(Application.persistentDataPath + "/User-" + user + "-Task-" + task + "---" + System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + "-Resume.csv");
-		string header = "Time;PieceID;IsSelected;DistanceToTarget;DistanceID;RotationID;Modality;Translation X;Translation Y;Translation Z;Rotation X;Rotation Y;Rotation Z;Rotation W;Camera X;Camera Y;Camera Z;Error Trans;Error Rot;Tracked Targets";
+		string header = "Time;PieceID;IsSelected;DistanceToTarget;DistanceID;RotationID;Modality;Translation X;Translation Y;Translation Z;Rotation X;Rotation Y;Rotation Z;Rotation W;Camera X;Camera Y;Camera Z;Error Trans Mat; Error Rot Mat;Error Rot Angle;Tracked Targets";
 		fVerbose.WriteLine(header);
-		header = "PieceID;DistanceToTarget;RotationID;Time;Error Trans;Error Rot";
+		header = "PieceID;DistanceToTarget;RotationID;Time;Error Trans;Error Rot;Error Rot Angle";
 		fResume.WriteLine(header);
 
 	}
@@ -36,10 +36,8 @@ public class Log{
     }
 
 
-    public void saveVerbose(int pieceID, bool isSelected, int distanceToTarget, int distanceID, int rotationID, int modality, GameObject piece, Vector3 cameraPosition, float errorTrans, float errorRot, int trackedTargets) //, float distToTarget, GameObject t, Quaternion cameraRotation, float errorTrans, float errorRot)
+	public void saveVerbose(int pieceID, bool isSelected, int distanceToTarget, int distanceID, int rotationID, int modality, GameObject piece, Vector3 cameraPosition, float errorTrans, float errorRot, float errorRotAngle, int trackedTargets)
 	{
-
-	//	//if (clients.Count < numberOfClients) return;
 
 	    String line = "";
 
@@ -48,19 +46,19 @@ public class Log{
         line += ";" + piece.transform.localPosition.x + ";" + piece.transform.localPosition.y + ";" + piece.transform.localPosition.z;
         line += ";" + piece.transform.localRotation.x + ";" + piece.transform.localRotation.y + ";" + piece.transform.localRotation.z + ";" + piece.transform.localRotation.w;
         line += ";" + cameraPosition.x + ";" + cameraPosition.y + ";" + cameraPosition.z;
-        line += ";" + errorTrans + ";" + errorRot + ";" + trackedTargets;
-
+		line += ";" + errorTrans + ";" + errorRot + ";" + errorRotAngle;
+		line += ";" + trackedTargets;
         fVerbose.WriteLine(line);
         fVerbose.Flush();
 	}
 
 
-	public void saveResume(int pieceID, int distanceToTarget, int rotationID,  float time, float errorTrans, float errorRot) //, float distToTarget, GameObject t, Quaternion cameraRotation, float errorTrans, float errorRot)
+	public void saveResume(int pieceID, int distanceToTarget, int rotationID,  float time, float errorTrans, float errorRot, float errorRotAngle)
 	{
 		String line = "";
 		line += pieceID + ";" + distanceToTarget + ";" + rotationID;
 		line += ";" + time;
-		line += ";" + errorTrans + ";" + errorRot;
+		line += ";" + errorTrans + ";" + errorRot + ";" + errorRotAngle;
 		fResume.WriteLine(line);
 		fResume.Flush();
 	}

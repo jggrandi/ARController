@@ -44,6 +44,7 @@ public class StackController : NetworkBehaviour {
         halfObjects = trackedObjects.transform.childCount / 2; // The objs/2 values are the moving objects. -2 to discard the training pieces in the end
         if (TestController.tcontrol.sceneIndex != 0) { // if it is not the howtouse scene
             for (int i = 0; i < halfObjects; i++) {
+				Debug.Log (i);
                 float x = TestController.tcontrol.spawnDistances[dataSync.distancesList[i] * 3];
                 float y = TestController.tcontrol.spawnDistances[dataSync.distancesList[i] * 3 + 1];
                 float z = TestController.tcontrol.spawnDistances[dataSync.distancesList[i] * 3 + 2];
@@ -132,6 +133,8 @@ public class StackController : NetworkBehaviour {
 
         dataSync.errorTranslation = Utils.distMatrices(movingObjMatrixTrans, staticObjMatrixTrans);
         dataSync.errorRotation = Utils.distMatrices(movingObjMatrixRot, staticObjMatrixRot);
+
+		dataSync.errorRotationAngle = Quaternion.Angle (childMoving.transform.rotation, childStatic.transform.rotation);
 
     }
 
