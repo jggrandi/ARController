@@ -34,13 +34,28 @@ public class TestController : NetworkBehaviour {
         -1.814323f,   0.6799691f,   -0.7294753f };
 
 
-	//Use Quaternion.AngleAxis(<angle>,<axis>) to rotate with a determied angle and axis an object.
-    public float[] spawnRotations = {
-        -0.8f, -0.3f,  0.4f, 0.1f,
-        -0.6f, -0.1f, -0.7f, 0.4f,
-         0.4f,  0.5f,  0.6f, 0.4f,
-         0.6f, -0.8f,  0.1f, 0.3f,
+    //Use Quaternion.AngleAxis(<angle>,<axis>) to rotate with a determied angle and axis an object.
+    //public float[] spawnRotations = { //random angle and axis
+    //    -0.8f, -0.3f,  0.4f, 0.1f,
+    //    -0.6f, -0.1f, -0.7f, 0.4f,
+    //     0.4f,  0.5f,  0.6f, 0.4f,
+    //     0.6f, -0.8f,  0.1f, 0.3f,
+    //};
+
+    //public float[] spawnRotations = { // 30 degrees with random axis
+    //     0.6f, -0.1f, -0.3f, -0.7f,
+    //     0.3f, -0.4f, -0.5f, -0.7f,
+    //    -0.5f, -0.1f,  0.5f, -0.7f,
+    //    -0.5f,  0.4f, -0.1f, -0.7f         
+    //};
+
+    public float[] spawnRotations = { // 120 degrees with random axis
+         0.0f,  0.6f,  0.6f, 0.5f,
+        -0.7f,  0.2f, -0.4f, 0.5f,
+         0.4f,  0.7f,  0.3f, 0.5f,
+         0.3f, -0.7f, -0.4f, 0.5f
     };
+
 
 
     void Awake() {
@@ -53,6 +68,10 @@ public class TestController : NetworkBehaviour {
             Destroy(gameObject);
         }
 
+        //for (int i = 0; i < 12; i++) {
+        //    Vector3 vec = new Vector3(UnityEngine.Random.Range(-10.0f, 10.0f), UnityEngine.Random.Range(-10.0f, 10.0f), UnityEngine.Random.Range(-10.0f, 10.0f));
+        //    Debug.Log(Quaternion.AngleAxis(120, vec));
+        //}
 
     }
 
