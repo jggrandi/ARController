@@ -34,7 +34,7 @@ public class HandleLog : NetworkBehaviour {
     void FixedUpdate() {
         
         if (!isServer ) return;
-        if (TestController.tcontrol.sceneIndex == 0) return;
+        if (TestController.tcontrol.sceneIndex == 0 || dataSync.pieceTraining < 2) return;
 
         foreach (var player in GameObject.FindGameObjectsWithTag("player")) {
             if (!player.GetComponent<NetworkIdentity>().isLocalPlayer) {

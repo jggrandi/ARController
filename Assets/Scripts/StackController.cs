@@ -70,6 +70,7 @@ public class StackController : NetworkBehaviour {
 
         if(dataSync.pieceTraining == 1) {
             if (showErrorTraining2) {
+                GUI.Box(new Rect(0, 0, Screen.width, Screen.height), "");
                 GUI.Label(new Rect(Screen.width / 2, 40, 50, 50), "Diff Angle: " + dataSync.errorRotationAngle.ToString("F2"), titleStyle);
                 GUI.Label(new Rect(Screen.width / 2, 80, 50, 50), "Diff Pos:   " + dataSync.errorTranslation.ToString("F2"), titleStyle2);
             }
