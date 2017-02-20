@@ -26,9 +26,12 @@ public class StackController : NetworkBehaviour {
     DataSync dataSync;
 
     void Start() {
-		if (!isLocalPlayer) return;
 
         dataSync = GameObject.Find("MainHandler").GetComponent<DataSync>();
+
+        if (!isLocalPlayer) return;
+
+
 
         trackedObjects = GameObject.Find("TrackedObjects");
         trainingObjects = GameObject.Find("TrainingObjects");
@@ -58,7 +61,7 @@ public class StackController : NetworkBehaviour {
                 trackedObjects.transform.GetChild(i).transform.position = new Vector3(x, y, z);
                 trackedObjects.transform.GetChild(i).transform.rotation = new Quaternion(rx, ry, rz, rw);
             }
-            
+
             int index = trainingObjects.transform.childCount;
             for (int i = 0; i < index; i++) {
                 trainingObjects.transform.GetChild(0).transform.parent = trackedObjects.transform;
@@ -87,7 +90,7 @@ public class StackController : NetworkBehaviour {
         if (TestController.tcontrol.sceneIndex == 0) return;
 
 
-		if (dataSync.pieceTraining == 1) { //if user is in the training mode
+        if (dataSync.pieceTraining == 1) {
             trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 4).gameObject.SetActive(false);
             trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 3).gameObject.SetActive(false);
 
@@ -95,9 +98,7 @@ public class StackController : NetworkBehaviour {
             trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 1).gameObject.SetActive(true);
             childMoving = trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 2); // take the moving object 
             childStatic = trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 1); // and its ghost
-        }
-
-        else if (dataSync.pieceTraining == 0) { //if user is in the training mode
+        } else if (dataSync.pieceTraining == 0) { //if user is in the training mode
 
 
             trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 4).gameObject.SetActive(true);
@@ -134,9 +135,7 @@ public class StackController : NetworkBehaviour {
 
         dataSync.errorTranslation = Utils.distMatrices(movingObjMatrixTrans, staticObjMatrixTrans);
         dataSync.errorRotation = Utils.distMatrices(movingObjMatrixRot, staticObjMatrixRot);
-
-		dataSync.errorRotationAngle = Quaternion.Angle (childMoving.transform.rotation, childStatic.transform.rotation);
-
+        dataSync.errorRotationAngle = Quaternion.Angle(childMoving.transform.rotation, childStatic.transform.rotation);
     }
 
 
@@ -165,12 +164,12 @@ public class StackController : NetworkBehaviour {
 
     [ClientRpc]
     void RpcPieceTrainingActiveNow() {
-		dataSync.pieceTraining++;
+        dataSync.pieceTraining++;
     }
 
     [Command]
     void CmdPieceTrainingActiveNow() {
-		RpcPieceTrainingActiveNow ();
+        RpcPieceTrainingActiveNow();
     }
 
     [ClientRpc]
