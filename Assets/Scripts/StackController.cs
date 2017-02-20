@@ -25,6 +25,57 @@ public class StackController : NetworkBehaviour {
 
     DataSync dataSync;
 
+    bool showErrorTraining2 = false;
+
+    public IEnumerator showError() {
+
+        showErrorTraining2 = true;
+
+        
+        yield return new WaitForSeconds(10.0f);
+        CmdPieceTrainingActiveNow();
+        showErrorTraining2 = false;
+
+    }
+    GUIStyle titleStyle = new GUIStyle();
+    GUIStyle titleStyle2 = new GUIStyle();
+
+    void OnGUI() {
+    
+        titleStyle.fontSize = 50;
+        titleStyle.fontStyle = FontStyle.Bold;
+        titleStyle.alignment = TextAnchor.MiddleCenter;
+
+
+        
+        titleStyle2.fontSize = 50;
+        titleStyle2.fontStyle = FontStyle.Bold;
+        titleStyle2.alignment = TextAnchor.MiddleCenter;
+
+        if (dataSync.errorRotationAngle < 3.0f)
+            titleStyle.normal.textColor = Color.green;
+        else
+            titleStyle.normal.textColor = Color.white;
+
+        if (dataSync.errorTranslation < 0.13f)
+            titleStyle2.normal.textColor = Color.green;
+        else
+            titleStyle2.normal.textColor = Color.white;
+
+
+        if (dataSync.pieceTraining == 0 && TestController.tcontrol.sceneIndex != 0) {
+            GUI.Label(new Rect(Screen.width / 2, 40, 50, 50), "Diff Angle: " + dataSync.errorRotationAngle.ToString("F2") , titleStyle);
+            GUI.Label(new Rect(Screen.width / 2, 80, 50, 50), "Diff Pos:   " + dataSync.errorTranslation.ToString("F2"), titleStyle2);
+        }
+
+        if(dataSync.pieceTraining == 1) {
+            if (showErrorTraining2) {
+                GUI.Label(new Rect(Screen.width / 2, 40, 50, 50), "Diff Angle: " + dataSync.errorRotationAngle.ToString("F2"), titleStyle);
+                GUI.Label(new Rect(Screen.width / 2, 80, 50, 50), "Diff Pos:   " + dataSync.errorTranslation.ToString("F2"), titleStyle2);
+            }
+        }
+    }
+
     void Start() {
 
         dataSync = GameObject.Find("MainHandler").GetComponent<DataSync>();
@@ -136,6 +187,9 @@ public class StackController : NetworkBehaviour {
         dataSync.errorTranslation = Utils.distMatrices(movingObjMatrixTrans, staticObjMatrixTrans);
         dataSync.errorRotation = Utils.distMatrices(movingObjMatrixRot, staticObjMatrixRot);
         dataSync.errorRotationAngle = Quaternion.Angle(childMoving.transform.rotation, childStatic.transform.rotation);
+
+
+
     }
 
 
@@ -192,9 +246,14 @@ public class StackController : NetworkBehaviour {
         MainController.control.objSelected.Clear();
         CmdClearSelection();
 
-        if (dataSync.pieceTraining < 2) // if user in the training, go to next training piece.
-            CmdPieceTrainingActiveNow();
-        else
+        if (dataSync.pieceTraining < 2) { // if user in the training, go to next training piece.
+            if(dataSync.pieceTraining == 1) {
+                StartCoroutine(showError());
+                
+            }
+            else
+                CmdPieceTrainingActiveNow();
+        } else
             CmdPieceActiveNow();
 
         //MainController.control.objSelected.Clear();

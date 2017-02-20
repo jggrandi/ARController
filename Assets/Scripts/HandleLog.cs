@@ -16,6 +16,7 @@ public class HandleLog : NetworkBehaviour {
     // Use this for initialization
     void Start () {
         if (!isServer ) return;
+        if (TestController.tcontrol.sceneIndex == 0) return;
 
         dataSync = gameObject.GetComponent<DataSync>();
         trackedObjects = GameObject.Find("TrackedObjects").gameObject;
@@ -33,6 +34,7 @@ public class HandleLog : NetworkBehaviour {
     void FixedUpdate() {
         
         if (!isServer ) return;
+        if (TestController.tcontrol.sceneIndex == 0) return;
 
         foreach (var player in GameObject.FindGameObjectsWithTag("player")) {
             if (!player.GetComponent<NetworkIdentity>().isLocalPlayer) {
