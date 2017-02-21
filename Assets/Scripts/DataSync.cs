@@ -14,6 +14,8 @@ public class DataSync : NetworkBehaviour {
     public SyncListInt piecesList = new SyncListInt();
 	public SyncListInt distancesList = new SyncListInt();
     public SyncListInt rotationsList = new SyncListInt();
+    public List<int> piecesListRedo = new List<int>();
+
     public int GroupCount = 0;
     public GameObject playerObject;
 

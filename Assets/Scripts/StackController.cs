@@ -83,8 +83,6 @@ public class StackController : NetworkBehaviour {
 
         if (!isLocalPlayer) return;
 
-
-
         trackedObjects = GameObject.Find("TrackedObjects");
         trainingObjects = GameObject.Find("TrainingObjects");
 
@@ -239,6 +237,25 @@ public class StackController : NetworkBehaviour {
         RpcClearSelection();
     }
 
+    [ClientRpc]
+    void RpcAddToRedo() {
+        dataSync.piecesListRedo.Add(dataSync.pieceActiveNow);
+    }
+
+    [Command]
+    void CmdAddToRedo() {
+        RpcAddToRedo();
+    }
+
+    [ClientRpc]
+    void RpcARemoveToRedo(int id) {
+        dataSync.piecesListRedo.Remove(id);
+    }
+
+    [Command]
+    void CmdRemoveToRedo(int id) {
+        RpcARemoveToRedo(id);
+    }
 
     public void SetNextPiece() {
         if (TestController.tcontrol.sceneIndex == 0) // if it is howtouse scene, after the first piece the setup scene is loaded.
@@ -248,20 +265,24 @@ public class StackController : NetworkBehaviour {
         CmdClearSelection();
 
         if (dataSync.pieceTraining < 2) { // if user in the training, go to next training piece.
-            if(dataSync.pieceTraining == 1) {
+            if (dataSync.pieceTraining == 1) {
                 StartCoroutine(showError());
-                
-            }
-            else
+            } else
                 CmdPieceTrainingActiveNow();
-        } else
+        } else {
+            if(dataSync.errorTranslation > 0.15f && dataSync.errorRotationAngle > 15.0f) // if the piece is coarse docked.. add it to redo list.
+                CmdAddToRedo();
+
             CmdPieceActiveNow();
-
-        //MainController.control.objSelected.Clear();
-        //CmdClearSelection();
-
+        }
         if (dataSync.pieceActiveNow == halfObjects - 1) {
-            StartCoroutine(Wait());
+            if (dataSync.piecesListRedo.Count <= 0) //if there is no piece to redo
+                StartCoroutine(Wait());
+            else {
+                Debug.Log("AAA");
+                dataSync.pieceActiveNow = dataSync.piecesListRedo[0];
+                CmdRemoveToRedo(0);
+            }
         }
     }
 
