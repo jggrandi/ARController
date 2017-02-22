@@ -24,6 +24,7 @@ public class StackController : NetworkBehaviour {
 
 
     DataSync dataSync;
+	bool redoList = false;
 
     bool showErrorTraining2 = false;
 
@@ -77,6 +78,23 @@ public class StackController : NetworkBehaviour {
         }
     }
 
+
+	void setSpawnPos(int id){
+		float x = TestController.tcontrol.spawnDistances[dataSync.distancesList[id] * 3];
+		float y = TestController.tcontrol.spawnDistances[dataSync.distancesList[id] * 3 + 1];
+		float z = TestController.tcontrol.spawnDistances[dataSync.distancesList[id] * 3 + 2];
+		trackedObjects.transform.GetChild(id).transform.position = new Vector3(x, y, z);
+	}
+
+	void setSpawnRot(int id){
+		float rx = TestController.tcontrol.spawnRotations[dataSync.rotationsList[id] * 4];
+		float ry = TestController.tcontrol.spawnRotations[dataSync.rotationsList[id] * 4 + 1];
+		float rz = TestController.tcontrol.spawnRotations[dataSync.rotationsList[id] * 4 + 2];
+		float rw = TestController.tcontrol.spawnRotations[dataSync.rotationsList[id] * 4 + 3];
+		trackedObjects.transform.GetChild(id).transform.rotation = new Quaternion(rx, ry, rz, rw);
+	}
+
+
     void Start() {
 
         dataSync = GameObject.Find("MainHandler").GetComponent<DataSync>();
@@ -99,17 +117,8 @@ public class StackController : NetworkBehaviour {
         halfObjects = trackedObjects.transform.childCount / 2; // The objs/2 values are the moving objects. -2 to discard the training pieces in the end
         if (TestController.tcontrol.sceneIndex != 0) { // if it is not the howtouse scene
             for (int i = 0; i < halfObjects; i++) {
-                float x = TestController.tcontrol.spawnDistances[dataSync.distancesList[i] * 3];
-                float y = TestController.tcontrol.spawnDistances[dataSync.distancesList[i] * 3 + 1];
-                float z = TestController.tcontrol.spawnDistances[dataSync.distancesList[i] * 3 + 2];
-
-                float rx = TestController.tcontrol.spawnRotations[dataSync.rotationsList[i] * 4];
-                float ry = TestController.tcontrol.spawnRotations[dataSync.rotationsList[i] * 4 + 1];
-                float rz = TestController.tcontrol.spawnRotations[dataSync.rotationsList[i] * 4 + 2];
-                float rw = TestController.tcontrol.spawnRotations[dataSync.rotationsList[i] * 4 + 3];
-
-                trackedObjects.transform.GetChild(i).transform.position = new Vector3(x, y, z);
-                trackedObjects.transform.GetChild(i).transform.rotation = new Quaternion(rx, ry, rz, rw);
+				setSpawnPos (i);
+				setSpawnRot (i);
             }
 
             int index = trainingObjects.transform.childCount;
@@ -215,6 +224,18 @@ public class StackController : NetworkBehaviour {
         RpcIncrementPieceActiveNow();
     }
 
+	[ClientRpc]
+	void RpcChangePieceActiveNow(int id) {
+		dataSync.pieceActiveNow = id;
+	}
+
+	[Command]
+	void CmdChangePieceActiveNow(int id) {
+		RpcChangePieceActiveNow(id);
+	}
+
+
+
     [ClientRpc]
     void RpcPieceTrainingActiveNow() {
         dataSync.pieceTraining++;
@@ -249,7 +270,7 @@ public class StackController : NetworkBehaviour {
 
     [ClientRpc]
     void RpcARemoveToRedo(int id) {
-        dataSync.piecesListRedo.Remove(id);
+		dataSync.piecesListRedo.RemoveAt (id);
     }
 
     [Command]
@@ -270,18 +291,24 @@ public class StackController : NetworkBehaviour {
             } else
                 CmdPieceTrainingActiveNow();
         } else {
-            if(dataSync.errorTranslation > 0.15f && dataSync.errorRotationAngle > 15.0f) // if the piece is coarse docked.. add it to redo list.
+			if((dataSync.errorTranslation > 0.15f || dataSync.errorRotationAngle > 15.0f) && !redoList) // if the piece is coarse docked.. add it to redo list.
                 CmdAddToRedo();
-
-            CmdPieceActiveNow();
+			if(!redoList)
+            	CmdPieceActiveNow();
         }
-        if (dataSync.pieceActiveNow == halfObjects - 1) {
+		Debug.Log (redoList);
+		if (dataSync.pieceActiveNow == halfObjects - 1 || redoList) {
             if (dataSync.piecesListRedo.Count <= 0) //if there is no piece to redo
                 StartCoroutine(Wait());
             else {
-                Debug.Log("AAA");
-                dataSync.pieceActiveNow = dataSync.piecesListRedo[0];
+				redoList = true;
+				trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]).gameObject.SetActive(false); // disable the previous object
+				trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow] + halfObjects).gameObject.SetActive(false); //and its ghost
+				CmdChangePieceActiveNow( dataSync.piecesListRedo[0]);
                 CmdRemoveToRedo(0);
+
+				setSpawnPos (dataSync.pieceActiveNow); //reset the initial piece position
+				setSpawnRot (dataSync.pieceActiveNow); //reset the initial piece rotation
             }
         }
     }
