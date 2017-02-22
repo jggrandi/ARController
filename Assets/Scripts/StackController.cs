@@ -80,6 +80,7 @@ public class StackController : NetworkBehaviour {
 
 
 	void setSpawnPos(int id){
+        Debug.Log(id);
 		float x = TestController.tcontrol.spawnDistances[dataSync.distancesList[id] * 3];
 		float y = TestController.tcontrol.spawnDistances[dataSync.distancesList[id] * 3 + 1];
 		float z = TestController.tcontrol.spawnDistances[dataSync.distancesList[id] * 3 + 2];
@@ -277,6 +278,27 @@ public class StackController : NetworkBehaviour {
     void CmdRemoveToRedo(int id) {
         RpcARemoveToRedo(id);
     }
+    
+    [ClientRpc]
+    void RpcDeactivatePiece(int id) {
+        trackedObjects.transform.GetChild(id).gameObject.SetActive(false); // disable the previous object
+    }
+
+    [Command]
+    void CmdDeactivatePiece(int id) {
+        RpcDeactivatePiece(id);
+    }
+
+    [ClientRpc]
+    void RpcSpawnPos(int id) {
+        setSpawnPos(id);
+        setSpawnRot(id);
+    }
+
+    [Command]
+    void CmdSpawnPos(int id) {
+        RpcSpawnPos(id);
+    }
 
     public void SetNextPiece() {
         if (TestController.tcontrol.sceneIndex == 0) // if it is howtouse scene, after the first piece the setup scene is loaded.
@@ -296,19 +318,19 @@ public class StackController : NetworkBehaviour {
 			if(!redoList)
             	CmdPieceActiveNow();
         }
-		Debug.Log (redoList);
+
 		if (dataSync.pieceActiveNow == halfObjects - 1 || redoList) {
             if (dataSync.piecesListRedo.Count <= 0) //if there is no piece to redo
                 StartCoroutine(Wait());
             else {
 				redoList = true;
-				trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]).gameObject.SetActive(false); // disable the previous object
-				trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow] + halfObjects).gameObject.SetActive(false); //and its ghost
-				CmdChangePieceActiveNow( dataSync.piecesListRedo[0]);
-                CmdRemoveToRedo(0);
+                CmdDeactivatePiece(dataSync.piecesList[dataSync.pieceActiveNow]);
+                CmdDeactivatePiece(dataSync.piecesList[dataSync.pieceActiveNow] + halfObjects);
 
-				setSpawnPos (dataSync.pieceActiveNow); //reset the initial piece position
-				setSpawnRot (dataSync.pieceActiveNow); //reset the initial piece rotation
+				CmdChangePieceActiveNow( dataSync.piecesListRedo[0]);
+
+                CmdSpawnPos(dataSync.piecesList[dataSync.piecesListRedo[0]]); //reset the initial piece position
+                CmdRemoveToRedo(0);
             }
         }
     }
