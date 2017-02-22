@@ -12,7 +12,7 @@ public class DataSync : NetworkBehaviour {
 
     public SyncListInt Groups = new SyncListInt();
     public SyncListInt piecesList = new SyncListInt();
-	public SyncListInt distancesList = new SyncListInt();
+	public SyncListInt posList = new SyncListInt();
     public SyncListInt rotationsList = new SyncListInt();
     public List<int> piecesListRedo = new List<int>();
 
@@ -23,7 +23,7 @@ public class DataSync : NetworkBehaviour {
     public float errorRotation;
 	public float errorRotationAngle;
 
-    public int[] vecRotIndex = { 0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3 };
+    public int[] vecTransIndex = { 0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3 };
 
     public override void OnStartServer() {
         GameObject trackedObjects = GameObject.Find("TrackedObjects");
@@ -36,18 +36,29 @@ public class DataSync : NetworkBehaviour {
             Groups.Add(-1);
         }
 
-        List<int> randomizedList = Utils.randomizeVector(trackedObjects.transform.childCount/2); // Randomize the blocks order. Store it in an array.
+        List<int> randomizedList = Utils.randomizeVector(trackedObjects.transform.childCount/4); // Randomize the blocks order. Store it in an array. /4 because we are dividing the moving pieces in 2 blocks 
+        List<int> randomizeSecondPart = Utils.randomizeVector(trackedObjects.transform.childCount / 4); // This second sort is for the second half of pieces
+
+        for (int i = 0; i < randomizeSecondPart.Count; i++)
+            randomizeSecondPart[i] = randomizeSecondPart[i] + (trackedObjects.transform.childCount / 4); // to assing correct values of the second half of pieces.
+
+        randomizedList.AddRange(randomizeSecondPart); // concat the first 6 trials with the last 6 trials
         listToSyncList(ref randomizedList, ref piecesList);
 
-		randomizedList.Clear ();
-		randomizedList = Utils.randomizeVector(trackedObjects.transform.childCount/2); // Randomize distances. Store it in an array.
-		listToSyncList(ref randomizedList, ref distancesList);
+        randomizedList.Clear ();
+        randomizeSecondPart.Clear();
 
-        randomizedList.Clear();
-        randomizedList = Utils.randomizeVector(vecRotIndex); // Randomize rotations. Store it in an array.
+		randomizedList = Utils.randomizeVector(trackedObjects.transform.childCount/4); // Randomize rotations. First half
+        randomizeSecondPart = Utils.randomizeVector(trackedObjects.transform.childCount / 4); // This second sort is for the second half of pieces
+
+        for (int i = 0; i < randomizeSecondPart.Count; i++)
+            randomizeSecondPart[i] = randomizeSecondPart[i] + (trackedObjects.transform.childCount / 4); // to assing correct values of the second half of pieces.
+        randomizedList.AddRange(randomizeSecondPart); // concat the first 6 rotations index with the last 6 rotations index
         listToSyncList(ref randomizedList, ref rotationsList);
 
-
+        randomizedList.Clear();
+        randomizedList = Utils.randomizeVector(vecTransIndex); // Randomize rotations. Store it in an array.
+        listToSyncList(ref randomizedList, ref posList);
 
     }
 

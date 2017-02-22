@@ -52,7 +52,7 @@ public class HandleLog : NetworkBehaviour {
         }
         
 		if (countFrames % 5 == 0 ) { //&& dataSync.pieceActiveNow < dataSync.piecesList.Count
-			log.saveVerbose(dataSync.piecesList[dataSync.pieceActiveNow], isObjSelected, (int)dataSync.distancesList[dataSync.piecesList[dataSync.pieceActiveNow]] / 4, dataSync.distancesList[dataSync.pieceActiveNow] * 3, dataSync.rotationsList[dataSync.pieceActiveNow], modality, trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]).gameObject, camPos, dataSync.errorTranslation, dataSync.errorRotation, dataSync.errorRotationAngle, targetsTracked);
+			log.saveVerbose(dataSync.piecesList[dataSync.pieceActiveNow], isObjSelected, (int)dataSync.posList[dataSync.piecesList[dataSync.pieceActiveNow]] / 4, dataSync.posList[dataSync.pieceActiveNow] * 3, dataSync.rotationsList[dataSync.pieceActiveNow], modality, trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]).gameObject, camPos, dataSync.errorTranslation, dataSync.errorRotation, dataSync.errorRotationAngle, targetsTracked);
         }
 
         if (previousPiece != dataSync.pieceActiveNow) {
@@ -66,7 +66,7 @@ public class HandleLog : NetworkBehaviour {
 
     public void SaveResumed(int pieceID) {
         time = Time.realtimeSinceStartup - time;
-		log.saveResume (dataSync.piecesList [pieceID], (int)dataSync.distancesList [dataSync.piecesList [pieceID]] / 4, dataSync.rotationsList [pieceID], time, dataSync.errorTranslation, dataSync.errorRotation, dataSync.errorRotationAngle);
+		log.saveResume (dataSync.piecesList [pieceID], (int)dataSync.posList[dataSync.piecesList [pieceID]] / 4, dataSync.rotationsList [pieceID], time, dataSync.errorTranslation, dataSync.errorRotation, dataSync.errorRotationAngle);
     }
 
 

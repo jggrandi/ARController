@@ -81,9 +81,9 @@ public class StackController : NetworkBehaviour {
 
 	void setSpawnPos(int id){
         Debug.Log(id);
-		float x = TestController.tcontrol.spawnDistances[dataSync.distancesList[id] * 3];
-		float y = TestController.tcontrol.spawnDistances[dataSync.distancesList[id] * 3 + 1];
-		float z = TestController.tcontrol.spawnDistances[dataSync.distancesList[id] * 3 + 2];
+		float x = TestController.tcontrol.spawnDistances[dataSync.posList[id] * 3];
+		float y = TestController.tcontrol.spawnDistances[dataSync.posList[id] * 3 + 1];
+		float z = TestController.tcontrol.spawnDistances[dataSync.posList[id] * 3 + 2];
 		trackedObjects.transform.GetChild(id).transform.position = new Vector3(x, y, z);
 	}
 
