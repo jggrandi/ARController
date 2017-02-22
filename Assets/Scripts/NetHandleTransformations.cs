@@ -15,6 +15,10 @@ namespace Lean.Touch {
         Utils.Transformations mode = Utils.Transformations.Translation;
 
         Matrix4x4 prevMatrix;
+
+        int translationZ = 0;
+        int countFrames = 0;
+
         void Start() {
             trackedObjects = GameObject.Find("TrackedObjects");
             lockedObjects = GameObject.Find("LockedObjects");
@@ -44,100 +48,124 @@ namespace Lean.Touch {
             }
 
             prevMatrix = camMatrix;
-            mode = MainController.control.transformationNow;
+            //mode = MainController.control.transformationNow;
             //this.gameObject.transform.GetComponent<HandleNetworkFunctions>().SyncCamPosition(Camera.main.transform.position);
-            
+
+            if (countFrames % 35 == 0) {
+                if (LeanTouch.Fingers.Count <= 0) {
+                    translationZ = 0;
+                    MainController.control.isTapForTransform = false;
+                }
+            }
+            countFrames++;
+
         }
 
        protected virtual void OnEnable() {
             LeanTouch.OnFingerSet += OnFingerSet; // Hook into the events we need
             LeanTouch.OnGesture += OnGesture;
+            LeanTouch.OnFingerTap += OnFingerTap;
+            LeanTouch.OnFingerUp += OnFingerUp;
         }
 
         protected virtual void OnDisable() {
             LeanTouch.OnFingerSet -= OnFingerSet;    // Unhook the events
             LeanTouch.OnGesture -= OnGesture;
+            LeanTouch.OnFingerTap -= OnFingerTap;
+            LeanTouch.OnFingerUp -= OnFingerUp;
+        }
+
+        private void OnFingerUp(LeanFinger finger) {
+            translationZ = 0;
+            MainController.control.isTapForTransform = false;
         }
 
         public int GetIndex(GameObject g) {
             return g.GetComponent<ObjectGroupId>().index;
         }
 
+        private void OnFingerTap(LeanFinger finger) {
+            translationZ = 1;
+            if (MainController.control.objSelected.Count != 0)
+                MainController.control.isTapForTransform = true;
+
+        }
+
+        float transFactor = 0.005f;
+
         public void OnFingerSet(LeanFinger finger) {  // one finger on the screen
             if (!isLocalPlayer) return;
             if (IgnoreGuiFingers == true && finger.StartedOverGui == true) return;
             if (LeanTouch.Fingers.Count != 1) return;
 
-            if (mode == Utils.Transformations.Translation) {  // translate in x and y axis
-                foreach (var index in MainController.control.objSelected) {
-                    
-                    Vector3 right = Camera.main.transform.right * finger.ScreenDelta.x * 0.005f;
-                    Vector3 up = Camera.main.transform.up * finger.ScreenDelta.y * 0.005f;
-                    this.gameObject.transform.GetComponent<HandleNetworkFunctions>().Translate(index, Utils.PowVec3(right+up, 1.2f));
-                    
+            if (translationZ == 1)
+                translationZ = 2;
+
+            if (translationZ == 2)
+                
+                MainController.control.isTapForTransform = true;
+
+            this.gameObject.GetComponent<NetHandleSelectionTouch>().unselectAllCount = 0;
+
+            foreach (var index in MainController.control.objSelected) {
+                if (translationZ < 2) {
+                    Vector3 right = Camera.main.transform.right.normalized * finger.ScreenDelta.x * transFactor;
+                    Vector3 up = Camera.main.transform.up.normalized * finger.ScreenDelta.y * transFactor;
+                    this.gameObject.transform.GetComponent<HandleNetworkFunctions>().Translate(index, Utils.PowVec3(right + up, 1.2f));
+                } else if (translationZ == 2) {
+                    Vector3 avg = avgCenterOfObjects(MainController.control.objSelected);
+                    Vector3 translate = (avg - Camera.main.transform.position).normalized * finger.ScreenDelta.y * transFactor; // obj pos - cam pos
+
+                    this.gameObject.GetComponent<HandleNetworkFunctions>().Translate(index, Utils.PowVec3(translate, 1.2f));
                 }
-            } else if (mode == Utils.Transformations.Rotation) { // rotate in the x and y axis
-                Vector3 avg = avgCenterOfObjects(MainController.control.objSelected);
-                Vector3 axis = Camera.main.transform.right * finger.ScreenDelta.y + Camera.main.transform.up * -finger.ScreenDelta.x;
-                float magnitude = finger.ScreenDelta.magnitude*0.3f;
-                foreach (int index in MainController.control.objSelected)
-                    this.gameObject.GetComponent<HandleNetworkFunctions>().Rotate(index, avg, axis, magnitude);
             }
         }
-        
+
         public void OnGesture(List<LeanFinger> fingers) {  // two fingers on screen
             if (!isLocalPlayer) return;
             if (LeanTouch.Fingers.Count != 2) return;
 
+            Vector3 avg = avgCenterOfObjects(MainController.control.objSelected);
+            Vector3 axis, axisTwist;
 
-                    Vector3 avg = avgCenterOfObjects(MainController.control.objSelected);
-            if (mode == Utils.Transformations.Translation) { // translate the object near or far away from the camera position
-                float scale = LeanGesture.GetPinchScale(fingers);
-                Vector3 translate = (avg - Camera.main.transform.position) * LeanGesture.GetScreenDelta(fingers).y * 0.005f;
-                translate += (avg - Camera.main.transform.position) * (1-scale) * 0.8f;
+            float angleTwist = LeanGesture.GetTwistDegrees(fingers) * 0.8f;
+            axisTwist = Camera.main.transform.forward.normalized;
+            axis = Camera.main.transform.right.normalized * LeanGesture.GetScreenDelta(fingers).y + Camera.main.transform.up.normalized * -LeanGesture.GetScreenDelta(fingers).x;
+            float pos = LeanGesture.GetScreenDelta(fingers).magnitude * 0.3f;
+            float scale = LeanGesture.GetPinchScale(fingers);
+            
 
-                foreach (var index in MainController.control.objSelected)
-                    this.gameObject.GetComponent<HandleNetworkFunctions>().CmdTranslate(index, translate);
-            } else if (mode == Utils.Transformations.Rotation) { // rotate the object around the 3rd axis
-                float angle = LeanGesture.GetTwistDegrees(fingers)*0.8f;
-                Vector3 axis = Camera.main.transform.forward;
-                foreach (int index in MainController.control.objSelected)
-                    this.gameObject.GetComponent<HandleNetworkFunctions>().Rotate(index, avg, axis, angle);
-            } else if (mode == Utils.Transformations.Scale) { // pinch to scale up and down
-                float scale = LeanGesture.GetPinchScale(fingers);
-                float translate = LeanGesture.GetScreenDelta(fingers).y;
-                float angle = LeanGesture.GetTwistDegrees(fingers);
+            foreach (int index in MainController.control.objSelected) {
+                var g = Utils.GetByIndex(index);
 
+                if (g.GetComponent<ParticleSystem>() != null) {
 
-                foreach (var index in MainController.control.objSelected) {
-                    var g = Utils.GetByIndex(index);
+                    float lifeTime = 1 + pos ;
+                    float rate = 1 + angleTwist ;
 
-                    if (g.GetComponent<ParticleSystem>() != null) {
+                    this.gameObject.GetComponent<HandleNetworkFunctions>().CmdSetParticle(index, lifeTime, rate);
 
-                        float lifeTime = 1+translate * 0.01f;
-                        float rate = 1+angle * 0.05f;
+                    if (g.transform.GetComponent<ParameterBars>() != null) {
 
-                        this.gameObject.GetComponent<HandleNetworkFunctions>().CmdSetParticle(index, lifeTime, rate);
+                        ParticleSystem particle = g.GetComponent<ParticleSystem>();
+                        var r = particle.emission.rate;
 
-                        if (g.transform.GetComponent<ParameterBars>() != null) {
-
-                            ParticleSystem particle = g.GetComponent<ParticleSystem>();
-                            var r = particle.emission.rate;
-
-                            g.transform.GetComponent<ParameterBars>().active();
-                            g.transform.GetComponent<ParameterBars>().values[0] = g.transform.localScale.x * scale / 4.0f ;
-                            g.transform.GetComponent<ParameterBars>().values[1] = particle.startLifetime * lifeTime / 5.0f;
-                            g.transform.GetComponent<ParameterBars>().values[2] = r.constant * rate / 12.0f;
-                        }
-
-
+                        g.transform.GetComponent<ParameterBars>().active();
+                        g.transform.GetComponent<ParameterBars>().values[0] = g.transform.localScale.x * scale / 4.0f;
+                        g.transform.GetComponent<ParameterBars>().values[1] = particle.startLifetime * lifeTime / 5.0f;
+                        g.transform.GetComponent<ParameterBars>().values[2] = r.constant * rate / 12.0f;
                     }
-                    Vector3 dir = g.transform.position - avg;
-                    this.gameObject.GetComponent<HandleNetworkFunctions>().CmdScale(index, scale, dir);
-                    
-               }
+
+
+                }
+
+                this.gameObject.GetComponent<HandleNetworkFunctions>().Rotate(index, avg, axisTwist, angleTwist);
+                this.gameObject.GetComponent<HandleNetworkFunctions>().Rotate(index, avg, axis, pos);
+                Vector3 dir = g.transform.position - avg;
+                this.gameObject.GetComponent<HandleNetworkFunctions>().CmdScale(index, scale, dir);
 
             }
+        
         }
 
         private Vector3 avgCenterOfObjects(List<int> objects) {

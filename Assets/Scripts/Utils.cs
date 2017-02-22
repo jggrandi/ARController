@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 public static class Utils {
     public enum Transformations { Translation, Rotation, Scale };
@@ -216,5 +217,19 @@ public static class Utils {
         result.SetPixels(pix);
         result.Apply();
         return result;
-    }	
+    }
+
+    static public void setTimeout(Action TheAction, int Timeout) {
+        Debug.Log(Timeout);
+        Thread t = new Thread(
+            () => {
+                Debug.Log("A");
+                Thread.Sleep(Timeout);
+                Debug.Log("B");
+                TheAction.Invoke();
+            }
+        );
+        t.Start();
+    }
+
 }
