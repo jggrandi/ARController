@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class StackController : NetworkBehaviour {
 
+    public GameObject playerObject;
 
     GameObject trackedObjects;
     GameObject trainingObjects;
@@ -26,6 +27,9 @@ public class StackController : NetworkBehaviour {
     DataSync dataSync;
 	bool redoList = false;
 
+    int prevPiece = -1;
+
+
     bool showErrorTraining2 = false;
 
     public IEnumerator showError() {
@@ -33,7 +37,7 @@ public class StackController : NetworkBehaviour {
         showErrorTraining2 = true;
 
         
-        yield return new WaitForSeconds(10.0f);
+        yield return new WaitForSeconds(1.0f);
         CmdPieceTrainingActiveNow();
         showErrorTraining2 = false;
 
@@ -84,7 +88,7 @@ public class StackController : NetworkBehaviour {
 		float x = TestController.tcontrol.spawnDistances[dataSync.posList[id] * 3];
 		float y = TestController.tcontrol.spawnDistances[dataSync.posList[id] * 3 + 1];
 		float z = TestController.tcontrol.spawnDistances[dataSync.posList[id] * 3 + 2];
-		trackedObjects.transform.GetChild(id).transform.position = new Vector3(x, y, z);
+		trackedObjects.transform.GetChild(id).transform.position = new Vector3(x*0.1f, y, z * 0.1f);
 	}
 
 	void setSpawnRot(int id){
@@ -144,8 +148,11 @@ public class StackController : NetworkBehaviour {
     }
 
 
+    public int disableObject = -1;
+    public int enableObject = -1;
+
     void Update() {
-        if (!isLocalPlayer) return;
+        //if (!isLocalPlayer) return;
         if (dataSync.pieceActiveNow == halfObjects) return;
         if (TestController.tcontrol.sceneIndex == 0) return;
 
@@ -176,12 +183,18 @@ public class StackController : NetworkBehaviour {
             childMoving = trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]); // take the moving object 
             childStatic = trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow] + halfObjects); // and its ghost
 
-            if (dataSync.pieceActiveNow > 0) {
-                trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow - 1]).gameObject.SetActive(false); // disable the previous object
-                trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow - 1] + halfObjects).gameObject.SetActive(false); //and its ghost
+            if(disableObject >= 0) {
+                Debug.Log("disable: "+disableObject);
+                trackedObjects.transform.GetChild(dataSync.piecesList[disableObject]).gameObject.SetActive(false); // disable the previous object
+                trackedObjects.transform.GetChild(dataSync.piecesList[disableObject] + halfObjects).gameObject.SetActive(false); //and its ghost
+                disableObject = -1;
             }
-            childMoving.gameObject.SetActive(true);
-            childStatic.gameObject.SetActive(true);
+            if (enableObject >= 0) {
+                Debug.Log("enable: " + enableObject);
+                trackedObjects.transform.GetChild(dataSync.piecesList[enableObject]).gameObject.SetActive(true);
+                trackedObjects.transform.GetChild(dataSync.piecesList[enableObject] + halfObjects).gameObject.SetActive(true);
+                enableObject = -1;
+            }
         }
 
 
@@ -270,13 +283,13 @@ public class StackController : NetworkBehaviour {
     }
 
     [ClientRpc]
-    void RpcARemoveToRedo(int id) {
+    void RpcARemoveFromRedo(int id) {
 		dataSync.piecesListRedo.RemoveAt (id);
     }
 
     [Command]
-    void CmdRemoveToRedo(int id) {
-        RpcARemoveToRedo(id);
+    void CmdRemoveFromRedo(int id) {
+        RpcARemoveFromRedo(id);
     }
     
     [ClientRpc]
@@ -301,6 +314,7 @@ public class StackController : NetworkBehaviour {
     }
 
     public void SetNextPiece() {
+
         if (TestController.tcontrol.sceneIndex == 0) // if it is howtouse scene, after the first piece the setup scene is loaded.
             StartCoroutine(Wait());
 
@@ -308,30 +322,46 @@ public class StackController : NetworkBehaviour {
         CmdClearSelection();
 
         if (dataSync.pieceTraining < 2) { // if user in the training, go to next training piece.
+            
             if (dataSync.pieceTraining == 1) {
                 StartCoroutine(showError());
-            } else
+            } else {
                 CmdPieceTrainingActiveNow();
-        } else {
-			if((dataSync.errorTranslation > 0.15f || dataSync.errorRotationAngle > 15.0f) && !redoList) // if the piece is coarse docked.. add it to redo list.
-                CmdAddToRedo();
-			if(!redoList)
-            	CmdPieceActiveNow();
-        }
-
-		if (dataSync.pieceActiveNow == halfObjects - 1 || redoList) {
-            if (dataSync.piecesListRedo.Count <= 0) //if there is no piece to redo
-                StartCoroutine(Wait());
-            else {
-				redoList = true;
-                CmdDeactivatePiece(dataSync.piecesList[dataSync.pieceActiveNow]);
-                CmdDeactivatePiece(dataSync.piecesList[dataSync.pieceActiveNow] + halfObjects);
-
-				CmdChangePieceActiveNow( dataSync.piecesListRedo[0]);
-
-                CmdSpawnPos(dataSync.piecesList[dataSync.piecesListRedo[0]]); //reset the initial piece position
-                CmdRemoveToRedo(0);
             }
+            enableObject = 0;
+        } else {
+
+
+            if ((dataSync.errorTranslation > 0.15f || dataSync.errorRotationAngle > 15.0f) && !redoList) // if the piece is coarse docked.. add it to redo list.
+                CmdAddToRedo();
+
+            Debug.Log(halfObjects);
+
+            if (dataSync.pieceActiveNow == halfObjects - 1 && !redoList) {
+                Debug.Log("Active redoList");
+                redoList = true;
+            }
+
+            if(redoList && dataSync.piecesListRedo.Count <= 0) {
+                Debug.Log("End");
+                StartCoroutine(Wait());
+                return;
+            }
+
+            disableObject = dataSync.pieceActiveNow;
+            if (!redoList) {
+                Debug.Log("Increment enableObject");
+                enableObject = dataSync.pieceActiveNow+1;
+            }else {
+                Debug.Log("Restore piecesListRedo[0]");
+                enableObject = dataSync.piecesListRedo[0];
+                CmdRemoveFromRedo(0);
+
+                //CmdSpawnPos(dataSync.piecesList[dataSync.piecesListRedo[0]]); //reset the initial piece position
+            }
+
+            CmdChangePieceActiveNow(enableObject);
+            
         }
     }
 
