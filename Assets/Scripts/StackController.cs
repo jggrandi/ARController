@@ -152,7 +152,7 @@ public class StackController : NetworkBehaviour {
     public int enableObject = -1;
 
     void Update() {
-        //if (!isLocalPlayer) return;
+        if (!isLocalPlayer) return;
         if (dataSync.pieceActiveNow == halfObjects) return;
         if (TestController.tcontrol.sceneIndex == 0) return;
 
