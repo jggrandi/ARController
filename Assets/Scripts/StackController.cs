@@ -29,8 +29,6 @@ public class StackController : NetworkBehaviour {
     DataSync dataSync;
 	bool redoList = false;
 
-    int prevPiece = -1;
-
 
     bool showErrorTraining2 = false;
 
@@ -86,7 +84,6 @@ public class StackController : NetworkBehaviour {
 
 
 	void setSpawnPos(int id){
-        Debug.Log(id);
 		float x = TestController.tcontrol.spawnDistances[dataSync.posList[id] * 3];
 		float y = TestController.tcontrol.spawnDistances[dataSync.posList[id] * 3 + 1];
 		float z = TestController.tcontrol.spawnDistances[dataSync.posList[id] * 3 + 2];
@@ -215,17 +212,10 @@ public class StackController : NetworkBehaviour {
 
     }
 
-    [ClientRpc]
-    void RpcSetEnabledObject(int id) {
-        dataSync.pieceActiveNow = id;
-    }
-
     [Command]
     void CmdSetEnabledObject(int id) {
-        RpcSetEnabledObject(id);
+        dataSync.pieceActiveNow = id;
     }
-    
-
 
     [ClientRpc]
     void RpcIncrementSceneID() {
@@ -238,29 +228,6 @@ public class StackController : NetworkBehaviour {
         TestController.tcontrol.sceneIndex++;
         MyNetworkManager.singleton.ServerChangeScene("SetupScene");
     }
-
-
-    [ClientRpc]
-    void RpcIncrementPieceActiveNow() {
-        dataSync.pieceActiveNow++;
-    }
-
-    [Command]
-    void CmdPieceActiveNow() {
-        RpcIncrementPieceActiveNow();
-    }
-
-	[ClientRpc]
-	void RpcChangePieceActiveNow(int id) {
-		dataSync.pieceActiveNow = id;
-	}
-
-	[Command]
-	void CmdChangePieceActiveNow(int id) {
-		RpcChangePieceActiveNow(id);
-	}
-
-
 
     [ClientRpc]
     void RpcPieceTrainingActiveNow() {
@@ -284,24 +251,14 @@ public class StackController : NetworkBehaviour {
         RpcClearSelection();
     }
 
-    [ClientRpc]
-    void RpcAddToRedo() {
+    [Command]
+    void CmdAddToRedo() {
         dataSync.piecesListRedo.Add(dataSync.pieceActiveNow);
     }
 
     [Command]
-    void CmdAddToRedo() {
-        RpcAddToRedo();
-    }
-
-    [ClientRpc]
-    void RpcARemoveFromRedo(int id) {
-		dataSync.piecesListRedo.RemoveAt (id);
-    }
-
-    [Command]
     void CmdRemoveFromRedo(int id) {
-        RpcARemoveFromRedo(id);
+        dataSync.piecesListRedo.RemoveAt(id);
     }
     
     [ClientRpc]
@@ -347,28 +304,21 @@ public class StackController : NetworkBehaviour {
             if ((dataSync.errorTranslation > 0.15f || dataSync.errorRotationAngle > 15.0f) && !redoList) // if the piece is coarse docked.. add it to redo list.
                 CmdAddToRedo();
 
-            Debug.Log(halfObjects);
-
             if (dataSync.pieceActiveNow == halfObjects - 1 && !redoList) {
-                Debug.Log("Active redoList");
                 redoList = true;
             }
 
             if(redoList && dataSync.piecesListRedo.Count <= 0) {
-                Debug.Log("End");
                 StartCoroutine(Wait());
                 return;
             }
 
             if (!redoList) {
-                Debug.Log("Increment enableObject");
                 CmdSetEnabledObject(dataSync.pieceActiveNow+1);
             }else {
-                Debug.Log("Restore piecesListRedo[0]");
                 CmdSetEnabledObject(dataSync.piecesListRedo[0]);
                 CmdRemoveFromRedo(0);
 
-                //CmdSpawnPos(dataSync.piecesList[dataSync.piecesListRedo[0]]); //reset the initial piece position
             }
             
             
