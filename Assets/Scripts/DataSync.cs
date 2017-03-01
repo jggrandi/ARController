@@ -2,16 +2,14 @@
 using System.Collections;
 using UnityEngine.Networking;
 using System.Collections.Generic;
-
+[NetworkSettings(channel = 0, sendInterval = 0.0f)]
 public class DataSync : NetworkBehaviour {
 
     [SyncVar]
     public int pieceActiveNow = 0;
     [SyncVar]
     public int pieceTraining = 0;
-
-    public int disableObject = -1;
-    public int enableObject = -1;
+    
 
     public SyncListInt Groups = new SyncListInt();
     public SyncListInt piecesList = new SyncListInt();

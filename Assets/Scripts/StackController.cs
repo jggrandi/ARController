@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 
+[NetworkSettings(channel = 0, sendInterval = 0.0f)]
+
 public class StackController : NetworkBehaviour {
 
     public GameObject playerObject;
@@ -178,19 +180,22 @@ public class StackController : NetworkBehaviour {
 
             childMoving = trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]); // take the moving object 
             childStatic = trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow] + halfObjects); // and its ghost
+            
+            for(int i = 0; i<dataSync.piecesList.Count; i++) {
+                bool activeState = trackedObjects.transform.GetChild(dataSync.piecesList[i]).gameObject.activeSelf;
+                if (i == dataSync.pieceActiveNow && activeState == false) {
+                    
+                    trackedObjects.transform.GetChild(dataSync.piecesList[i]).gameObject.SetActive(true);
+                    trackedObjects.transform.GetChild(dataSync.piecesList[i] + halfObjects).gameObject.SetActive(true);
 
-            if(dataSync.disableObject >= 0) {
-                Debug.Log("disable: "+ dataSync.disableObject);
-                trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.disableObject]).gameObject.SetActive(false); // disable the previous object
-                trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.disableObject] + halfObjects).gameObject.SetActive(false); //and its ghost
-                CmdSetDisabledObject(-1);
+                } else if(i != dataSync.pieceActiveNow && activeState == true) {
+                    
+                    trackedObjects.transform.GetChild(dataSync.piecesList[i]).gameObject.SetActive(false); // disable the previous object
+                    trackedObjects.transform.GetChild(dataSync.piecesList[i] + halfObjects).gameObject.SetActive(false); //and its ghost
+
+                }
             }
-            if (dataSync.enableObject >= 0) {
-                Debug.Log("enable: " + dataSync.enableObject);
-                trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.enableObject]).gameObject.SetActive(true);
-                trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.enableObject] + halfObjects).gameObject.SetActive(true);
-                CmdSetEnabledObject(-1);
-            }
+            
         }
 
 
@@ -212,23 +217,14 @@ public class StackController : NetworkBehaviour {
 
     [ClientRpc]
     void RpcSetEnabledObject(int id) {
-        dataSync.enableObject = id;
+        dataSync.pieceActiveNow = id;
     }
 
     [Command]
     void CmdSetEnabledObject(int id) {
         RpcSetEnabledObject(id);
     }
-
-    [ClientRpc]
-    void RpcSetDisabledObject(int id) {
-        dataSync.disableObject = id;
-    }
-
-    [Command]
-    void CmdSetDisabledObject(int id) {
-        RpcSetDisabledObject(id);
-    }
+    
 
 
     [ClientRpc]
@@ -364,21 +360,17 @@ public class StackController : NetworkBehaviour {
                 return;
             }
 
-            CmdSetDisabledObject(dataSync.pieceActiveNow);
             if (!redoList) {
                 Debug.Log("Increment enableObject");
-                dataSync.enableObject = dataSync.pieceActiveNow + 1;
                 CmdSetEnabledObject(dataSync.pieceActiveNow+1);
             }else {
                 Debug.Log("Restore piecesListRedo[0]");
-                dataSync.enableObject = dataSync.piecesListRedo[0];
                 CmdSetEnabledObject(dataSync.piecesListRedo[0]);
                 CmdRemoveFromRedo(0);
 
                 //CmdSpawnPos(dataSync.piecesList[dataSync.piecesListRedo[0]]); //reset the initial piece position
             }
-
-            CmdChangePieceActiveNow(dataSync.enableObject);
+            
             
         }
     }
