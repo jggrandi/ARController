@@ -7,8 +7,11 @@ public class DataSync : NetworkBehaviour {
 
     [SyncVar]
     public int pieceActiveNow = 0;
-    
+    [SyncVar]
     public int pieceTraining = 0;
+
+    public int disableObject = -1;
+    public int enableObject = -1;
 
     public SyncListInt Groups = new SyncListInt();
     public SyncListInt piecesList = new SyncListInt();

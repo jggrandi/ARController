@@ -147,10 +147,6 @@ public class StackController : NetworkBehaviour {
         }
     }
 
-
-    public int disableObject = -1;
-    public int enableObject = -1;
-
     void Update() {
         if (!isLocalPlayer) return;
         if (dataSync.pieceActiveNow == halfObjects) return;
@@ -183,17 +179,17 @@ public class StackController : NetworkBehaviour {
             childMoving = trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]); // take the moving object 
             childStatic = trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow] + halfObjects); // and its ghost
 
-            if(disableObject >= 0) {
-                Debug.Log("disable: "+disableObject);
-                trackedObjects.transform.GetChild(dataSync.piecesList[disableObject]).gameObject.SetActive(false); // disable the previous object
-                trackedObjects.transform.GetChild(dataSync.piecesList[disableObject] + halfObjects).gameObject.SetActive(false); //and its ghost
-                disableObject = -1;
+            if(dataSync.disableObject >= 0) {
+                Debug.Log("disable: "+ dataSync.disableObject);
+                trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.disableObject]).gameObject.SetActive(false); // disable the previous object
+                trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.disableObject] + halfObjects).gameObject.SetActive(false); //and its ghost
+                CmdSetDisabledObject(-1);
             }
-            if (enableObject >= 0) {
-                Debug.Log("enable: " + enableObject);
-                trackedObjects.transform.GetChild(dataSync.piecesList[enableObject]).gameObject.SetActive(true);
-                trackedObjects.transform.GetChild(dataSync.piecesList[enableObject] + halfObjects).gameObject.SetActive(true);
-                enableObject = -1;
+            if (dataSync.enableObject >= 0) {
+                Debug.Log("enable: " + dataSync.enableObject);
+                trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.enableObject]).gameObject.SetActive(true);
+                trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.enableObject] + halfObjects).gameObject.SetActive(true);
+                CmdSetEnabledObject(-1);
             }
         }
 
@@ -212,6 +208,26 @@ public class StackController : NetworkBehaviour {
 
 
 
+    }
+
+    [ClientRpc]
+    void RpcSetEnabledObject(int id) {
+        dataSync.enableObject = id;
+    }
+
+    [Command]
+    void CmdSetEnabledObject(int id) {
+        RpcSetEnabledObject(id);
+    }
+
+    [ClientRpc]
+    void RpcSetDisabledObject(int id) {
+        dataSync.disableObject = id;
+    }
+
+    [Command]
+    void CmdSetDisabledObject(int id) {
+        RpcSetDisabledObject(id);
     }
 
 
@@ -328,7 +344,7 @@ public class StackController : NetworkBehaviour {
             } else {
                 CmdPieceTrainingActiveNow();
             }
-            enableObject = 0;
+            CmdSetEnabledObject(0);
         } else {
 
 
@@ -348,19 +364,21 @@ public class StackController : NetworkBehaviour {
                 return;
             }
 
-            disableObject = dataSync.pieceActiveNow;
+            CmdSetDisabledObject(dataSync.pieceActiveNow);
             if (!redoList) {
                 Debug.Log("Increment enableObject");
-                enableObject = dataSync.pieceActiveNow+1;
+                dataSync.enableObject = dataSync.pieceActiveNow + 1;
+                CmdSetEnabledObject(dataSync.pieceActiveNow+1);
             }else {
                 Debug.Log("Restore piecesListRedo[0]");
-                enableObject = dataSync.piecesListRedo[0];
+                dataSync.enableObject = dataSync.piecesListRedo[0];
+                CmdSetEnabledObject(dataSync.piecesListRedo[0]);
                 CmdRemoveFromRedo(0);
 
                 //CmdSpawnPos(dataSync.piecesList[dataSync.piecesListRedo[0]]); //reset the initial piece position
             }
 
-            CmdChangePieceActiveNow(enableObject);
+            CmdChangePieceActiveNow(dataSync.enableObject);
             
         }
     }
