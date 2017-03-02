@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 
-[NetworkSettings(channel = 0, sendInterval = 0.0f)]
+//[NetworkSettings(channel = 0, sendInterval = 0.0f)]
 
 public class StackController : NetworkBehaviour {
 

@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.Networking;
 using System.Collections.Generic;
-[NetworkSettings(channel = 0, sendInterval = 0.0f)]
+//[NetworkSettings(channel = 0, sendInterval = 0.0f)]
 public class DataSync : NetworkBehaviour {
 
     [SyncVar]
