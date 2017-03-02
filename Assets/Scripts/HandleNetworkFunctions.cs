@@ -154,7 +154,7 @@ public class HandleNetworkFunctions : NetworkBehaviour {
     }*/
 
 
-    public override void OnStartClient() {
+    public override void OnStartLocalPlayer() {
         CmdSyncAll();
     }
 
