@@ -26,14 +26,9 @@ public class NetHandleGroup : NetworkBehaviour {
         
         foreach (int index in MainController.control.objSelected) {
             CmdSetGroup(index, -1);
-            var g = Utils.GetByIndex(index);
-            if (g.GetComponent<ParticleSystem>() == null) {
-                g.GetComponent<Renderer>().material = g.GetComponent<ObjectGroupId>().material;
-            }
         }
-        
-        MainController.control.objSelected.Clear();
-        MainController.control.isMultipleSelection = false;
+
+        this.gameObject.transform.GetComponent<Lean.Touch.NetHandleSelectionTouch>().UnselectAll();
     }
 
     [Command]

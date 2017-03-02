@@ -34,7 +34,7 @@ namespace Lean.Touch {
                 Matrix4x4 step = prevMatrix * camMatrix.inverse;
 
                 foreach (int index in MainController.control.objSelected) {
-                    var g = Utils.GetByIndex(index);
+                    var g = ObjectManager.Get(index);
                     Matrix4x4 modelMatrix = Matrix4x4.TRS(g.transform.position, g.transform.rotation, new Vector3(1,1,1)); // get the object matrix
                     modelMatrix = prevMatrix * modelMatrix; // transform the model matrix to the camera space matrix
                     modelMatrix = step * modelMatrix; // transform the object's position and orientation
@@ -136,7 +136,7 @@ namespace Lean.Touch {
             
 
             foreach (int index in MainController.control.objSelected) {
-                var g = Utils.GetByIndex(index);
+                var g = ObjectManager.Get(index);
 
                 if (g.GetComponent<ParticleSystem>() != null) {
 
@@ -171,7 +171,7 @@ namespace Lean.Touch {
         private Vector3 avgCenterOfObjects(List<int> objects) {
             Vector3 avg = Vector3.zero;
             foreach (var index in objects) {
-                var g = Utils.GetByIndex(index);
+                var g = ObjectManager.Get(index);
                 avg += g.transform.position;
             }
             return avg /= objects.Count;

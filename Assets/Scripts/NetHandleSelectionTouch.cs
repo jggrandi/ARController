@@ -47,24 +47,19 @@ namespace Lean.Touch {
         }*/
 
 
-        public List<int> objSelectedShared = new List<int>();
+        public SyncListInt objSelectedShared = new SyncListInt();
 
-        [ClientRpc]
-        void RpcAddSelected(int index) {
-            objSelectedShared.Add(index);
-        }
+
         [Command]
         void CmdAddSelected(int index) {
-            RpcAddSelected(index);
+            objSelectedShared.Add(index);
         }
-        [ClientRpc]
-        void RpcClearSelected() {
-            objSelectedShared.Clear();
-        }
+
         [Command]
         void CmdClearSelected() {
-            RpcClearSelected();
+            objSelectedShared.Clear();
         }
+
         public void CmdSyncSelected() {
             CmdClearSelected();
             foreach (var i in MainController.control.objSelected) {
@@ -91,8 +86,8 @@ namespace Lean.Touch {
         public void Start() {
             DataSyncRef = GameObject.Find("MainHandler").GetComponent<DataSync>();
 
-            // if (selectedMaterial == null)
-            selectedMaterial = (Material)Resources.Load("Light Blue");
+            if (selectedMaterial == null)
+                selectedMaterial = (Material)Resources.Load("Light Blue");
 
             if (!isLocalPlayer) return;
 
@@ -155,6 +150,12 @@ namespace Lean.Touch {
 
         }
 
+        [Command]
+        public void CmdClearSelectedShared() {
+            objSelectedShared.Clear();
+        }
+
+
         public int unselectAllCount = -1;
 
         void Update() {
@@ -187,7 +188,7 @@ namespace Lean.Touch {
                 }
 
                 foreach (var index in selected) {
-                    var g = Utils.GetByIndex(index);
+                    var g = ObjectManager.Get(index);
                     var dist = Vector3.Magnitude(g.transform.position - camera);
                     if (dist < minDist) {
                         minDist = dist;
@@ -195,7 +196,7 @@ namespace Lean.Touch {
                     }
                 }
 
-                AddLine(camera, Utils.GetByIndex(minObj).transform.position, color);
+                AddLine(camera, ObjectManager.Get(minObj).transform.position, color);
                 
                 List<int> visited = new List<int>();
                 visited.Add(minObj);
@@ -210,7 +211,7 @@ namespace Lean.Touch {
 
                     foreach (var a in visited) {
                         foreach (var b in selected) {
-                            var dist = Vector3.Magnitude(Utils.GetByIndex(a).transform.position - Utils.GetByIndex(b).transform.position);
+                            var dist = Vector3.Magnitude(ObjectManager.Get(a).transform.position - ObjectManager.Get(b).transform.position);
                             if (dist < minDist) {
                                 minDist = dist;
                                 minObjA = a;
@@ -218,7 +219,7 @@ namespace Lean.Touch {
                             }
                         }
                     }
-                    AddLine(Utils.GetByIndex(minObjA).transform.position, Utils.GetByIndex(minObjB).transform.position, color);
+                    AddLine(ObjectManager.Get(minObjA).transform.position, ObjectManager.Get(minObjB).transform.position, color);
 
                     selected.Remove(minObjB);
                     visited.Add(minObjB);
@@ -291,15 +292,19 @@ namespace Lean.Touch {
 
         public void UnselectAll() {
             MainController.control.isMultipleSelection = false;
-            //foreach (int i in MainController.control.objSelected) {
-                //GameObject g = Utils.GetByIndex(i);
-                //g.transform.GetComponent<Renderer>().material = g.transform.GetComponent<ObjectGroupId>().material;
-            //}
+            foreach (int i in MainController.control.objSelected) {
+                GameObject g = ObjectManager.Get(i);
+                g.transform.GetComponent<Renderer>().material = g.transform.GetComponent<ObjectGroupId>().material;
+            }
             MainController.control.objSelected.Clear();
+            CmdClearSelectedShared();
+            MainController.control.isMultipleSelection = false;
         }
 
         public void Select(int index) {
-            //Utils.GetByIndex(index).GetComponent<Renderer>().material = selectedMaterial;
+            if (ObjectManager.Get(index).GetComponent<ParticleSystem>() == null) {
+                ObjectManager.Get(index).GetComponent<Renderer>().material = selectedMaterial;
+            }
             MainController.control.objSelected.Add(index);
         }
 
