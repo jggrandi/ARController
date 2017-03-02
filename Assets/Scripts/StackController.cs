@@ -289,9 +289,11 @@ public class StackController : NetworkBehaviour {
 
         MainController.control.objSelected.Clear();
         CmdClearSelection();
+        
+        
 
         if (dataSync.pieceTraining < 2) { // if user in the training, go to next training piece.
-            
+            GameObject.Find("MainHandler").GetComponent<HandleLog>().SaveResumed();
             if (dataSync.pieceTraining == 1) {
                 StartCoroutine(showError());
             } else {
@@ -299,7 +301,7 @@ public class StackController : NetworkBehaviour {
             }
             CmdSetEnabledObject(0);
         } else {
-
+            GameObject.Find("MainHandler").GetComponent<HandleLog>().SaveResumed();
 
             if ((dataSync.errorTranslation > 0.15f || dataSync.errorRotationAngle > 15.0f) && !redoList) // if the piece is coarse docked.. add it to redo list.
                 CmdAddToRedo();

@@ -52,21 +52,23 @@ public class HandleLog : NetworkBehaviour {
         }
         
 		if (countFrames % 5 == 0 ) { //&& dataSync.pieceActiveNow < dataSync.piecesList.Count
-			log.saveVerbose(dataSync.piecesList[dataSync.pieceActiveNow], isObjSelected, (int)dataSync.posList[dataSync.piecesList[dataSync.pieceActiveNow]] / 4, dataSync.posList[dataSync.pieceActiveNow] * 3, dataSync.rotationsList[dataSync.pieceActiveNow], modality, trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]).gameObject, camPos, dataSync.errorTranslation, dataSync.errorRotation, dataSync.errorRotationAngle, targetsTracked);
+			log.saveVerbose(dataSync.piecesList[dataSync.pieceActiveNow], isObjSelected, dataSync.posList[dataSync.piecesList[dataSync.pieceActiveNow]] / 4, dataSync.posList[dataSync.pieceActiveNow] * 3, dataSync.rotationsList[dataSync.pieceActiveNow], modality, trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]).gameObject, camPos, dataSync.errorTranslation, dataSync.errorRotation, dataSync.errorRotationAngle, targetsTracked);
         }
 
-        if (previousPiece != dataSync.pieceActiveNow) {
-            SaveResumed(previousPiece);
-            previousPiece = dataSync.pieceActiveNow;
-            time = 0.0f;
-        }
+        //if (previousPiece != dataSync.pieceActiveNow) {
+        //    SaveResumed(previousPiece);
+        //    previousPiece = dataSync.pieceActiveNow;
+        //    time = 0.0f;
+        //}
 
         countFrames++;
     }
 
-    public void SaveResumed(int pieceID) {
+    public void SaveResumed() {
         time = Time.realtimeSinceStartup - time;
-		log.saveResume (dataSync.piecesList [pieceID], (int)dataSync.posList[dataSync.piecesList [pieceID]] / 4, dataSync.rotationsList [pieceID], time, dataSync.errorTranslation, dataSync.errorRotation, dataSync.errorRotationAngle);
+
+        this.log.saveResume(dataSync.piecesList[dataSync.pieceActiveNow], dataSync.posList[dataSync.piecesList[dataSync.pieceActiveNow]] / 4, dataSync.rotationsList[dataSync.pieceActiveNow], time, dataSync.errorTranslation, dataSync.errorRotation, dataSync.errorRotationAngle);
+        time = 0.0f;
     }
 
 
