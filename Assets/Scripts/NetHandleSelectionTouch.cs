@@ -135,23 +135,23 @@ namespace Lean.Touch {
         [ClientRpc]
         public void RpcSetCameraPosition(Vector3 p) {
 
-            if(trackedObjects == null) trackedObjects = GameObject.Find("TrackedObjects");
-            p = trackedObjects.transform.TransformPoint(p);
-            CameraPosition = p;
+
         }
         [Command]
         public void CmdSetCameraPosition(Vector3 p) {
-            RpcSetCameraPosition(p);
+            if (trackedObjects == null) trackedObjects = GameObject.Find("TrackedObjects");
+            p = trackedObjects.transform.TransformPoint(p);
+            CameraPosition = p;
         }
 
         [ClientRpc]
         public void RpcTragetsTracked(int t) {
-            targetsTracked = t;
+            
         }
 
         [Command]
         public void CmdTargetsTracked(int t) {
-            RpcTragetsTracked(t);
+            targetsTracked = t;
 
         }
 

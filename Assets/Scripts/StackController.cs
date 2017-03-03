@@ -290,7 +290,7 @@ public class StackController : NetworkBehaviour {
     public void SetNextPiece() {
 
         if (TestController.tcontrol.sceneIndex == 0) // if it is howtouse scene, after the first piece the setup scene is loaded.
-            StartCoroutine(Wait());
+            CmdChangeScene();
 
         MainController.control.objSelected.Clear();
         CmdClearSelection();
@@ -315,7 +315,7 @@ public class StackController : NetworkBehaviour {
             }
 
             if(redoList && dataSync.piecesListRedo.Count <= 0) {
-                StartCoroutine(Wait());
+                CmdChangeScene();
                 return;
             }
 
@@ -331,11 +331,6 @@ public class StackController : NetworkBehaviour {
         }
     }
 
-    IEnumerator Wait() { // wait until saving the resumed log.
-
-        yield return new WaitForSeconds(2);
-        CmdChangeScene();
-    }
 
 
 }
