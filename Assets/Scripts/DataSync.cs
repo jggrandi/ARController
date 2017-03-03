@@ -26,6 +26,8 @@ public class DataSync : NetworkBehaviour {
 	public float errorRotationAngle;
 
     public int[] vecTransIndex = { 0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3 };
+    public int[] vecRotAngle = { 45, 45, 45, 90, 90, 90, 45, 45, 45, 90, 90, 90 }; //Crianças, não façam isso em casa.
+
 
     public override void OnStartServer() {
         GameObject trackedObjects = GameObject.Find("TrackedObjects");

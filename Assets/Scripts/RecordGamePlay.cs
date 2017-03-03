@@ -17,9 +17,9 @@ public class Log{
         Debug.Log(Application.persistentDataPath);
 		fVerbose = File.CreateText(Application.persistentDataPath + "/User-" + user + "-Task-" + task + "---" + System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + "-Verbose.csv");
 		fResume = File.CreateText(Application.persistentDataPath + "/User-" + user + "-Task-" + task + "---" + System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + "-Resume.csv");
-		string header = "Time;PieceID;IsSelected;DistanceToTarget;DistanceID;RotationID;Modality;Translation X;Translation Y;Translation Z;Rotation X;Rotation Y;Rotation Z;Rotation W;Camera X;Camera Y;Camera Z;Error Trans Mat; Error Rot Mat;Error Rot Angle;Tracked Targets";
+		string header = "Time;PieceID;IsSelected;DistanceID;RotationID;RotAngle;Modality;Translation X;Translation Y;Translation Z;Rotation X;Rotation Y;Rotation Z;Rotation W;Camera X;Camera Y;Camera Z;Error Trans Mat; Error Rot Mat;Error Rot Angle;Tracked Targets";
 		fVerbose.WriteLine(header);
-		header = "PieceID;DistanceToTarget;RotationID;Time;Error Trans;Error Rot;Error Rot Angle";
+		header = "PieceID;DistanceID;RotationID;RotAngle;Time;Error Trans;Error Rot;Error Rot Angle";
 		fResume.WriteLine(header);
 
 	}
@@ -36,13 +36,15 @@ public class Log{
     }
 
 
-	public void saveVerbose(int pieceID, bool isSelected, int distanceToTarget, int distanceID, int rotationID, int modality, GameObject piece, Vector3 cameraPosition, float errorTrans, float errorRot, float errorRotAngle, int trackedTargets)
+	public void saveVerbose(bool isTraining, int pieceID, bool isSelected, int distanceID, int rotationID, int rotAngle, int modality, GameObject piece, Vector3 cameraPosition, float errorTrans, float errorRot, float errorRotAngle, int trackedTargets)
 	{
 
 	    String line = "";
 
     	line += Time.realtimeSinceStartup + "";
-        line += ";" + pieceID + ";" + isSelected + ";" + distanceToTarget + ";" + distanceID + ";" + rotationID + ";" + modality;
+        line += ";";
+        if (isTraining) line += "T";
+        line += pieceID + ";" + isSelected + ";" + distanceID + ";" + rotationID + ";" + rotAngle + ";" + modality;
         line += ";" + piece.transform.localPosition.x + ";" + piece.transform.localPosition.y + ";" + piece.transform.localPosition.z;
         line += ";" + piece.transform.localRotation.x + ";" + piece.transform.localRotation.y + ";" + piece.transform.localRotation.z + ";" + piece.transform.localRotation.w;
         line += ";" + cameraPosition.x + ";" + cameraPosition.y + ";" + cameraPosition.z;
@@ -53,10 +55,11 @@ public class Log{
 	}
 
 
-	public void saveResume(int pieceID, int distanceToTarget, int rotationID,  float time, float errorTrans, float errorRot, float errorRotAngle)
+	public void saveResume(bool isTraining, int pieceID, int distanceID, int rotationID, int rotAngle,  float time, float errorTrans, float errorRot, float errorRotAngle)
 	{
 		String line = "";
-		line += pieceID + ";" + distanceToTarget + ";" + rotationID;
+        if (isTraining) line += "T";
+		line += pieceID + ";" + distanceID + ";" + rotationID + ";" + rotAngle + ";";
 		line += ";" + time;
 		line += ";" + errorTrans + ";" + errorRot + ";" + errorRotAngle;
 		fResume.WriteLine(line);

@@ -52,7 +52,10 @@ public class HandleLog : NetworkBehaviour {
         }
         
 		if (countFrames % 5 == 0 ) { //&& dataSync.pieceActiveNow < dataSync.piecesList.Count
-			log.saveVerbose(dataSync.piecesList[dataSync.pieceActiveNow], isObjSelected, dataSync.posList[dataSync.piecesList[dataSync.pieceActiveNow]] / 4, dataSync.posList[dataSync.pieceActiveNow] * 3, dataSync.rotationsList[dataSync.pieceActiveNow], modality, trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]).gameObject, camPos, dataSync.errorTranslation, dataSync.errorRotation, dataSync.errorRotationAngle, targetsTracked);
+            if(dataSync.pieceTraining < 2)
+			    log.saveVerbose(true, dataSync.pieceTraining, isObjSelected, -1, -1, -1, modality, trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]).gameObject, camPos, dataSync.errorTranslation, dataSync.errorRotation, dataSync.errorRotationAngle, targetsTracked);
+            else
+                log.saveVerbose(false, dataSync.piecesList[dataSync.pieceActiveNow], isObjSelected, dataSync.posList[dataSync.piecesList[dataSync.pieceActiveNow]], dataSync.rotationsList[dataSync.pieceActiveNow], dataSync.vecRotAngle[dataSync.rotationsList[dataSync.pieceActiveNow]], modality, trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]).gameObject, camPos, dataSync.errorTranslation, dataSync.errorRotation, dataSync.errorRotationAngle, targetsTracked);
         }
 
         countFrames++;
@@ -60,7 +63,10 @@ public class HandleLog : NetworkBehaviour {
 
     public void SaveResumed() {
         time = Time.realtimeSinceStartup - time;
-        this.log.saveResume(dataSync.piecesList[dataSync.pieceActiveNow], dataSync.posList[dataSync.piecesList[dataSync.pieceActiveNow]] / 4, dataSync.rotationsList[dataSync.pieceActiveNow], time, dataSync.errorTranslation, dataSync.errorRotation, dataSync.errorRotationAngle);
+        if(dataSync.pieceTraining < 2)
+            log.saveResume(true, dataSync.pieceTraining, -1, -1, -1, time, dataSync.errorTranslation, dataSync.errorRotation, dataSync.errorRotationAngle);
+        else
+            log.saveResume(false, dataSync.piecesList[dataSync.pieceActiveNow], dataSync.posList[dataSync.piecesList[dataSync.pieceActiveNow]], dataSync.rotationsList[dataSync.pieceActiveNow], dataSync.vecRotAngle[dataSync.rotationsList[dataSync.pieceActiveNow]], time, dataSync.errorTranslation, dataSync.errorRotation, dataSync.errorRotationAngle);
         time = 0.0f;
     }
 

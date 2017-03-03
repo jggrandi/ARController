@@ -87,7 +87,7 @@ public class StackController : NetworkBehaviour {
 		float x = TestController.tcontrol.spawnDistances[dataSync.posList[id] * 3];
 		float y = TestController.tcontrol.spawnDistances[dataSync.posList[id] * 3 + 1];
 		float z = TestController.tcontrol.spawnDistances[dataSync.posList[id] * 3 + 2];
-		trackedObjects.transform.GetChild(id).transform.position = new Vector3(x*0.1f, y, z * 0.1f);
+        trackedObjects.transform.GetChild(id).transform.position = new Vector3(x, y, z);
 	}
 
 	void setSpawnRot(int id){
@@ -205,8 +205,10 @@ public class StackController : NetworkBehaviour {
         dataSync.errorRotation = Utils.distMatrices(movingObjMatrixRot, staticObjMatrixRot);
         dataSync.errorRotationAngle = Quaternion.Angle(childMoving.transform.rotation, childStatic.transform.rotation);
 
-
-
+        //float angle;
+        //Vector3 vec;
+        //childMoving.transform.rotation.ToAngleAxis(out angle, out vec);
+        
     }
 
     [Command]

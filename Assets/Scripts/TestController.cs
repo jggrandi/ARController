@@ -34,7 +34,7 @@ public class TestController : NetworkBehaviour {
     //    -1.814323f,   0.6799691f,   -0.7294753f }; //3-far
 
     public float[] spawnDistances = {
-        0.7324734f,   0.6683413f,   0.6792539f,  //2-med
+        1.088868f,    0.6498964f,   -1.067111f,  //2-med
         1.324226f,    0.5784369f,   0.7516428f,  //2-med
         -1.19018f,    0.645997f,    0.8342187f,  //2-med
         -0.9268596f,  0.7322414f,   -1.130795f,  //2-med
