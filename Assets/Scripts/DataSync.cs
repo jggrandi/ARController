@@ -9,7 +9,8 @@ public class DataSync : NetworkBehaviour {
     public int pieceActiveNow = 0;
     [SyncVar]
     public int pieceTraining = 0;
-    
+    [SyncVar]
+    public bool saveResumed = false;
 
     public SyncListInt Groups = new SyncListInt();
     public SyncListInt piecesList = new SyncListInt();
