@@ -59,7 +59,7 @@ public class Log{
 	{
 		String line = "";
         if (isTraining) line += "T";
-		line += pieceID + ";" + distanceID + ";" + rotationID + ";" + rotAngle + ";";
+		line += pieceID + ";" + distanceID + ";" + rotationID + ";" + rotAngle;
 		line += ";" + time;
 		line += ";" + errorTrans + ";" + errorRot + ";" + errorRotAngle;
 		fResume.WriteLine(line);
