@@ -34,7 +34,7 @@ public class HandleLog : NetworkBehaviour {
     void FixedUpdate() {
         
         if (!isServer ) return;
-        if (TestController.tcontrol.sceneIndex == 0 || dataSync.pieceTraining < 2) return;
+        if (TestController.tcontrol.sceneIndex == 0 ) return;
 
         foreach (var player in GameObject.FindGameObjectsWithTag("player")) {
             if (!player.GetComponent<NetworkIdentity>().isLocalPlayer) {
@@ -55,9 +55,6 @@ public class HandleLog : NetworkBehaviour {
 			log.saveVerbose(dataSync.piecesList[dataSync.pieceActiveNow], isObjSelected, dataSync.posList[dataSync.piecesList[dataSync.pieceActiveNow]] / 4, dataSync.posList[dataSync.pieceActiveNow] * 3, dataSync.rotationsList[dataSync.pieceActiveNow], modality, trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]).gameObject, camPos, dataSync.errorTranslation, dataSync.errorRotation, dataSync.errorRotationAngle, targetsTracked);
         }
 
-        if (dataSync.saveResumed) {
-            SaveResumed();
-        }
 
         //if (previousPiece != dataSync.pieceActiveNow) {
         //    SaveResumed(previousPiece);
@@ -69,10 +66,10 @@ public class HandleLog : NetworkBehaviour {
     }
 
     public void SaveResumed() {
+        Debug.Log("SAVING...");
         time = Time.realtimeSinceStartup - time;
         this.log.saveResume(dataSync.piecesList[dataSync.pieceActiveNow], dataSync.posList[dataSync.piecesList[dataSync.pieceActiveNow]] / 4, dataSync.rotationsList[dataSync.pieceActiveNow], time, dataSync.errorTranslation, dataSync.errorRotation, dataSync.errorRotationAngle);
         time = 0.0f;
-        dataSync.saveResumed = false;
     }
 
 

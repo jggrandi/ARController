@@ -282,6 +282,11 @@ public class StackController : NetworkBehaviour {
         RpcSpawnPos(id);
     }
 
+    [Command]
+    void CmdSaveResumed() {
+        GameObject.Find("MainHandler").gameObject.transform.GetComponent<HandleLog>().SaveResumed();
+    }
+
     public void SetNextPiece() {
 
         if (TestController.tcontrol.sceneIndex == 0) // if it is howtouse scene, after the first piece the setup scene is loaded.
@@ -290,7 +295,7 @@ public class StackController : NetworkBehaviour {
         MainController.control.objSelected.Clear();
         CmdClearSelection();
 
-        dataSync.saveResumed = true;        
+        CmdSaveResumed();
 
         if (dataSync.pieceTraining < 2) { // if user in the training, go to next training piece.
 
