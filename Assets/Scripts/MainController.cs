@@ -25,14 +25,6 @@ public class MainController : MonoBehaviour {
     void Awake() {
 
         control = this;
-        //if (control == null) {
-        //    DontDestroyOnLoad(gameObject);
-        //    control = this;
-
-        //} else if (control != this) {
-        //    Destroy(gameObject);
-        //}
-
 
         for (int i = 0; i < trackedObjects.transform.childCount; i++) {
             GameObject obj = trackedObjects.transform.GetChild(i).transform.gameObject;

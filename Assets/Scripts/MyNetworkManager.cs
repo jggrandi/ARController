@@ -6,25 +6,9 @@ using UnityEngine.SceneManagement;
 
 public class MyNetworkManager : NetworkManager {
 
-    //public override void OnClientConnect(NetworkConnection conn) {
-    //    base.OnClientConnect(conn);
-    //    GameObject.Find("MainHandler").GetComponent<NetworkIdentity>().AssignClientAuthority(conn);
-    //}
-
-   
     public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId) {
         if (TestController.tcontrol.sceneIndex == TestController.tcontrol.tasksToPermute + 1) return; //The +1 is because of the howtouse initial task
         base.OnServerAddPlayer(conn,playerControllerId);
-        //GameObject player = (GameObject)Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
-        //NetworkServer.AddPlayerForConnection(conn, player, playerControllerId);
-        //GameObject player = null;
-        //foreach (PlayerController p in conn.playerControllers) {
-        //    if (p.playerControllerId == playerControllerId) {
-        //        player = p.gameObject;
-        //        break;
-        //    }
-        //}
-
     }
 
     public override void OnClientSceneChanged(NetworkConnection conn) {

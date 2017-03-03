@@ -122,38 +122,6 @@ public class HandleNetworkFunctions : NetworkBehaviour {
     }
 
 
-
-    
-
-    /*[Command]
-    public void CmdSetGroup(GameObject obj) {
-        obj.transform.gameObject.GetComponent<ObjectGroupId>().id = MainController.control.idAvaiableNow;
-    }
-
-    [Command]
-    public void CmdSetGroup2(GameObject obj, int id) {
-        obj.transform.gameObject.GetComponent<ObjectGroupId>().id = id;
-    }
-
-    [Command]
-    public void CmdIncrementCount() {
-        MainController.control.idAvaiableNow++;
-    }*/
-    /*
-    [ClientRpc]
-    public void RpcSyncCamPosition(Vector3 pos) {
-        gameObject.transform.GetChild(0).transform.position = pos;
-    }
-    [Command]
-    public void CmdSyncCamPosition(Vector3 pos) {
-        RpcSyncCamPosition(pos);
-    }
-    public void SyncCamPosition(Vector3 pos) {
-        gameObject.transform.GetChild(0).transform.position = pos;
-        CmdSyncCamPosition(pos);
-    }*/
-
-
     public override void OnStartLocalPlayer() {
     //public override void OnStartClient() {
         CmdSyncAll();

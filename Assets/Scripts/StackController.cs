@@ -195,9 +195,6 @@ public class StackController : NetworkBehaviour {
             
         }
 
-
-
-
         movingObjMatrixTrans = Matrix4x4.TRS(childMoving.transform.position, Quaternion.identity, new Vector3(1.0f, 1.0f, 1.0f));
         movingObjMatrixRot = Matrix4x4.TRS(new Vector3(0, 0, 0), childMoving.transform.rotation, new Vector3(1.0f, 1.0f, 1.0f));
 
@@ -326,12 +323,7 @@ public class StackController : NetworkBehaviour {
                 CmdRemoveFromRedo(0);
 
             }
-            
-            
         }
     }
-
-
-
 }
 
