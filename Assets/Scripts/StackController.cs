@@ -37,7 +37,7 @@ public class StackController : NetworkBehaviour {
         showErrorTraining2 = true;
 
         
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(10.0f);
         CmdPieceTrainingActiveNow();
         showErrorTraining2 = false;
 
