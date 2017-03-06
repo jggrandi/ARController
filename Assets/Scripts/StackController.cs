@@ -178,7 +178,7 @@ public class StackController : NetworkBehaviour {
             childMoving = trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]); // take the moving object 
             childStatic = trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow] + halfObjects); // and its ghost
             
-            for(int i = 0; i<dataSync.piecesList.Count; i++) {
+            for(int i = 0; i < dataSync.piecesList.Count; i++) {
                 bool activeState = trackedObjects.transform.GetChild(dataSync.piecesList[i]).gameObject.activeSelf;
                 if (i == dataSync.pieceActiveNow && activeState == false) {
                     
@@ -189,6 +189,8 @@ public class StackController : NetworkBehaviour {
                     
                     trackedObjects.transform.GetChild(dataSync.piecesList[i]).gameObject.SetActive(false); // disable the previous object
                     trackedObjects.transform.GetChild(dataSync.piecesList[i] + halfObjects).gameObject.SetActive(false); //and its ghost
+                    setSpawnPos(i);
+                    setSpawnRot(i);
 
                 }
             }
