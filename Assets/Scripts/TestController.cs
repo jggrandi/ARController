@@ -49,33 +49,44 @@ public class TestController : NetworkBehaviour {
     //     0.6f, -0.8f,  0.1f, 0.3f,
     //};
 
-        //public float[] spawnRotations = { // 30 degrees with random axis
-        //     0.6f, -0.1f, -0.3f, -0.7f,
-        //     0.3f, -0.4f, -0.5f, -0.7f,
-        //    -0.5f, -0.1f,  0.5f, -0.7f,
-        //    -0.5f,  0.4f, -0.1f, -0.7f         
-        //};
+    //public float[] spawnRotations = { // 30 degrees with random axis
+    //     0.6f, -0.1f, -0.3f, -0.7f,
+    //     0.3f, -0.4f, -0.5f, -0.7f,
+    //    -0.5f, -0.1f,  0.5f, -0.7f,
+    //    -0.5f,  0.4f, -0.1f, -0.7f         
+    //};
 
-        //public float[] spawnRotations = { // 120 degrees with random axis
-        //     0.0f,  0.6f,  0.6f, 0.5f,
-        //    -0.7f,  0.2f, -0.4f, 0.5f,
-        //     0.4f,  0.7f,  0.3f, 0.5f,
-        //     0.3f, -0.7f, -0.4f, 0.5f
-        //};
+    //public float[] spawnRotations = { // 120 degrees with random axis
+    //     0.0f,  0.6f,  0.6f, 0.5f,
+    //    -0.7f,  0.2f, -0.4f, 0.5f,
+    //     0.4f,  0.7f,  0.3f, 0.5f,
+    //     0.3f, -0.7f, -0.4f, 0.5f
+    //};
 
-    public float[] spawnRotations = { 
+    //public float[] spawnRotations = { 
+    //    -0.1f,  0.3f,  0.2f, 0.9f, //45
+    //     0.2f, -0.2f,  0.2f, 0.9f, //45
+    //    -0.2f, -0.3f,  0.1f, 0.9f, //45
+    //    -0.3f,  0.4f, -0.5f, 0.7f, //90
+    //    -0.5f, -0.4f, -0.2f, 0.7f, //90
+    //    -0.4f,  0.5f,  0.3f, 0.7f, //90
+    //    -0.1f,  0.3f,  0.2f, 0.9f, //45
+    //     0.2f, -0.2f,  0.2f, 0.9f, //45
+    //    -0.2f, -0.3f,  0.1f, 0.9f, //45
+    //    -0.3f,  0.4f, -0.5f, 0.7f, //90
+    //    -0.5f, -0.4f, -0.2f, 0.7f, //90
+    //    -0.4f,  0.5f,  0.3f, 0.7f  //90
+    //};
+
+    public float[] spawnRotations = {
         -0.1f,  0.3f,  0.2f, 0.9f, //45
          0.2f, -0.2f,  0.2f, 0.9f, //45
-        -0.2f, -0.3f,  0.1f, 0.9f, //45
         -0.3f,  0.4f, -0.5f, 0.7f, //90
         -0.5f, -0.4f, -0.2f, 0.7f, //90
-        -0.4f,  0.5f,  0.3f, 0.7f, //90
         -0.1f,  0.3f,  0.2f, 0.9f, //45
          0.2f, -0.2f,  0.2f, 0.9f, //45
-        -0.2f, -0.3f,  0.1f, 0.9f, //45
         -0.3f,  0.4f, -0.5f, 0.7f, //90
         -0.5f, -0.4f, -0.2f, 0.7f, //90
-        -0.4f,  0.5f,  0.3f, 0.7f  //90
     };
 
 
