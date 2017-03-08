@@ -48,6 +48,12 @@ namespace Lean.Touch {
 
 
         public SyncListInt objSelectedShared = new SyncListInt();
+        [SyncVar]
+        public int currentOperation = 0;
+        [Command]
+        public void CmdSetCurrentOperation(int ope) {
+            currentOperation = ope;
+        }
 
 
         [Command]
@@ -175,6 +181,11 @@ namespace Lean.Touch {
                 //if (player.GetComponent<NetworkIdentity>().isLocalPlayer) continue;
                 var selected = new List<int>(player.GetComponent<NetHandleSelectionTouch>().objSelectedShared);
 
+                player.transform.GetChild(0).gameObject.SetActive(false);
+                player.transform.GetChild(1).gameObject.SetActive(false);
+                player.transform.GetChild(2).gameObject.SetActive(false);
+                player.transform.GetChild(3).gameObject.SetActive(false);
+
                 if (selected.Count == 0) continue;
 
                 float minDist = float.MaxValue;
@@ -202,6 +213,15 @@ namespace Lean.Touch {
                 visited.Add(minObj);
                 selected.Remove(minObj);
 
+                int operation = player.GetComponent<NetHandleSelectionTouch>().currentOperation;
+                if (operation > 0 && !player.GetComponent<NetworkIdentity>().isLocalPlayer) {
+                    var OperationObj = player.transform.GetChild(operation - 1);
+                    OperationObj.gameObject.SetActive(true);
+                    OperationObj.position = camera*0.3f + ObjectManager.Get(minObj).transform.position * 0.7f;
+                    
+                    OperationObj.LookAt (ObjectManager.Get(minObj).transform);
+                    OperationObj.localRotation =  OperationObj.localRotation * Quaternion.Euler(90, 0, 0);
+                }
 
                 while (selected.Count > 0) {
 

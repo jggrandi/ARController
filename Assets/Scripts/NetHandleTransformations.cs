@@ -18,10 +18,13 @@ namespace Lean.Touch {
 
         int translationZ = 0;
         int countFrames = 0;
-
+        //int currentOperation = 0; /* move rotate resize move_cel */
+        
         void Start() {
             trackedObjects = GameObject.Find("TrackedObjects");
             lockedObjects = GameObject.Find("LockedObjects");
+            
+            
         }
 
         void Update() {
@@ -45,6 +48,7 @@ namespace Lean.Touch {
 
                     this.gameObject.transform.GetComponent<HandleNetworkFunctions>().LockTransform(GetIndex(g), Utils.GetPosition(modelMatrix), Utils.GetRotation(modelMatrix));
                 }
+                setCurrentOperation(OPERATION_LOCK);
             }
 
             prevMatrix = camMatrix;
@@ -59,6 +63,17 @@ namespace Lean.Touch {
             }
             countFrames++;
 
+
+
+        }
+
+        const int OPERATION_NONE = 0;
+        const int OPERATION_MOVE = 1;
+        const int OPERATION_ROTATE = 2;
+        const int OPERATION_RESIZE = 3;
+        const int OPERATION_LOCK = 4;
+        void setCurrentOperation(int op) {
+            GetComponent<NetHandleSelectionTouch>().CmdSetCurrentOperation(op);
         }
 
        protected virtual void OnEnable() {
@@ -78,6 +93,7 @@ namespace Lean.Touch {
         private void OnFingerUp(LeanFinger finger) {
             translationZ = 0;
             MainController.control.isTapForTransform = false;
+            setCurrentOperation(OPERATION_NONE);
         }
 
         public int GetIndex(GameObject g) {
@@ -117,8 +133,10 @@ namespace Lean.Touch {
                     Vector3 translate = (avg - Camera.main.transform.position).normalized * finger.ScreenDelta.y * transFactor; // obj pos - cam pos
 
                     this.gameObject.GetComponent<HandleNetworkFunctions>().Translate(index, Utils.PowVec3(translate, 1.2f));
+
                 }
             }
+            setCurrentOperation(OPERATION_MOVE);
         }
 
         public void OnGesture(List<LeanFinger> fingers) {  // two fingers on screen
@@ -165,7 +183,8 @@ namespace Lean.Touch {
                 this.gameObject.GetComponent<HandleNetworkFunctions>().CmdScale(index, scale, dir);
 
             }
-        
+            if( Mathf.Abs(scale - 1) > 0.01f) setCurrentOperation(OPERATION_RESIZE);
+            else setCurrentOperation(OPERATION_ROTATE);
         }
 
         private Vector3 avgCenterOfObjects(List<int> objects) {
