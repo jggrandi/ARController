@@ -26,6 +26,15 @@ namespace Lean.Touch {
             
             
         }
+        string log ="";
+
+        void OnGUI() {
+            var centeredStyle = GUI.skin.GetStyle("Label");
+            centeredStyle.alignment = TextAnchor.UpperCenter;
+            centeredStyle.fontSize = 30;
+            GUI.Label(new Rect(Screen.width / 2 - 500, Screen.height / 2 - 25, 500, 50), log, centeredStyle);
+        }
+
 
         void Update() {
             if (!isLocalPlayer) return;
@@ -92,6 +101,7 @@ namespace Lean.Touch {
 
         private void OnFingerUp(LeanFinger finger) {
             translationZ = 0;
+            gestureOperation = 0;
             MainController.control.isTapForTransform = false;
             setCurrentOperation(OPERATION_NONE);
         }
@@ -139,6 +149,7 @@ namespace Lean.Touch {
             setCurrentOperation(OPERATION_MOVE);
         }
 
+        public int gestureOperation = 0;
         public void OnGesture(List<LeanFinger> fingers) {  // two fingers on screen
             if (!isLocalPlayer) return;
             if (LeanTouch.Fingers.Count != 2) return;
@@ -177,14 +188,33 @@ namespace Lean.Touch {
 
                 }
 
-                this.gameObject.GetComponent<HandleNetworkFunctions>().Rotate(index, avg, axisTwist, angleTwist);
-                this.gameObject.GetComponent<HandleNetworkFunctions>().Rotate(index, avg, axis, pos);
-                Vector3 dir = g.transform.position - avg;
-                this.gameObject.GetComponent<HandleNetworkFunctions>().CmdScale(index, scale, dir);
+                float rotationMagnitude = Mathf.Max(Mathf.Abs(angleTwist) * 2, pos); ;
+                float scallingMagnitude = Mathf.Abs(scale-1)*100;
+                
 
+
+                if (gestureOperation == 0 && (rotationMagnitude > 2 || scallingMagnitude > 2)) {
+                    log = angleTwist + "|" + pos + "|" + scallingMagnitude;
+                    if (rotationMagnitude > scallingMagnitude) {
+                        gestureOperation = 1;
+                    } else {
+                        gestureOperation = 2;
+                    }
+                }
+
+                if (gestureOperation == 0) setCurrentOperation(OPERATION_NONE);
+                else if (gestureOperation == 1) setCurrentOperation(OPERATION_ROTATE);
+                else if (gestureOperation == 2) setCurrentOperation(OPERATION_RESIZE);
+
+                if (gestureOperation != 2) {
+                    this.gameObject.GetComponent<HandleNetworkFunctions>().Rotate(index, avg, axisTwist, angleTwist);
+                    this.gameObject.GetComponent<HandleNetworkFunctions>().Rotate(index, avg, axis, pos);
+                }
+                if (gestureOperation != 1) {
+                    Vector3 dir = g.transform.position - avg;
+                    this.gameObject.GetComponent<HandleNetworkFunctions>().CmdScale(index, scale, dir);
+                }
             }
-            if( Mathf.Abs(scale - 1) > 0.01f) setCurrentOperation(OPERATION_RESIZE);
-            else setCurrentOperation(OPERATION_ROTATE);
         }
 
         private Vector3 avgCenterOfObjects(List<int> objects) {
