@@ -314,7 +314,9 @@ namespace Lean.Touch {
             MainController.control.isMultipleSelection = false;
             foreach (int i in MainController.control.objSelected) {
                 GameObject g = ObjectManager.Get(i);
-                g.transform.GetComponent<Renderer>().material = g.transform.GetComponent<ObjectGroupId>().material;
+                if (g.GetComponent<ParticleSystem>() != null) {
+                    g.transform.GetComponent<Renderer>().material = g.transform.GetComponent<ObjectGroupId>().material;
+                }
             }
             MainController.control.objSelected.Clear();
             CmdClearSelectedShared();
