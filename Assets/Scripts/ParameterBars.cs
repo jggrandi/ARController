@@ -55,8 +55,8 @@ public class ParameterBars : MonoBehaviour {
 	void Update () {
         fadeOutCount--;
         alpha = 0.93f * alpha + (fadeOutCount > 0 ? 0.07f:0.0f);
-
-        canvas.transform.LookAt(Camera.main.transform);
+        
+        canvas.transform.rotation = Quaternion.LookRotation((Camera.main.transform.position - transform.position).normalized, new Vector3(0, 1, 0));
         canvas.transform.localPosition = Vector3.zero;
         canvas.transform.position = transform.position;
 

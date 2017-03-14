@@ -169,8 +169,12 @@ namespace Lean.Touch {
 
                 if (g.GetComponent<ParticleSystem>() != null) {
 
-                    float lifeTime = 1 + pos ;
-                    float rate = 1 + angleTwist ;
+                    var dir = LeanGesture.GetScreenDelta(fingers);
+                    float lifeTime = Vector2.Dot(dir, new Vector2(1, 0)) * 0.01f;
+                    float rate = Vector2.Dot(dir, new Vector2(0, 1)) * 0.01f;
+                    
+                    log = lifeTime + " | " + rate;
+
 
                     this.gameObject.GetComponent<HandleNetworkFunctions>().CmdSetParticle(index, lifeTime, rate);
 
@@ -181,8 +185,8 @@ namespace Lean.Touch {
 
                         g.transform.GetComponent<ParameterBars>().active();
                         g.transform.GetComponent<ParameterBars>().values[0] = g.transform.localScale.x * scale / 4.0f;
-                        g.transform.GetComponent<ParameterBars>().values[1] = particle.startLifetime * lifeTime / 5.0f;
-                        g.transform.GetComponent<ParameterBars>().values[2] = r.constant * rate / 12.0f;
+                        g.transform.GetComponent<ParameterBars>().values[1] = (particle.startLifetime + lifeTime) / 5.0f;
+                        g.transform.GetComponent<ParameterBars>().values[2] = (r.constant + rate) / 12.0f;
                     }
 
 
@@ -194,7 +198,7 @@ namespace Lean.Touch {
 
 
                 if (gestureOperation == 0 && (rotationMagnitude > 2 || scallingMagnitude > 2)) {
-                    log = angleTwist + "|" + pos + "|" + scallingMagnitude;
+                    //log = angleTwist + "|" + pos + "|" + scallingMagnitude;
                     if (rotationMagnitude > scallingMagnitude) {
                         gestureOperation = 1;
                     } else {

@@ -219,7 +219,7 @@ namespace Lean.Touch {
                     OperationObj.gameObject.SetActive(true);
                     OperationObj.position = camera*0.3f + ObjectManager.Get(minObj).transform.position * 0.7f;
                     
-                    OperationObj.LookAt (ObjectManager.Get(minObj).transform);
+                    OperationObj.rotation = Quaternion.LookRotation((Camera.main.transform.position - OperationObj.position).normalized, new Vector3(0, 1, 0));
                     OperationObj.localRotation =  OperationObj.localRotation * Quaternion.Euler(90, 0, 0);
                 }
 
@@ -314,7 +314,7 @@ namespace Lean.Touch {
             MainController.control.isMultipleSelection = false;
             foreach (int i in MainController.control.objSelected) {
                 GameObject g = ObjectManager.Get(i);
-                if (g.GetComponent<ParticleSystem>() != null) {
+                if (g.GetComponent<ParticleSystem>() == null) {
                     g.transform.GetComponent<Renderer>().material = g.transform.GetComponent<ObjectGroupId>().material;
                 }
             }

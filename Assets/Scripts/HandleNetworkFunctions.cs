@@ -129,12 +129,12 @@ public class HandleNetworkFunctions : NetworkBehaviour {
 
     }
     [Command]
-    public void CmdSetParticle(int index, float scalarLlifeTime, float scalarRate) {
+    public void CmdSetParticle(int index, float stepLlifeTime, float stepRate) {
 
         ParticleSystem particle = ObjectManager.Get(index).GetComponent<ParticleSystem>();
-        particle.startLifetime *= scalarLlifeTime;
+        particle.startLifetime += stepLlifeTime;
         var r = particle.emission.rate;
-        r.constant *= scalarRate;
+        r.constant += stepRate;
 
         particle.startLifetime = Mathf.Min(Mathf.Max(particle.startLifetime, 0.1f), 5.0f);
         r.constant = Mathf.Min(Mathf.Max(r.constant, 0.1f), 12.0f);
