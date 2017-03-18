@@ -22,8 +22,10 @@ public class MyNetworkManager : NetworkManager {
     }
 
     public void StartMyHost() {
+        MainController.Landscape = GameObject.Find("Panel").transform.GetChild(4).GetComponent<Toggle>().isOn;
         SetPort();
         NetworkManager.singleton.StartHost();
+        ShowLoading();
     }
 
     public void SetPort() {
@@ -31,10 +33,23 @@ public class MyNetworkManager : NetworkManager {
     }
 
     public void JoinGame() {
-        SetPort();
+        MainController.Landscape = GameObject.Find("Panel").transform.GetChild(4).GetComponent<Toggle>().isOn;
         SetIpAddress();
+        SetPort();
         NetworkManager.singleton.StartClient();
+        ShowLoading();
     }
+
+
+    public void ShowLoading() {
+        GameObject.Find("Panel").transform.GetChild(0).gameObject.SetActive(true);
+        GameObject.Find("Panel").transform.GetChild(1).gameObject.SetActive(false);
+        GameObject.Find("Panel").transform.GetChild(2).gameObject.SetActive(false);
+        GameObject.Find("Panel").transform.GetChild(3).gameObject.SetActive(false);
+        GameObject.Find("Panel").transform.GetChild(4).gameObject.SetActive(false);
+
+    }
+
 
     void SetIpAddress() {
         string ipAddress = GameObject.Find("InputFieldIPAddress").transform.FindChild("Text").GetComponent<Text>().text;

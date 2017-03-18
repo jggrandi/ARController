@@ -7,6 +7,18 @@ using System.Collections.Generic;
 namespace Lean.Touch {
     public class NetHandleSelectionTouch : NetworkBehaviour {
 
+        string log = "";
+
+        void OnGUI() {
+            var centeredStyle = GUI.skin.GetStyle("Label");
+            centeredStyle.alignment = TextAnchor.UpperCenter;
+            centeredStyle.fontSize = 30;
+            GUI.Label(new Rect(Screen.width / 2 - 500, Screen.height / 2 - 25, 500, 50), log, centeredStyle);
+        }
+
+
+        
+
         public GameObject trackedObjects = null;
 
         [Tooltip("Ignore fingers with StartedOverGui?")]
@@ -77,10 +89,12 @@ namespace Lean.Touch {
             // Hook into the events we need
             LeanTouch.OnFingerTap += OnFingerTap;
             LeanTouch.OnFingerHeldDown += OnFingerHeldDown;
+            LeanTouch.OnFingerDown += OnFingerDown;
         }
 
         protected virtual void OnDisable() {
             // Unhook the events
+            LeanTouch.OnFingerDown -= OnFingerDown;
             LeanTouch.OnFingerTap -= OnFingerTap;
             LeanTouch.OnFingerHeldDown -= OnFingerHeldDown;
         }
@@ -105,6 +119,7 @@ namespace Lean.Touch {
                 g.transform.parent = lines.transform;
             }*/
             ClearLines();
+            Utils.UpdateToutchSemsibilty();
 
         }
 
@@ -247,16 +262,21 @@ namespace Lean.Touch {
 
             }
             ClearLines();
-
-            if (LeanTouch.Fingers.Count == 1) {
-                if (LeanTouch.Fingers[0].ScreenDelta.magnitude > 0.001f)
-                    isFingerMoving = true;
-            } else {
-                isFingerMoving = false;
-            }
             
-        }
+            isFingerMoving = false;
+            if (LeanTouch.Fingers.Count == 1) {
+                if (Vector2.Distance(LeanTouch.Fingers[0].StartScreenPosition, LeanTouch.Fingers[0].ScreenPosition) * Utils.ToutchSensibility > 5) {
+                    isFingerMoving = true;
+                }
+            }
 
+        }
+        public Vector2 DownStartPostion = new Vector2();
+        private void OnFingerDown(LeanFinger finger) {
+            DownStartPostion = finger.ScreenPosition;
+            
+
+        }
         private void OnFingerTap(LeanFinger finger) {
             // Ignore this tap?
             if (!isLocalPlayer) return;
@@ -287,10 +307,15 @@ namespace Lean.Touch {
         }
 
         private void OnFingerHeldDown(LeanFinger finger) {
+            
             if (!isLocalPlayer) return;
+            log = "1<<<<<";
             if (LeanTouch.Fingers.Count != 1) return;
+            log = "2<<<<<";
             if (IgnoreGuiFingers == true && finger.StartedOverGui == true) return;
+            log = "3<<<<<" + Utils.ToutchSensibility;
             if (isFingerMoving) return;
+            log = "4<<<<<";
 
             var ray = finger.GetRay();// Get ray for finger
             var hit = default(RaycastHit);// Stores the raycast hit info
@@ -299,6 +324,8 @@ namespace Lean.Touch {
 
             bool sync = false;
             if (Physics.Raycast(ray, out hit, float.PositiveInfinity, LayerMask) == true) { // se tocou em um objeto
+
+                log = "5<<<<<";
                 component = hit.collider;
                 if (MainController.control.objSelected.Count > 0) { // only multiple selection when there is at least one object in the selectednow list
                     MainController.control.isMultipleSelection = true;
@@ -309,6 +336,7 @@ namespace Lean.Touch {
             if(sync) CmdSyncSelected();
 
         }
+
 
         public void UnselectAll() {
             MainController.control.isMultipleSelection = false;
@@ -331,7 +359,7 @@ namespace Lean.Touch {
         }
 
         public void Select(LeanFinger finger, Component obj) {
-
+            
             int index = Utils.GetIndex(obj.transform.gameObject);
             if (!MainController.control.isMultipleSelection) {
                 UnselectAll();

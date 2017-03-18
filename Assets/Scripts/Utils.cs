@@ -36,8 +36,23 @@ public static class Utils {
 
 	}
 
+    public static float ToutchSensibility = 1.0f;
 
-	public static Vector3 GetPosition(this Matrix4x4 matrix)
+    public static void UpdateToutchSemsibilty() {
+
+        /*
+         * MotoX2 420
+         * S6 577
+         * Nexeus5 445
+         * 
+         * */
+        ToutchSensibility = 350/Screen.dpi;
+        if (ToutchSensibility < 1) {
+            ToutchSensibility *= ToutchSensibility;
+        }
+    }
+
+    public static Vector3 GetPosition(this Matrix4x4 matrix)
 	{
 		var x = matrix.m03;
 		var y = matrix.m13;

@@ -22,6 +22,7 @@ public class MainController : MonoBehaviour {
 
     public bool isTapForTransform = false;
 
+    public static bool Landscape = true;
     void Awake() {
 
         if (control == null) {
@@ -39,17 +40,22 @@ public class MainController : MonoBehaviour {
             obj.GetComponent<ObjectGroupId>().material = obj.GetComponent<Renderer>().material;
             obj.GetComponent<ObjectGroupId>().index = i;
         }
-            
 
-            // Handle the screen orientation
-        Screen.autorotateToLandscapeLeft = true;
-        Screen.autorotateToLandscapeRight = true;
-        Screen.autorotateToPortraitUpsideDown = false;
-        Screen.autorotateToPortrait = false;
-        Screen.orientation = ScreenOrientation.AutoRotation;
+
+        // Handle the screen orientation
+        
+        Screen.autorotateToLandscapeLeft = Landscape;
+        Screen.autorotateToLandscapeRight = Landscape;
+        Screen.autorotateToPortraitUpsideDown = !Landscape;
+        Screen.autorotateToPortrait = !Landscape;
+        Screen.orientation = Landscape?ScreenOrientation.Landscape: ScreenOrientation.Portrait;
     }
 
-
+    void OnApplicationPause(bool pause) {
+        if (pause) {
+            System.Diagnostics.Process.GetCurrentProcess().Kill();
+        }
+    }
 
     // Update is called once per frame
     void Update () {

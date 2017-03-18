@@ -135,12 +135,12 @@ namespace Lean.Touch {
 
             foreach (var index in MainController.control.objSelected) {
                 if (translationZ < 2) {
-                    Vector3 right = Camera.main.transform.right.normalized * finger.ScreenDelta.x * transFactor;
-                    Vector3 up = Camera.main.transform.up.normalized * finger.ScreenDelta.y * transFactor;
+                    Vector3 right = Camera.main.transform.right.normalized * finger.ScreenDelta.x * transFactor * Utils.ToutchSensibility;
+                    Vector3 up = Camera.main.transform.up.normalized * finger.ScreenDelta.y * transFactor * Utils.ToutchSensibility;
                     this.gameObject.transform.GetComponent<HandleNetworkFunctions>().Translate(index, Utils.PowVec3(right + up, 1.2f));
                 } else if (translationZ == 2) {
                     Vector3 avg = avgCenterOfObjects(MainController.control.objSelected);
-                    Vector3 translate = (avg - Camera.main.transform.position).normalized * finger.ScreenDelta.y * transFactor; // obj pos - cam pos
+                    Vector3 translate = (avg - Camera.main.transform.position).normalized * finger.ScreenDelta.y * transFactor * Utils.ToutchSensibility; // obj pos - cam pos
 
                     this.gameObject.GetComponent<HandleNetworkFunctions>().Translate(index, Utils.PowVec3(translate, 1.2f));
 
@@ -150,6 +150,7 @@ namespace Lean.Touch {
         }
 
         public int gestureOperation = 0;
+       
         public void OnGesture(List<LeanFinger> fingers) {  // two fingers on screen
             if (!isLocalPlayer) return;
             if (LeanTouch.Fingers.Count != 2) return;
