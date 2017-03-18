@@ -61,13 +61,13 @@ public class HandleMultitargetsObjectsPosition : MonoBehaviour
         for (int i = 0; i < imageTargets.transform.childCount; i++) {
             if (trackedObjects.activeInHierarchy) {
                 if (imageTargets.transform.GetChild(i).GetChild(0).gameObject.activeInHierarchy) {
-                    if (Vector3.Distance(imageTargets.transform.GetChild(i).GetChild(0).transform.position, avg) > distAvg*1.5) {
+                    //if (Vector3.Distance(imageTargets.transform.GetChild(i).GetChild(0).transform.position, avg) > distAvg*1.5) {
                         //Debug.Log("Descartado: " + i);
-                        continue;
-                    }
+                      //  continue;
+                    //}
                     
-                    trackedObjects.transform.position = Vector3.Lerp(trackedObjects.transform.position, imageTargets.transform.GetChild(i).GetChild(0).transform.position, 0.05f);
-                    trackedObjects.transform.rotation = Quaternion.Slerp(trackedObjects.transform.rotation, imageTargets.transform.GetChild(i).GetChild(0).transform.rotation, 0.05f);
+                    trackedObjects.transform.position = Vector3.Lerp(trackedObjects.transform.position, imageTargets.transform.GetChild(i).GetChild(0).transform.position, 0.10f);
+                    trackedObjects.transform.rotation = Quaternion.Slerp(trackedObjects.transform.rotation, imageTargets.transform.GetChild(i).GetChild(0).transform.rotation, 0.10f);
 
                     avg2 += imageTargets.transform.GetChild(i).GetChild(0).transform.position;
                     n++;

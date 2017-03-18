@@ -309,13 +309,9 @@ namespace Lean.Touch {
         private void OnFingerHeldDown(LeanFinger finger) {
             
             if (!isLocalPlayer) return;
-            log = "1<<<<<";
             if (LeanTouch.Fingers.Count != 1) return;
-            log = "2<<<<<";
             if (IgnoreGuiFingers == true && finger.StartedOverGui == true) return;
-            log = "3<<<<<" + Utils.ToutchSensibility;
             if (isFingerMoving) return;
-            log = "4<<<<<";
 
             var ray = finger.GetRay();// Get ray for finger
             var hit = default(RaycastHit);// Stores the raycast hit info
@@ -324,8 +320,7 @@ namespace Lean.Touch {
 
             bool sync = false;
             if (Physics.Raycast(ray, out hit, float.PositiveInfinity, LayerMask) == true) { // se tocou em um objeto
-
-                log = "5<<<<<";
+                
                 component = hit.collider;
                 if (MainController.control.objSelected.Count > 0) { // only multiple selection when there is at least one object in the selectednow list
                     MainController.control.isMultipleSelection = true;

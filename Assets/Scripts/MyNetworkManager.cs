@@ -47,6 +47,7 @@ public class MyNetworkManager : NetworkManager {
         GameObject.Find("Panel").transform.GetChild(2).gameObject.SetActive(false);
         GameObject.Find("Panel").transform.GetChild(3).gameObject.SetActive(false);
         GameObject.Find("Panel").transform.GetChild(4).gameObject.SetActive(false);
+        GameObject.Find("Panel").transform.GetChild(5).gameObject.SetActive(false);
 
     }
 
