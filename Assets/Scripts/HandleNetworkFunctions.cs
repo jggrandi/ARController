@@ -79,6 +79,7 @@ public class HandleNetworkFunctions : NetworkBehaviour {
     public void CmdTranslate(int index, Vector3 vec) {
         var g = GetByIndex(index);
         g.transform.localPosition += vec;
+        Debug.Log(vec.x);
         RpcTranslate(index, g.transform.localPosition);
     }
     [ClientRpc]
