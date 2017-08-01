@@ -8,7 +8,7 @@ public class MyNetworkManager : NetworkManager {
 
     public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId) {
         if (TestController.tcontrol.sceneIndex == TestController.tcontrol.tasksToPermute + 1) return; //The +1 is because of the howtouse initial task
-        base.OnServerAddPlayer(conn,playerControllerId);
+        base.OnServerAddPlayer(conn, playerControllerId);
     }
 
     public override void OnClientSceneChanged(NetworkConnection conn) {
@@ -28,7 +28,7 @@ public class MyNetworkManager : NetworkManager {
     public void StartMyHost() {
         SetPort();
         NetworkManager.singleton.StartHost();
-        
+
     }
 
     public void SetPort() {

@@ -30,9 +30,9 @@ public class NetHandleGroup : NetworkBehaviour {
             //g.GetComponent<Renderer>().material = g.GetComponent<ObjectGroupId>().material;
             
         }
-        
         MainController.control.objSelected.Clear();
         MainController.control.isMultipleSelection = false;
+        this.gameObject.transform.GetComponent<Lean.Touch.NetHandleSelectionTouch>().UnselectAll();
     }
 
     [Command]

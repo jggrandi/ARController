@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 public static class Utils {
     public enum Transformations { Translation, Rotation, Scale };
@@ -35,8 +36,23 @@ public static class Utils {
 
 	}
 
+    public static float ToutchSensibility = 1.0f;
 
-	public static Vector3 GetPosition(this Matrix4x4 matrix)
+    public static void UpdateToutchSemsibilty() {
+
+        /*
+         * MotoX2 420
+         * S6 577
+         * Nexeus5 445
+         * 
+         * */
+        ToutchSensibility = 350/Screen.dpi;
+        if (ToutchSensibility < 1) {
+            ToutchSensibility *= ToutchSensibility;
+        }
+    }
+
+    public static Vector3 GetPosition(this Matrix4x4 matrix)
 	{
 		var x = matrix.m03;
 		var y = matrix.m13;
@@ -85,12 +101,6 @@ public static class Utils {
 
     public static int GetIndex(GameObject g) {
         return g.GetComponent<ObjectGroupId>().index;
-    }
-
-    static GameObject TrackedObjects = null;
-    static public GameObject GetByIndex(int index) {
-        if (TrackedObjects == null) TrackedObjects = GameObject.Find("TrackedObjects").gameObject;
-        return TrackedObjects.transform.GetChild(index).gameObject;
     }
 
     public static float distMatrices(Matrix4x4 a, Matrix4x4 b)
@@ -292,5 +302,16 @@ public static class Utils {
 		a = b;
 		b = tmp;
 	}
-
+    static public void setTimeout(Action TheAction, int Timeout) {
+        Debug.Log(Timeout);
+        Thread t = new Thread(
+            () => {
+                Debug.Log("A");
+                Thread.Sleep(Timeout);
+                Debug.Log("B");
+                TheAction.Invoke();
+            }
+        );
+        t.Start();
+    }
 }

@@ -22,6 +22,7 @@ public class MainController : MonoBehaviour {
 
     public bool isTapForTransform = false;
 
+    public static bool Landscape = true;
     void Awake() {
 
         control = this;
@@ -35,15 +36,20 @@ public class MainController : MonoBehaviour {
 
              
         // Handle the screen orientation
-        Screen.autorotateToLandscapeLeft = true;
-        Screen.autorotateToLandscapeRight = true;
-        Screen.autorotateToPortraitUpsideDown = false;
-        Screen.autorotateToPortrait = false;
-        Screen.orientation = ScreenOrientation.AutoRotation;
+        
+        Screen.autorotateToLandscapeLeft = Landscape;
+        Screen.autorotateToLandscapeRight = Landscape;
+        Screen.autorotateToPortraitUpsideDown = !Landscape;
+        Screen.autorotateToPortrait = !Landscape;
+        Screen.orientation = Landscape?ScreenOrientation.Landscape: ScreenOrientation.Portrait;
     }
 
-
     public float dist = 0.75f;
+    void OnApplicationPause(bool pause) {
+        if (pause) {
+            System.Diagnostics.Process.GetCurrentProcess().Kill();
+        }
+    }
 
     Vector3 prevPos;
     // Update is called once per frame

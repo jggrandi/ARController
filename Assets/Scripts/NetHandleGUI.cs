@@ -68,4 +68,10 @@ public class NetHandleGUI : NetworkBehaviour {
             btnGroup.SetActive(false);
         }
     }
+    public void CloseInstructions() {
+        GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(true);
+        GameObject.Find("Canvas").transform.GetChild(2).gameObject.SetActive(true);
+        GameObject.Find("Instructions").SetActive(false);
+
+    }
 }

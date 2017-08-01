@@ -7,6 +7,18 @@ using System.Collections.Generic;
 namespace Lean.Touch {
     public class NetHandleSelectionTouch : NetworkBehaviour {
 
+        string log = "";
+
+        void OnGUI() {
+            var centeredStyle = GUI.skin.GetStyle("Label");
+            centeredStyle.alignment = TextAnchor.UpperCenter;
+            centeredStyle.fontSize = 30;
+            GUI.Label(new Rect(Screen.width / 2 - 500, Screen.height / 2 - 25, 500, 50), log, centeredStyle);
+        }
+
+
+        
+
         public GameObject trackedObjects = null;
 
         [Tooltip("Ignore fingers with StartedOverGui?")]
@@ -47,24 +59,25 @@ namespace Lean.Touch {
         }*/
 
 
-        public List<int> objSelectedShared = new List<int>();
-
-        [ClientRpc]
-        void RpcAddSelected(int index) {
-            objSelectedShared.Add(index);
+        public SyncListInt objSelectedShared = new SyncListInt();
+        [SyncVar]
+        public int currentOperation = 0;
+        [Command]
+        public void CmdSetCurrentOperation(int ope) {
+            currentOperation = ope;
         }
+
+
         [Command]
         void CmdAddSelected(int index) {
-            RpcAddSelected(index);
+            objSelectedShared.Add(index);
         }
-        [ClientRpc]
-        void RpcClearSelected() {
-            objSelectedShared.Clear();
-        }
+
         [Command]
         void CmdClearSelected() {
-            RpcClearSelected();
+            objSelectedShared.Clear();
         }
+
         public void CmdSyncSelected() {
             CmdClearSelected();
             foreach (var i in MainController.control.objSelected) {
@@ -76,10 +89,12 @@ namespace Lean.Touch {
             // Hook into the events we need
             LeanTouch.OnFingerTap += OnFingerTap;
             LeanTouch.OnFingerHeldDown += OnFingerHeldDown;
+            LeanTouch.OnFingerDown += OnFingerDown;
         }
 
         protected virtual void OnDisable() {
             // Unhook the events
+            LeanTouch.OnFingerDown -= OnFingerDown;
             LeanTouch.OnFingerTap -= OnFingerTap;
             LeanTouch.OnFingerHeldDown -= OnFingerHeldDown;
         }
@@ -91,8 +106,8 @@ namespace Lean.Touch {
         public void Start() {
             DataSyncRef = GameObject.Find("MainHandler").GetComponent<DataSync>();
 
-            // if (selectedMaterial == null)
-            selectedMaterial = (Material)Resources.Load("Light Blue");
+            if (selectedMaterial == null)
+                selectedMaterial = (Material)Resources.Load("Light Blue");
 
             if (!isLocalPlayer) return;
 
@@ -104,6 +119,7 @@ namespace Lean.Touch {
                 g.transform.parent = lines.transform;
             }*/
             ClearLines();
+            Utils.UpdateToutchSemsibilty();
 
         }
 
@@ -144,21 +160,46 @@ namespace Lean.Touch {
             CameraPosition = p;
         }
 
+        //[ClientRpc]
+        //public void RpcTragetsTracked(int t) {
+            
+        //}
+
+        //[Command]
+        //public void CmdTargetsTracked(int t) {
+        //    targetsTracked = t;
+
+        //}
+
         [ClientRpc]
         public void RpcTragetsTracked(int t) {
-            
+            targetsTracked = t;
         }
 
         [Command]
         public void CmdTargetsTracked(int t) {
-            targetsTracked = t;
+            RpcTragetsTracked(t);
 
         }
+
+        [Command]
+        public void CmdClearSelectedShared() {
+            objSelectedShared.Clear();
+        }
+
+
+        public int unselectAllCount = -1;
 
         void Update() {
 
             if (!isLocalPlayer) return;
+            CmdSetCameraPosition(trackedObjects.transform.InverseTransformPoint(Camera.main.transform.position));
+            CmdTargetsTracked(MainController.control.targetsTrackedNow);
 
+            if(unselectAllCount > 0 && --unselectAllCount == 0) {
+                UnselectAll();
+                CmdSyncSelected();
+            }
             CmdSetCameraPosition(trackedObjects.transform.InverseTransformPoint(Camera.main.transform.position));
             CmdTargetsTracked(MainController.control.targetsTrackedNow);
             linesUsed = 0;
@@ -166,6 +207,11 @@ namespace Lean.Touch {
             foreach (var player in GameObject.FindGameObjectsWithTag("player")) {
                 //if (player.GetComponent<NetworkIdentity>().isLocalPlayer) continue;
                 var selected = new List<int>(player.GetComponent<NetHandleSelectionTouch>().objSelectedShared);
+
+                //player.transform.GetChild(0).gameObject.SetActive(false);
+                //player.transform.GetChild(1).gameObject.SetActive(false);
+                //player.transform.GetChild(2).gameObject.SetActive(false);
+                //player.transform.GetChild(3).gameObject.SetActive(false);
 
                 if (selected.Count == 0) continue;
 
@@ -180,7 +226,7 @@ namespace Lean.Touch {
                 }
 
                 foreach (var index in selected) {
-                    var g = Utils.GetByIndex(index);
+                    var g = ObjectManager.Get(index);
                     var dist = Vector3.Magnitude(g.transform.position - camera);
                     if (dist < minDist) {
                         minDist = dist;
@@ -188,12 +234,21 @@ namespace Lean.Touch {
                     }
                 }
 
-                AddLine(camera, Utils.GetByIndex(minObj).transform.position, color);
+                AddLine(camera, ObjectManager.Get(minObj).transform.position, color);
                 
                 List<int> visited = new List<int>();
                 visited.Add(minObj);
                 selected.Remove(minObj);
 
+                int operation = player.GetComponent<NetHandleSelectionTouch>().currentOperation;
+                if (operation > 0 && !player.GetComponent<NetworkIdentity>().isLocalPlayer) {
+                    var OperationObj = player.transform.GetChild(operation - 1);
+                    OperationObj.gameObject.SetActive(true);
+                    OperationObj.position = camera*0.3f + ObjectManager.Get(minObj).transform.position * 0.7f;
+                    
+                    OperationObj.rotation = Quaternion.LookRotation((Camera.main.transform.position - OperationObj.position).normalized, new Vector3(0, 1, 0));
+                    OperationObj.localRotation =  OperationObj.localRotation * Quaternion.Euler(90, 0, 0);
+                }
 
                 while (selected.Count > 0) {
 
@@ -203,7 +258,7 @@ namespace Lean.Touch {
 
                     foreach (var a in visited) {
                         foreach (var b in selected) {
-                            var dist = Vector3.Magnitude(Utils.GetByIndex(a).transform.position - Utils.GetByIndex(b).transform.position);
+                            var dist = Vector3.Magnitude(ObjectManager.Get(a).transform.position - ObjectManager.Get(b).transform.position);
                             if (dist < minDist) {
                                 minDist = dist;
                                 minObjA = a;
@@ -211,7 +266,7 @@ namespace Lean.Touch {
                             }
                         }
                     }
-                    AddLine(Utils.GetByIndex(minObjA).transform.position, Utils.GetByIndex(minObjB).transform.position, color);
+                    AddLine(ObjectManager.Get(minObjA).transform.position, ObjectManager.Get(minObjB).transform.position, color);
 
                     selected.Remove(minObjB);
                     visited.Add(minObjB);
@@ -219,16 +274,21 @@ namespace Lean.Touch {
 
             }
             ClearLines();
-
-            if (LeanTouch.Fingers.Count == 1) {
-                if (LeanTouch.Fingers[0].ScreenDelta.magnitude > 0.001f)
-                    isFingerMoving = true;
-            } else {
-                isFingerMoving = false;
-            }
             
-        }
+            isFingerMoving = false;
+            if (LeanTouch.Fingers.Count == 1) {
+                if (Vector2.Distance(LeanTouch.Fingers[0].StartScreenPosition, LeanTouch.Fingers[0].ScreenPosition) * Utils.ToutchSensibility > 5) {
+                    isFingerMoving = true;
+                }
+            }
 
+        }
+        public Vector2 DownStartPostion = new Vector2();
+        private void OnFingerDown(LeanFinger finger) {
+            DownStartPostion = finger.ScreenPosition;
+            
+
+        }
         private void OnFingerTap(LeanFinger finger) {
             // Ignore this tap?
             if (!isLocalPlayer) return;
@@ -250,14 +310,16 @@ namespace Lean.Touch {
                 CmdSyncSelected();
             } else {
                 if (MainController.control.isTapForTransform) return;
+                //if (MainController.control.isTapForTransform ) return;
                 if (MainController.control.objSelected.Count > 0) {
-                    UnselectAll();
-                    CmdSyncSelected();
+                    unselectAllCount = 10;
+                    
                 }
             }
         }
 
         private void OnFingerHeldDown(LeanFinger finger) {
+            
             if (!isLocalPlayer) return;
             if (LeanTouch.Fingers.Count != 1) return;
             if (IgnoreGuiFingers == true && finger.StartedOverGui == true) return;
@@ -270,6 +332,7 @@ namespace Lean.Touch {
 
             bool sync = false;
             if (Physics.Raycast(ray, out hit, float.PositiveInfinity, LayerMask) == true) { // se tocou em um objeto
+                
                 component = hit.collider;
                 if (MainController.control.objSelected.Count > 0) { // only multiple selection when there is at least one object in the selectednow list
                     MainController.control.isMultipleSelection = true;
@@ -281,22 +344,27 @@ namespace Lean.Touch {
 
         }
 
+
         public void UnselectAll() {
             MainController.control.isMultipleSelection = false;
             //foreach (int i in MainController.control.objSelected) {
-                //GameObject g = Utils.GetByIndex(i);
-                //g.transform.GetComponent<Renderer>().material = g.transform.GetComponent<ObjectGroupId>().material;
+            //    GameObject g = ObjectManager.Get(i);
+            //    g.transform.GetComponent<Renderer>().material = g.transform.GetComponent<ObjectGroupId>().material;
             //}
-            MainController.control.objSelected.Clear();
+            //MainController.control.objSelected.Clear();
+            //CmdClearSelectedShared();
+            MainController.control.isMultipleSelection = false;
         }
 
         public void Select(int index) {
-            //Utils.GetByIndex(index).GetComponent<Renderer>().material = selectedMaterial;
+            //if (ObjectManager.Get(index).GetComponent<ParticleSystem>() == null) {
+                //ObjectManager.Get(index).GetComponent<Renderer>().material = selectedMaterial;
+            //}
             MainController.control.objSelected.Add(index);
         }
 
         public void Select(LeanFinger finger, Component obj) {
-
+            
             int index = Utils.GetIndex(obj.transform.gameObject);
             if (!MainController.control.isMultipleSelection) {
                 UnselectAll();

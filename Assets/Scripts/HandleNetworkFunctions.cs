@@ -9,17 +9,12 @@ public class HandleNetworkFunctions : NetworkBehaviour {
     public Transform GetLocalTransform() {
         return TrackedObjects.transform.parent;
     }
-
-    public GameObject GetByIndex(int index) {
-        return TrackedObjects.transform.GetChild(index).gameObject;
-    }
-
     
     public void SyncObj(int index, bool pos = true, bool rot = true, bool scale = true) {
         Vector3 p = Vector3.zero;
         Quaternion r = new Quaternion(0, 0, 0, 0);
         Vector3 s = Vector3.zero;
-        var g = GetByIndex(index);
+        var g = ObjectManager.Get(index);
         if (pos) p = g.transform.localPosition;
         if (rot) r = g.transform.localRotation;
         if (scale) s = g.transform.localScale;
@@ -36,7 +31,7 @@ public class HandleNetworkFunctions : NetworkBehaviour {
 
     [ClientRpc]
     public void RpcSyncObj(int index, Vector3 pos, Quaternion rot, Vector3 scale) {
-        var g = GetByIndex(index);
+        var g = ObjectManager.Get(index);
         if (pos != Vector3.zero) g.transform.localPosition = pos;
         if (rot != new Quaternion(0,0,0,0)) g.transform.localRotation = rot;
         if (scale != Vector3.zero) g.transform.localScale = scale;
@@ -51,8 +46,8 @@ public class HandleNetworkFunctions : NetworkBehaviour {
         if (isLocalPlayer) return;
         position = GetLocalTransform().TransformPoint(position);
         rotation = rotation * GetLocalTransform().rotation;
-        GetByIndex(index).transform.position = position;
-        GetByIndex(index).transform.rotation = rotation;
+        ObjectManager.Get(index).transform.position = position;
+        ObjectManager.Get(index).transform.rotation = rotation;
     }
 
     [Command]
@@ -66,7 +61,7 @@ public class HandleNetworkFunctions : NetworkBehaviour {
     }
 
     public void Translate(int index, Vector3 vec) {
-        var g = GetByIndex(index);
+        var g = ObjectManager.Get(index);
         Vector3 prevLocalPos = g.transform.localPosition;
         g.transform.position += vec;
         Vector3 localPos = g.transform.localPosition;
@@ -77,7 +72,7 @@ public class HandleNetworkFunctions : NetworkBehaviour {
 
     [Command]
     public void CmdTranslate(int index, Vector3 vec) {
-        var g = GetByIndex(index);
+        var g = ObjectManager.Get(index);
         g.transform.localPosition += vec;
         SyncObj(index);
         //Debug.Log(vec.x);
@@ -85,14 +80,14 @@ public class HandleNetworkFunctions : NetworkBehaviour {
     }
     [ClientRpc]
     public void RpcTranslate(int index, Vector3 pos) {
-        var g = GetByIndex(index);
+        var g = ObjectManager.Get(index);
         g.transform.localPosition = pos;
     }
     
 
     [Command]
     public void CmdRotate(int index, Vector3 avg, Vector3 axis, float mag) {
-        var g = GetByIndex(index);
+        var g = ObjectManager.Get(index);
         avg = GetLocalTransform().TransformPoint(avg);
         axis = GetLocalTransform().TransformVector(axis);
         g.transform.RotateAround(avg, axis, mag);
@@ -107,7 +102,7 @@ public class HandleNetworkFunctions : NetworkBehaviour {
 
     [ClientRpc]
     public void RpcScale(int index, float scale, Vector3 dir) {
-        var g = GetByIndex(index);
+        var g = ObjectManager.Get(index);
         g.transform.position += dir * (-1 + scale);
 
         g.transform.localScale *= scale;
@@ -124,8 +119,66 @@ public class HandleNetworkFunctions : NetworkBehaviour {
     }
 
 
+    [ClientRpc]
+    public void RpcSetParticle(int index, float lifeTime, float rate) {
+        ParticleSystem particle = ObjectManager.Get(index).GetComponent<ParticleSystem>();
+        particle.startLifetime = lifeTime;
+        var r = particle.emission.rate;
+
+        r.constant = rate;
+
+        var em = particle.emission;
+        em.rate = new ParticleSystem.MinMaxCurve(rate);
+
+    }
+    [Command]
+    public void CmdSetParticle(int index, float stepLlifeTime, float stepRate) {
+
+        ParticleSystem particle = ObjectManager.Get(index).GetComponent<ParticleSystem>();
+        particle.startLifetime += stepLlifeTime;
+        var r = particle.emission.rate;
+        r.constant += stepRate;
+
+        particle.startLifetime = Mathf.Min(Mathf.Max(particle.startLifetime, 0.1f), 5.0f);
+        r.constant = Mathf.Min(Mathf.Max(r.constant, 0.1f), 12.0f);
+
+
+        var em = particle.emission;
+        em.rate = new ParticleSystem.MinMaxCurve(r.constant);
+
+        RpcSetParticle(index, particle.startLifetime, r.constant);
+    }
+
+
+
+    /*[Command]
+    public void CmdSetGroup(GameObject obj) {
+        obj.transform.gameObject.GetComponent<ObjectGroupId>().id = MainController.control.idAvaiableNow;
+    }
+    [Command]
+    public void CmdSetGroup2(GameObject obj, int id) {
+        obj.transform.gameObject.GetComponent<ObjectGroupId>().id = id;
+    }
+    [Command]
+    public void CmdIncrementCount() {
+        MainController.control.idAvaiableNow++;
+    }*/
+    /*
+    [ClientRpc]
+    public void RpcSyncCamPosition(Vector3 pos) {
+        gameObject.transform.GetChild(0).transform.position = pos;
+    }
+    [Command]
+    public void CmdSyncCamPosition(Vector3 pos) {
+        RpcSyncCamPosition(pos);
+    }
+    public void SyncCamPosition(Vector3 pos) {
+        gameObject.transform.GetChild(0).transform.position = pos;
+        CmdSyncCamPosition(pos);
+    }*/
+
+
     public override void OnStartLocalPlayer() {
-    //public override void OnStartClient() {
         CmdSyncAll();
     }
 
