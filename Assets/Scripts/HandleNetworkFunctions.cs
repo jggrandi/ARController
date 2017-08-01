@@ -74,7 +74,8 @@ public class HandleNetworkFunctions : NetworkBehaviour {
     public void CmdTranslate(int index, Vector3 vec) {
         var g = ObjectManager.Get(index);
         g.transform.localPosition += vec;
-        RpcTranslate(index, g.transform.localPosition);
+        SyncObj(index);
+        //RpcTranslate(index, g.transform.localPosition);
     }
     [ClientRpc]
     public void RpcTranslate(int index, Vector3 pos) {
