@@ -25,6 +25,10 @@ public class ObjectManager : MonoBehaviour {
         for (int i = 0; i < parent.childCount; i++) {
             list.Add(parent.GetChild(i).gameObject);
         }
+        parent = GameObject.Find("TrainingObjects").transform;
+        for (int i = 0; i < parent.childCount; i++) {
+            list.Add(parent.GetChild(i).gameObject);
+        }
         manager = this;
     }
 
