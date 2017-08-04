@@ -20,8 +20,8 @@ public class SetupScene : NetworkBehaviour {
             GameObject.Find("PanelClient").gameObject.SetActive(false);
             GameObject.Find("PanelServer").gameObject.SetActive(true);
 
-            GameObject.Find("InputFieldUserID").GetComponent<InputField>().text = TestController.tcontrol.userID.ToString();
-            int[] order = Utils.selectUserTaskSequence(TestController.tcontrol.userID, TestController.tcontrol.tasksToPermute);
+            GameObject.Find("InputFieldGroupID").GetComponent<InputField>().text = TestController.tcontrol.groupID.ToString();
+            int[] order = Utils.selectTaskSequence(TestController.tcontrol.groupID, TestController.tcontrol.tasksToPermute);
             TestController.tcontrol.taskOrder.Clear();
 			TestController.tcontrol.taskOrder.Add (-1);
             for (int i = 0; i < order.Length; i++)
@@ -60,7 +60,7 @@ public class SetupScene : NetworkBehaviour {
 
     void UpdateScene() {
 		
-        int[] order = Utils.selectUserTaskSequence(TestController.tcontrol.userID, TestController.tcontrol.tasksToPermute);
+        int[] order = Utils.selectTaskSequence(TestController.tcontrol.groupID, TestController.tcontrol.tasksToPermute);
         TestController.tcontrol.taskOrder.Clear();
 
 		TestController.tcontrol.taskOrder.Add (-1);
@@ -75,7 +75,7 @@ public class SetupScene : NetworkBehaviour {
 
     [Command]
     void CmdUpdateUser() {
-        TestController.tcontrol.userID = int.Parse(GameObject.Find("InputFieldUserID").GetComponent<InputField>().text);
+        TestController.tcontrol.groupID = int.Parse(GameObject.Find("InputFieldGroupID").GetComponent<InputField>().text);
     }
 
     [Command]
@@ -85,7 +85,7 @@ public class SetupScene : NetworkBehaviour {
 
     [Command]
     void CmdStartScene() {
-        MyNetworkManager.singleton.ServerChangeScene("workingWithNetNew");
+        MyNetworkManager.singleton.ServerChangeScene("CollaborativeTasks");
     }
 
     [Command]

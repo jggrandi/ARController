@@ -264,7 +264,7 @@ public static class Utils {
 
     public static List<int> allPermutations = new List<int>();
 
-	public static int[] selectUserTaskSequence(int uid, int tasks){ //Select an permutation based on the ID given
+	public static int[] selectTaskSequence(int uid, int tasks){ //Select an permutation based on the ID given
 		allPermutations.Clear ();
 		int[] elements = new int[tasks];
 		for (int i = 0; i < tasks; i++)

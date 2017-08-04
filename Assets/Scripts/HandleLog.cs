@@ -21,7 +21,7 @@ public class HandleLog : NetworkBehaviour {
         dataSync = gameObject.GetComponent<DataSync>();
         trackedObjects = GameObject.Find("TrackedObjects").gameObject;
         int task = TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIndex];
-        log = new Log(TestController.tcontrol.userID.ToString(), task);
+        log = new Log(TestController.tcontrol.groupID.ToString(), task);
 
 		previousPiece = dataSync.pieceActiveNow;
 	}

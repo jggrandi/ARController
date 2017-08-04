@@ -14,7 +14,7 @@ public class TestController : NetworkBehaviour {
     public SyncListInt taskOrder = new SyncListInt();
     
     [SyncVar]
-    public int userID = 0;
+    public int groupID = 0;
     [SyncVar]
     public int sceneIndex = 0;
 
