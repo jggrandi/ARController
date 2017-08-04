@@ -151,18 +151,18 @@ namespace Lean.Touch {
         [ClientRpc]
         public void RpcSetCameraPosition(Vector3 p) {
 
-
-        }
-        [Command]
-        public void CmdSetCameraPosition(Vector3 p) {
             if (trackedObjects == null) trackedObjects = GameObject.Find("TrackedObjects");
             p = trackedObjects.transform.TransformPoint(p);
             CameraPosition = p;
         }
+        [Command]
+        public void CmdSetCameraPosition(Vector3 p) {
+            RpcSetCameraPosition(p);
+        }
 
         //[ClientRpc]
         //public void RpcTragetsTracked(int t) {
-            
+
         //}
 
         //[Command]
@@ -208,10 +208,10 @@ namespace Lean.Touch {
                 //if (player.GetComponent<NetworkIdentity>().isLocalPlayer) continue;
                 var selected = new List<int>(player.GetComponent<NetHandleSelectionTouch>().objSelectedShared);
 
-                //player.transform.GetChild(0).gameObject.SetActive(false);
-                //player.transform.GetChild(1).gameObject.SetActive(false);
-                //player.transform.GetChild(2).gameObject.SetActive(false);
-                //player.transform.GetChild(3).gameObject.SetActive(false);
+                player.transform.GetChild(0).gameObject.SetActive(false);
+                player.transform.GetChild(1).gameObject.SetActive(false);
+                player.transform.GetChild(2).gameObject.SetActive(false);
+                player.transform.GetChild(3).gameObject.SetActive(false);
 
                 if (selected.Count == 0) continue;
 
@@ -349,10 +349,12 @@ namespace Lean.Touch {
             MainController.control.isMultipleSelection = false;
             //foreach (int i in MainController.control.objSelected) {
             //    GameObject g = ObjectManager.Get(i);
-            //    g.transform.GetComponent<Renderer>().material = g.transform.GetComponent<ObjectGroupId>().material;
+                //if (g.GetComponent<ParticleSystem>() == null) {
+                //    g.transform.GetComponent<Renderer>().material = g.transform.GetComponent<ObjectGroupId>().material;
+                //}
             //}
-            //MainController.control.objSelected.Clear();
-            //CmdClearSelectedShared();
+            MainController.control.objSelected.Clear();
+            CmdClearSelectedShared();
             MainController.control.isMultipleSelection = false;
         }
 
