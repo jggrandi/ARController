@@ -4,22 +4,36 @@ using UnityEngine.Networking;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+
+
 public class MyNetworkManager : NetworkManager {
 
-    public int connID;
+    
 
     public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId) {
-        if (TestController.tcontrol.sceneIndex == TestController.tcontrol.tasksToPermute + 1) return; //The +1 is because of the howtouse initial task
+
+        //if(TestController.tcontrol != null)
+            if (TestController.tcontrol.sceneIndex == TestController.tcontrol.tasksToPermute + 1) return; //The +1 is because of the howtouse initial task
+        //NetworkServer.AddPlayerForConnection()
+        //GameObject playersMan = GameObject.Find("PlayersManager");
+        //if (playersMan.GetComponent<PlayersManager>().Get(conn.connectionId) == null)
+        //    playersMan.GetComponent<PlayersManager>().Set(conn);
+        //else
+        //    conn = playersMan.GetComponent<PlayersManager>().Get(conn.connectionId);
+
         base.OnServerAddPlayer(conn, playerControllerId);
         
     }
 
-    public override void OnClientConnect(NetworkConnection conn) {
-        connID = conn.connectionId;
-        base.OnClientConnect(conn);
-    }
+    //public override void OnClientConnect(NetworkConnection conn) {
+    //    connID = conn.connectionId;
+    //    base.OnClientConnect(conn);
+    //}
 
     public override void OnClientSceneChanged(NetworkConnection conn) {
+        Debug.Log(conn.address);
+        Debug.Log(conn.connectionId);
+
         StartCoroutine(Wait(conn));
     }
 

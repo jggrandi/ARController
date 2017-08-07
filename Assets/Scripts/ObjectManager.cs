@@ -22,10 +22,13 @@ public class ObjectManager : MonoBehaviour {
     void Awake() {
         var parent = GameObject.Find("TrackedObjects").transform;
 
+        if (parent == null) return;
+        
         for (int i = 0; i < parent.childCount; i++) {
             list.Add(parent.GetChild(i).gameObject);
         }
         parent = GameObject.Find("TrainingObjects").transform;
+        if (parent == null) return;
         for (int i = 0; i < parent.childCount; i++) {
             list.Add(parent.GetChild(i).gameObject);
         }

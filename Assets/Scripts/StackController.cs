@@ -46,7 +46,10 @@ public class StackController : NetworkBehaviour {
     GUIStyle titleStyle2 = new GUIStyle();
 
     void OnGUI() {
-    
+
+        GameObject handler = GameObject.Find("MainHandler");
+        if (handler == null) return;
+
         titleStyle.fontSize = 50;
         titleStyle.fontStyle = FontStyle.Bold;
         titleStyle.alignment = TextAnchor.MiddleCenter;
@@ -100,8 +103,9 @@ public class StackController : NetworkBehaviour {
 
 
     void Start() {
-
-        dataSync = GameObject.Find("MainHandler").GetComponent<DataSync>();
+        GameObject handler = GameObject.Find("MainHandler");
+        if (handler == null) return;
+        dataSync = handler.GetComponent<DataSync>();
 
         if (!isLocalPlayer) return;
 
@@ -227,7 +231,7 @@ public class StackController : NetworkBehaviour {
     void CmdChangeScene() {
         //RpcIncrementSceneID();
         TestController.tcontrol.sceneIndex++;
-        MyNetworkManager.singleton.ServerChangeScene("SetupScene");
+        MyNetworkManager.singleton.ServerChangeScene("SetupTest");
     }
 
     [ClientRpc]

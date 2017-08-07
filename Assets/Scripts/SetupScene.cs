@@ -11,7 +11,7 @@ public class SetupScene : NetworkBehaviour {
 
     void OnGUI() {
         GameObject NetMan = GameObject.Find("NetworkManager");
-        string connID = NetMan.GetComponent<MyNetworkManager>().connID.ToString();
+        //string connID = NetMan.GetComponent<MyNetworkManager>().connID.ToString();
         var centeredStyle = GUI.skin.GetStyle("Label");
         Color myColor = new Color();
         //centeredStyle.alignment = TextAnchor.UpperCenter;
@@ -19,8 +19,8 @@ public class SetupScene : NetworkBehaviour {
         centeredStyle.fontStyle = FontStyle.Normal;
         ColorUtility.TryParseHtmlString("#323232FF", out myColor);
         centeredStyle.normal.textColor = myColor;
-        if(!isServer)
-            GUI.Label(new Rect(Screen.width / 2 - 250, Screen.height / 2-40, 500, 100), "Get Ready\nPlayer ID: "+connID, centeredStyle);
+        //if(!isServer)
+        //    GUI.Label(new Rect(Screen.width / 2 - 250, Screen.height / 2-40, 500, 100), "Get Ready\nPlayer ID: "+connID, centeredStyle);
     }
 
 
@@ -28,7 +28,8 @@ public class SetupScene : NetworkBehaviour {
         foreach (var player in GameObject.FindGameObjectsWithTag("player")) {
             player.gameObject.SetActive(false);
         }
-
+        Debug.Log(connectionToClient.connectionId);
+        Debug.Log(connectionToServer.connectionId);
         if (isServer) {
             //GameObject.Find("PanelClient").gameObject.SetActive(false);
             GameObject.Find("PanelServer").gameObject.SetActive(true);

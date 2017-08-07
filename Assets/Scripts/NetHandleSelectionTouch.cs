@@ -104,7 +104,9 @@ namespace Lean.Touch {
 
         DataSync DataSyncRef;
         public void Start() {
-            DataSyncRef = GameObject.Find("MainHandler").GetComponent<DataSync>();
+            GameObject handler = GameObject.Find("MainHandler");
+            if (handler == null) return;
+            DataSyncRef = handler.GetComponent<DataSync>();
 
             if (selectedMaterial == null)
                 selectedMaterial = (Material)Resources.Load("Light Blue");

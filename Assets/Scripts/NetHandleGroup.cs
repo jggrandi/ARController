@@ -6,7 +6,9 @@ public class NetHandleGroup : NetworkBehaviour {
 
     DataSync dataSync;
     public void Start() {
-        dataSync = GameObject.Find("MainHandler").GetComponent<DataSync>();
+        GameObject handler = GameObject.Find("MainHandler");
+        if(handler != null)
+            dataSync = handler.GetComponent<DataSync>();
     }
 
     public int GetIndex(GameObject g) {
