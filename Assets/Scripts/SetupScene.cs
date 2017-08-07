@@ -85,7 +85,10 @@ public class SetupScene : NetworkBehaviour {
 
     [Command]
     void CmdStartScene() {
-        MyNetworkManager.singleton.ServerChangeScene("CollaborativeTasks");
+        if (TestController.tcontrol.sceneIndex == 0)
+            MyNetworkManager.singleton.ServerChangeScene("CollaborativeTasks");
+        else if (TestController.tcontrol.sceneIndex == 1)
+            MyNetworkManager.singleton.ServerChangeScene("CollaborativeTasks2");
     }
 
     [Command]
