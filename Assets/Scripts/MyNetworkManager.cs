@@ -6,9 +6,17 @@ using UnityEngine.SceneManagement;
 
 public class MyNetworkManager : NetworkManager {
 
+    public int connID;
+
     public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId) {
         if (TestController.tcontrol.sceneIndex == TestController.tcontrol.tasksToPermute + 1) return; //The +1 is because of the howtouse initial task
         base.OnServerAddPlayer(conn, playerControllerId);
+        
+    }
+
+    public override void OnClientConnect(NetworkConnection conn) {
+        connID = conn.connectionId;
+        base.OnClientConnect(conn);
     }
 
     public override void OnClientSceneChanged(NetworkConnection conn) {

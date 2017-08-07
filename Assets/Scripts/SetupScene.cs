@@ -8,16 +8,29 @@ public class SetupScene : NetworkBehaviour {
 
     public GameObject playerObject;
 
-    
+
+    void OnGUI() {
+        GameObject NetMan = GameObject.Find("NetworkManager");
+        string connID = NetMan.GetComponent<MyNetworkManager>().connID.ToString();
+        var centeredStyle = GUI.skin.GetStyle("Label");
+        Color myColor = new Color();
+        //centeredStyle.alignment = TextAnchor.UpperCenter;
+        centeredStyle.fontSize = 30;
+        centeredStyle.fontStyle = FontStyle.Normal;
+        ColorUtility.TryParseHtmlString("#323232FF", out myColor);
+        centeredStyle.normal.textColor = myColor;
+        if(!isServer)
+            GUI.Label(new Rect(Screen.width / 2 - 250, Screen.height / 2-40, 500, 100), "Get Ready\nPlayer ID: "+connID, centeredStyle);
+    }
+
 
     void Start() {
         foreach (var player in GameObject.FindGameObjectsWithTag("player")) {
             player.gameObject.SetActive(false);
         }
 
-
         if (isServer) {
-            GameObject.Find("PanelClient").gameObject.SetActive(false);
+            //GameObject.Find("PanelClient").gameObject.SetActive(false);
             GameObject.Find("PanelServer").gameObject.SetActive(true);
 
             GameObject.Find("InputFieldGroupID").GetComponent<InputField>().text = TestController.tcontrol.groupID.ToString();
@@ -31,10 +44,9 @@ public class SetupScene : NetworkBehaviour {
                 MyNetworkManager.singleton.ServerChangeScene("EndTest");
 
             GameObject.Find("InputFieldSceneID").GetComponent<InputField>().text = TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIndex].ToString();
-            GameObject.Find("InputFieldSceneNow").GetComponent<InputField>().text = TestController.tcontrol.sceneIndex.ToString();
-
+            GameObject.Find("InputFieldSceneNow").GetComponent<InputField>().text = TestController.tcontrol.sceneIndex.ToString();            
         } else {
-            GameObject.Find("PanelClient").gameObject.SetActive(true);
+            //GameObject.Find("PanelClient").gameObject.SetActive(true);
             GameObject.Find("PanelServer").gameObject.SetActive(false);
         }
     }
@@ -86,9 +98,9 @@ public class SetupScene : NetworkBehaviour {
     [Command]
     void CmdStartScene() {
         if (TestController.tcontrol.sceneIndex == 0)
-            MyNetworkManager.singleton.ServerChangeScene("CollaborativeTasks");
+            MyNetworkManager.singleton.ServerChangeScene("Trainning");
         else if (TestController.tcontrol.sceneIndex == 1)
-            MyNetworkManager.singleton.ServerChangeScene("CollaborativeTasks2");
+            MyNetworkManager.singleton.ServerChangeScene("Task1");
     }
 
     [Command]
