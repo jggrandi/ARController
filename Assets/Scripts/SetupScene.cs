@@ -65,7 +65,7 @@ public class SetupScene : NetworkBehaviour {
             CmdStartScene();
     }
 
-    public void UpdataGroupId() {
+    public void UpdateGroupId() {
         if (GameObject.Find("InputFieldGroupID").GetComponent<InputField>().text == "") return;
 
         CmdUpdateGroup();
@@ -78,7 +78,7 @@ public class SetupScene : NetworkBehaviour {
     }
 
     void UpdateScene() {
-		
+        Debug.Log(TestController.tcontrol.groupID);
         int[] order = Utils.selectTaskSequence(TestController.tcontrol.groupID, TestController.tcontrol.tasksToPermute);
         TestController.tcontrol.taskOrder.Clear();
 
@@ -89,6 +89,7 @@ public class SetupScene : NetworkBehaviour {
 
         GameObject.Find("InputFieldSceneID").GetComponent<InputField>().text = TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIndex].ToString();
         GameObject.Find("InputFieldSceneNow").GetComponent<InputField>().text = TestController.tcontrol.sceneIndex.ToString();
+        Debug.Log(TestController.tcontrol.sceneIndex);
         CmdUpdateScene();
     }
 
