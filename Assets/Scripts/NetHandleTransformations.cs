@@ -46,7 +46,7 @@ namespace Lean.Touch {
 
                 foreach (int index in MainController.control.objSelected) {
                     var g = ObjectManager.Get(index);
-                    //var gSharp = new GameObject();
+                    //var gSharp = new GameObject();  // The comments are for smoothed movements. Buggy: it is creating empty objects. 
                     //gSharp.transform.position = g.transform.position;
                     //gSharp.transform.rotation = g.transform.rotation;
                     //Matrix4x4 modelMatrix = Matrix4x4.TRS(gSharp.transform.position, gSharp.transform.rotation, new Vector3(1, 1, 1)); // get the object matrix
