@@ -11,16 +11,7 @@ public class MyNetworkManager : NetworkManager {
     
 
     public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId) {
-
-        //if(TestController.tcontrol != null)
-            if (TestController.tcontrol.sceneIndex == TestController.tcontrol.tasksToPermute + 1) return; //The +1 is because of the howtouse initial task
-        //NetworkServer.AddPlayerForConnection()
-        //GameObject playersMan = GameObject.Find("PlayersManager");
-        //if (playersMan.GetComponent<PlayersManager>().Get(conn.connectionId) == null)
-        //    playersMan.GetComponent<PlayersManager>().Set(conn);
-        //else
-        //    conn = playersMan.GetComponent<PlayersManager>().Get(conn.connectionId);
-
+        if (TestController.tcontrol.sceneIndex == TestController.tcontrol.tasksToPermute + 1) return; //The +1 is because of the howtouse initial task
         base.OnServerAddPlayer(conn, playerControllerId);
         
     }

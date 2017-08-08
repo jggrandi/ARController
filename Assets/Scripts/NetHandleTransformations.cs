@@ -9,7 +9,7 @@ namespace Lean.Touch {
         
         public GameObject lockedObjects;
         public GameObject trackedObjects;
-        public LayerMask LayerMask = Physics.DefaultRaycastLayers;
+        //public LayerMask LayerMask = Physics.DefaultRaycastLayers;
         [Tooltip("Ignore fingers with StartedOverGui?")]
         public bool IgnoreGuiFingers = true;
         //Utils.Transformations mode = Utils.Transformations.Translation;
@@ -21,13 +21,10 @@ namespace Lean.Touch {
         //int currentOperation = 0; /* move rotate resize move_cel */
 
         void Start() {
-            trackedObjects = GameObject.Find("TrackedObjects");
-            if (isLocalPlayer) {
-                //Debug.Log(this.gameObject.GetComponent<NetworkIdentity>().connectionToClient.connectionId);
-                Debug.Log("NID: "+netId);
-            }
-            
+            trackedObjects = GameObject.Find("TrackedObjects");            
         }
+
+
         string log ="";
 
         void OnGUI() {
@@ -49,20 +46,20 @@ namespace Lean.Touch {
 
                 foreach (int index in MainController.control.objSelected) {
                     var g = ObjectManager.Get(index);
-                    var gSharp = new GameObject();
-                    gSharp.transform.position = g.transform.position;
-                    gSharp.transform.rotation = g.transform.rotation;
-                    Matrix4x4 modelMatrix = Matrix4x4.TRS(gSharp.transform.position, gSharp.transform.rotation, new Vector3(1, 1, 1)); // get the object matrix
+                    //var gSharp = new GameObject();
+                    //gSharp.transform.position = g.transform.position;
+                    //gSharp.transform.rotation = g.transform.rotation;
+                    //Matrix4x4 modelMatrix = Matrix4x4.TRS(gSharp.transform.position, gSharp.transform.rotation, new Vector3(1, 1, 1)); // get the object matrix
+                    Matrix4x4 modelMatrix = Matrix4x4.TRS(g.transform.position, g.transform.rotation, new Vector3(1, 1, 1)); // get the object matrix
                     modelMatrix = prevMatrix * modelMatrix; // transform the model matrix to the camera space matrix
                     modelMatrix = step * modelMatrix; // transform the object's position and orientation
                     modelMatrix = prevMatrix.inverse * modelMatrix; // put the object in the world coordinates
-
-                    gSharp.transform.position = Utils.GetPosition(modelMatrix);
-                    gSharp.transform.rotation = Utils.GetRotation(modelMatrix);
-
-                    g.transform.position = Vector3.Lerp(g.transform.position, gSharp.transform.position, 0.95f);
-                    g.transform.rotation = Quaternion.Lerp(g.transform.rotation, gSharp.transform.rotation, 0.95f);
-
+                    //gSharp.transform.position = Utils.GetPosition(modelMatrix);
+                    //gSharp.transform.rotation = Utils.GetRotation(modelMatrix);
+                    //g.transform.position = Vector3.Lerp(g.transform.position, gSharp.transform.position, 0.95f);
+                    //g.transform.rotation = Quaternion.Lerp(g.transform.rotation, gSharp.transform.rotation, 0.95f);
+                    g.transform.position = Utils.GetPosition(modelMatrix);
+                    g.transform.rotation = Utils.GetRotation(modelMatrix);
                     this.gameObject.transform.GetComponent<HandleNetworkFunctions>().LockTransform(GetIndex(g), Utils.GetPosition(modelMatrix), Utils.GetRotation(modelMatrix));
                 }
                 setCurrentOperation(OPERATION_LOCK);
