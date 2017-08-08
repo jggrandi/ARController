@@ -59,28 +59,27 @@
 
 		Pass // normal render
 		{
-		ZWrite On
+			ZWrite On
 
-		Material
-	{
-		Diffuse[_Color]
-		Ambient[_Color]
+			Material
+			{
+				Diffuse[_Color]
+				Ambient[_Color]
+			}
+
+			Lighting On
+
+			SetTexture[_MainTex]
+			{
+				ConstantColor[_Color]
+			}
+
+			SetTexture[_MainTex]
+			{
+				Combine previous * primary DOUBLE
+			}
+		}
 	}
-
-		Lighting On
-
-		SetTexture[_MainTex]
-	{
-		ConstantColor[_Color]
-	}
-
-		SetTexture[_MainTex]
-	{
-		Combine previous * primary DOUBLE
-	}
-
-
-	}
-	}
+	Fallback "VertexLit"
 }
 
