@@ -311,8 +311,7 @@ namespace Lean.Touch {
                 Select(finger, component);
                 CmdSyncSelected();
             } else {
-                if (MainController.control.isTapForTransform) return;
-                //if (MainController.control.isTapForTransform ) return;
+                //if (MainController.control.isTapForTransform) return;
                 if (MainController.control.objSelected.Count > 0) {
                     unselectAllCount = 10;
                     
@@ -349,12 +348,14 @@ namespace Lean.Touch {
 
         public void UnselectAll() {
             MainController.control.isMultipleSelection = false;
-            //foreach (int i in MainController.control.objSelected) {
-            //    GameObject g = ObjectManager.Get(i);
-                //if (g.GetComponent<ParticleSystem>() == null) {
-                //    g.transform.GetComponent<Renderer>().material = g.transform.GetComponent<ObjectGroupId>().material;
-                //}
-            //}
+            foreach (int i in MainController.control.objSelected) {
+                GameObject g = ObjectManager.Get(i);
+                if (g.GetComponent<ParticleSystem>() == null) {
+                    Renderer rend = g.transform.GetComponent<Renderer>();
+                    foreach (Material m in rend.materials) //cicle through all materials                    
+                        m.SetFloat("_OutlineWidth", 1.2f);
+                }
+            }
             MainController.control.objSelected.Clear();
             CmdClearSelectedShared();
             MainController.control.isMultipleSelection = false;
@@ -365,6 +366,10 @@ namespace Lean.Touch {
                 //ObjectManager.Get(index).GetComponent<Renderer>().material = selectedMaterial;
             //}
             MainController.control.objSelected.Add(index);
+            
+            Renderer rend = ObjectManager.Get(index).GetComponent<Renderer>();
+            foreach (Material m in rend.materials) //cicle through all materials                    
+                m.SetFloat("_OutlineWidth", 2.0f);
         }
 
         public void Select(LeanFinger finger, Component obj) {
