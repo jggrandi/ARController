@@ -28,10 +28,9 @@ public class SetupScene : NetworkBehaviour {
         foreach (var player in GameObject.FindGameObjectsWithTag("player")) {
             player.gameObject.SetActive(false);
         }
-        Debug.Log(connectionToClient.connectionId);
-        Debug.Log(connectionToServer.connectionId);
+        
         if (isServer) {
-            //GameObject.Find("PanelClient").gameObject.SetActive(false);
+            GameObject.Find("PanelClient").gameObject.SetActive(false);
             GameObject.Find("PanelServer").gameObject.SetActive(true);
 
             GameObject.Find("InputFieldGroupID").GetComponent<InputField>().text = TestController.tcontrol.groupID.ToString();
@@ -47,8 +46,10 @@ public class SetupScene : NetworkBehaviour {
             GameObject.Find("InputFieldSceneID").GetComponent<InputField>().text = TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIndex].ToString();
             GameObject.Find("InputFieldSceneNow").GetComponent<InputField>().text = TestController.tcontrol.sceneIndex.ToString();            
         } else {
-            //GameObject.Find("PanelClient").gameObject.SetActive(true);
+            GameObject.Find("PanelClient").gameObject.SetActive(true);
             GameObject.Find("PanelServer").gameObject.SetActive(false);
+            if(TestController.tcontrol.userID != 0)
+                GameObject.Find("InputFieldUserID").GetComponent<InputField>().text = TestController.tcontrol.userID.ToString();
         }
     }
 
@@ -64,11 +65,16 @@ public class SetupScene : NetworkBehaviour {
             CmdStartScene();
     }
 
+    public void UpdataGroupId() {
+        if (GameObject.Find("InputFieldGroupID").GetComponent<InputField>().text == "") return;
+
+        CmdUpdateGroup();
+        UpdateScene();
+    }
+
     public void UpdataUserId() {
         if (GameObject.Find("InputFieldUserID").GetComponent<InputField>().text == "") return;
-
-        CmdUpdateUser();
-        UpdateScene();
+        TestController.tcontrol.userID = int.Parse(GameObject.Find("InputFieldUserID").GetComponent<InputField>().text);
     }
 
     void UpdateScene() {
@@ -87,7 +93,7 @@ public class SetupScene : NetworkBehaviour {
     }
 
     [Command]
-    void CmdUpdateUser() {
+    void CmdUpdateGroup() {
         TestController.tcontrol.groupID = int.Parse(GameObject.Find("InputFieldGroupID").GetComponent<InputField>().text);
     }
 

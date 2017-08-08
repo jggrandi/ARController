@@ -31,9 +31,6 @@ public class MyNetworkManager : NetworkManager {
     //}
 
     public override void OnClientSceneChanged(NetworkConnection conn) {
-        Debug.Log(conn.address);
-        Debug.Log(conn.connectionId);
-
         StartCoroutine(Wait(conn));
     }
 

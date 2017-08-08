@@ -24,7 +24,7 @@ namespace Lean.Touch {
             trackedObjects = GameObject.Find("TrackedObjects");
             if (isLocalPlayer) {
                 //Debug.Log(this.gameObject.GetComponent<NetworkIdentity>().connectionToClient.connectionId);
-                Debug.Log(this.gameObject.GetComponent<NetworkIdentity>().connectionToServer.connectionId);
+                Debug.Log("NID: "+netId);
             }
             
         }

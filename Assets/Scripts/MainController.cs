@@ -55,7 +55,7 @@ public class MainController : MonoBehaviour {
     // Update is called once per frame
     void Update () {
         if (Input.GetKey("space")) {
-            MyNetworkManager.singleton.ServerChangeScene("SetupScene");
+            MyNetworkManager.singleton.ServerChangeScene("SetupTest");
         }
     }
 
