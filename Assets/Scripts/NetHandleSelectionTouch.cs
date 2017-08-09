@@ -288,9 +288,8 @@ namespace Lean.Touch {
         public Vector2 DownStartPostion = new Vector2();
         private void OnFingerDown(LeanFinger finger) {
             DownStartPostion = finger.ScreenPosition;
-            
-
         }
+
         private void OnFingerTap(LeanFinger finger) {
             // Ignore this tap?
             if (!isLocalPlayer) return;
@@ -345,31 +344,26 @@ namespace Lean.Touch {
 
         }
 
+        public void changeOutlineThickness(int index, float thickness) {
+            GameObject g = ObjectManager.Get(index);
+            Renderer rend = g.transform.GetComponent<Renderer>();
+            foreach (Material m in rend.materials) //cicle through all materials                    
+                m.SetFloat("_OutlineWidth", thickness);
+        }
+
 
         public void UnselectAll() {
             MainController.control.isMultipleSelection = false;
-            foreach (int i in MainController.control.objSelected) {
-                GameObject g = ObjectManager.Get(i);
-                if (g.GetComponent<ParticleSystem>() == null) {
-                    Renderer rend = g.transform.GetComponent<Renderer>();
-                    foreach (Material m in rend.materials) //cicle through all materials                    
-                        m.SetFloat("_OutlineWidth", 1.2f);
-                }
-            }
+            foreach (int i in MainController.control.objSelected) 
+                changeOutlineThickness(i, 1.0f);
             MainController.control.objSelected.Clear();
             CmdClearSelectedShared();
             MainController.control.isMultipleSelection = false;
         }
 
         public void Select(int index) {
-            //if (ObjectManager.Get(index).GetComponent<ParticleSystem>() == null) {
-                //ObjectManager.Get(index).GetComponent<Renderer>().material = selectedMaterial;
-            //}
             MainController.control.objSelected.Add(index);
-            
-            Renderer rend = ObjectManager.Get(index).GetComponent<Renderer>();
-            foreach (Material m in rend.materials) //cicle through all materials                    
-                m.SetFloat("_OutlineWidth", 2.0f);
+            changeOutlineThickness(index, 1.08f);
         }
 
         public void Select(LeanFinger finger, Component obj) {
