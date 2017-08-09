@@ -40,6 +40,7 @@
 
 	SubShader
 	{
+		Tags{"Queue" = "Transparent"}
 		Pass // outline pass
 		{
 			ZWrite Off
@@ -80,6 +81,6 @@
 			}
 		}
 	}
-	Fallback "VertexLit"
+		Fallback "Legacy Shaders/Diffuse"
 }
 
