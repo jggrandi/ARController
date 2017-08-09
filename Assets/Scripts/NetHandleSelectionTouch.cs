@@ -327,8 +327,7 @@ namespace Lean.Touch {
 
             var ray = finger.GetRay();// Get ray for finger
             var hit = default(RaycastHit);// Stores the raycast hit info
-            var component = default(Component);// Stores the component we hit (Collider)
-
+            var component = default(Component);// Stores the component we hit (Collider)          
 
             bool sync = false;
             if (Physics.Raycast(ray, out hit, float.PositiveInfinity, LayerMask) == true) { // se tocou em um objeto
@@ -351,11 +350,21 @@ namespace Lean.Touch {
                 m.SetFloat("_OutlineWidth", thickness);
         }
 
+        public void changeObjectPhysics(int index, bool gravity, float mass, float drag, float adrag) {
+            GameObject g = ObjectManager.Get(index);
+            Rigidbody rbody = g.transform.GetComponent<Rigidbody>();
+            rbody.useGravity = gravity;
+            rbody.mass = mass;
+            rbody.drag = drag;
+            rbody.angularDrag = adrag;
+        }
 
         public void UnselectAll() {
             MainController.control.isMultipleSelection = false;
-            foreach (int i in MainController.control.objSelected) 
+            foreach (int i in MainController.control.objSelected) {
                 changeOutlineThickness(i, 1.0f);
+                changeObjectPhysics(i, true, 10.0f, 1.0f, 1.0f);
+            }
             MainController.control.objSelected.Clear();
             CmdClearSelectedShared();
             MainController.control.isMultipleSelection = false;
@@ -364,6 +373,7 @@ namespace Lean.Touch {
         public void Select(int index) {
             MainController.control.objSelected.Add(index);
             changeOutlineThickness(index, 1.08f);
+            changeObjectPhysics(index, false, 1.0f, 9.0f, 9.0f);
         }
 
         public void Select(LeanFinger finger, Component obj) {
@@ -386,7 +396,7 @@ namespace Lean.Touch {
             if (objIsSelected) {
                 MainController.control.objSelected.Remove(objToRemove);
                 //obj.transform.GetComponent<Renderer>().material = obj.transform.GetComponent<ObjectGroupId>().material;
-            
+                changeOutlineThickness(objToRemove, 1.0f);
                 if (MainController.control.objSelected.Count == 0)
                     MainController.control.isMultipleSelection = false;
                 return;
