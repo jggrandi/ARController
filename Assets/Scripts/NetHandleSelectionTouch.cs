@@ -397,8 +397,11 @@ namespace Lean.Touch {
                 MainController.control.objSelected.Remove(objToRemove);
                 //obj.transform.GetComponent<Renderer>().material = obj.transform.GetComponent<ObjectGroupId>().material;
                 changeOutlineThickness(objToRemove, 1.0f);
-                if (MainController.control.objSelected.Count == 0)
+                changeObjectPhysics(objToRemove, false, 10.0f, 9.0f, 9.0f);
+                if (MainController.control.objSelected.Count == 0) {
                     MainController.control.isMultipleSelection = false;
+                    changeObjectPhysics(objToRemove, true, 1.0f, 9.0f, 9.0f);
+                }
                 return;
             }
 
