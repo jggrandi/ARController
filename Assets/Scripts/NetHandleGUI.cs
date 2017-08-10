@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.Networking;
+using System.Collections.Generic;
 
 public class NetHandleGUI : NetworkBehaviour {
 
@@ -15,8 +16,8 @@ public class NetHandleGUI : NetworkBehaviour {
     public GameObject trackedObjects;
 
     public GameObject playerObject;
+    //List<int> listSelected;
 
-   
     public void buttonLock () {
         MainController.control.lockTransform = true;
     }
@@ -72,13 +73,14 @@ public class NetHandleGUI : NetworkBehaviour {
     DataSync DataSyncRef;
     public void Start() {
         DataSyncRef = GameObject.Find("MainHandler").GetComponent<DataSync>();
+        //listSelected = playerObject.gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelected;
         if (TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIndex] == 0) {
             GameObject.Find("lock").gameObject.SetActive(false);
         }
     }
 
     private void Update() {
-        if (MainController.control.objSelected.Count > 0) {
+        if (playerObject.gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelected.Count > 0) {
             guiOk.SetActive(true);
             btnOk.SetActive(true);
         } else {
@@ -86,11 +88,11 @@ public class NetHandleGUI : NetworkBehaviour {
             btnOk.SetActive(false);
         }
 
-        if (MainController.control.objSelected.Count > 1) {
+        if (playerObject.gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelected.Count > 1) {
 
             int groupSelected = -2;
             bool sigleGroup = true;
-            foreach (var index in MainController.control.objSelected) {
+            foreach (var index in playerObject.gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelected) {
                 int group = DataSyncRef.Groups[index];
                 if (group < 0) {
                     sigleGroup = false;
@@ -109,7 +111,7 @@ public class NetHandleGUI : NetworkBehaviour {
                 for (int i = 0; i < trackedObjects.transform.childCount; i++) {
                     if (DataSyncRef.Groups[i] != groupSelected) continue;
                     bool selected = false;
-                    foreach (var index in MainController.control.objSelected) {
+                    foreach (var index in playerObject.gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelected) {
                         if (index == i) {
                             selected = true;
                             break;

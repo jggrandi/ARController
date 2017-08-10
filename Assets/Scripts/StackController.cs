@@ -104,6 +104,7 @@ public class StackController : NetworkBehaviour {
 
     void Start() {
         GameObject handler = GameObject.Find("MainHandler");
+        
         if (handler == null) return;
         dataSync = handler.GetComponent<DataSync>();
 
@@ -297,7 +298,7 @@ public class StackController : NetworkBehaviour {
         if (TestController.tcontrol.sceneIndex == 0) // if it is howtouse scene, after the first piece the setup scene is loaded.
             CmdChangeScene();
 
-        MainController.control.objSelected.Clear();
+        gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelected.Clear();
         CmdClearSelection();
 
         CmdSaveResumed();

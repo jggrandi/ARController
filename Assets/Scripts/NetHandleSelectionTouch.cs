@@ -18,7 +18,7 @@ namespace Lean.Touch {
 
 
         
-
+        //public List<int> objSelected = new List<int>();
         public GameObject trackedObjects = null;
 
         [Tooltip("Ignore fingers with StartedOverGui?")]
@@ -58,7 +58,7 @@ namespace Lean.Touch {
             }
         }*/
 
-
+        public List<int> objSelected = new List<int>();
         public SyncListInt objSelectedShared = new SyncListInt();
         [SyncVar]
         public int currentOperation = 0;
@@ -80,7 +80,7 @@ namespace Lean.Touch {
 
         public void CmdSyncSelected() {
             CmdClearSelected();
-            foreach (var i in MainController.control.objSelected) {
+            foreach (var i in objSelected) {
                 CmdAddSelected(i);
             }
         }
@@ -103,11 +103,12 @@ namespace Lean.Touch {
         public Material selectedMaterial = null;
 
         DataSync DataSyncRef;
+        public GameObject handler;
         public void Start() {
-            GameObject handler = GameObject.Find("MainHandler");
+            handler = GameObject.Find("MainHandler");
             if (handler == null) return;
             DataSyncRef = handler.GetComponent<DataSync>();
-
+            
             if (selectedMaterial == null)
                 selectedMaterial = (Material)Resources.Load("Light Blue");
 
@@ -189,12 +190,12 @@ namespace Lean.Touch {
             objSelectedShared.Clear();
         }
 
-
         public int unselectAllCount = -1;
 
         void Update() {
 
             if (!isLocalPlayer) return;
+            
             CmdSetCameraPosition(trackedObjects.transform.InverseTransformPoint(Camera.main.transform.position));
             CmdTargetsTracked(MainController.control.targetsTrackedNow);
 
@@ -208,8 +209,9 @@ namespace Lean.Touch {
 
             foreach (var player in GameObject.FindGameObjectsWithTag("player")) {
                 //if (player.GetComponent<NetworkIdentity>().isLocalPlayer) continue;
-                var selected = new List<int>(player.GetComponent<NetHandleSelectionTouch>().objSelectedShared);
 
+                var selected = new List<int>(player.GetComponent<NetHandleSelectionTouch>().objSelectedShared);          
+      
                 player.transform.GetChild(0).gameObject.SetActive(false);
                 player.transform.GetChild(1).gameObject.SetActive(false);
                 player.transform.GetChild(2).gameObject.SetActive(false);
@@ -234,6 +236,7 @@ namespace Lean.Touch {
                         minDist = dist;
                         minObj = index;
                     }
+
                 }
 
                 AddLine(camera, ObjectManager.Get(minObj).transform.position, color);
@@ -311,7 +314,7 @@ namespace Lean.Touch {
                 CmdSyncSelected();
             } else {
                 //if (MainController.control.isTapForTransform) return;
-                if (MainController.control.objSelected.Count > 0) {
+                if (objSelected.Count > 0) {
                     unselectAllCount = 10;
                     
                 }
@@ -333,7 +336,7 @@ namespace Lean.Touch {
             if (Physics.Raycast(ray, out hit, float.PositiveInfinity, LayerMask) == true) { // se tocou em um objeto
                 
                 component = hit.collider;
-                if (MainController.control.objSelected.Count > 0) { // only multiple selection when there is at least one object in the selectednow list
+                if (objSelected.Count > 0) { // only multiple selection when there is at least one object in the selectednow list
                     MainController.control.isMultipleSelection = true;
                     Select(finger, component);
                     sync = true;
@@ -359,21 +362,49 @@ namespace Lean.Touch {
             rbody.angularDrag = adrag;
         }
 
-        public void UnselectAll() {
-            MainController.control.isMultipleSelection = false;
-            foreach (int i in MainController.control.objSelected) {
-                changeOutlineThickness(i, 1.0f);
-                changeObjectPhysics(i, true, 10.0f, 1.0f, 1.0f);
+        public void selectAllObjectsSameGroup(int id) {
+            for (int i = 0; i < trackedObjects.transform.childCount; i++) { // and find the other objects in the same group
+                if (DataSyncRef.Groups[i] == id) {
+                    Select(i); // select them
+                }
             }
-            MainController.control.objSelected.Clear();
+        } 
+
+
+        public void UnselectAll() {
+            //MainController.control.isMultipleSelection = false;
+            bool isSelectedByOther = false;
+            foreach (int i in objSelected) {
+                foreach (var player in GameObject.FindGameObjectsWithTag("player")) {
+                    if (player.GetComponent<NetworkIdentity>().isLocalPlayer) continue;
+                    var selected = new List<int>(player.GetComponent<NetHandleSelectionTouch>().objSelectedShared);
+
+                    if (selected.Count == 0) continue;
+
+                    foreach (var index in selected) {
+                        if (i == index)
+                            isSelectedByOther = true;
+                    }
+
+                }
+                if (!isSelectedByOther) {
+                    changeObjectPhysics(i, true, 12.0f, 2.0f, 2.0f);
+                    this.gameObject.GetComponent<HandleNetworkFunctions>().CmdSyncPhysicsObj(i, true, 12.0f, 2.0f, 2.0f);
+                }
+                changeOutlineThickness(i, 1.0f);
+
+            }
+
+            objSelected.Clear();
             CmdClearSelectedShared();
             MainController.control.isMultipleSelection = false;
         }
 
         public void Select(int index) {
-            MainController.control.objSelected.Add(index);
+            objSelected.Add(index);
             changeOutlineThickness(index, 1.08f);
             changeObjectPhysics(index, false, 1.0f, 9.0f, 9.0f);
+            this.gameObject.GetComponent<HandleNetworkFunctions>().CmdSyncPhysicsObj(index, false, 1.0f, 9.0f, 9.0f);
         }
 
         public void Select(LeanFinger finger, Component obj) {
@@ -385,7 +416,7 @@ namespace Lean.Touch {
 
             int objToRemove = -1;
             bool objIsSelected = false;
-            foreach (var i in MainController.control.objSelected) {
+            foreach (var i in objSelected) {
                 if (i == index) {
                     objIsSelected = true;
                     objToRemove = i;
@@ -394,33 +425,44 @@ namespace Lean.Touch {
             }
 
             if (objIsSelected) {
-                MainController.control.objSelected.Remove(objToRemove);
+                bool isSelectedByOther = false;
+                
                 //obj.transform.GetComponent<Renderer>().material = obj.transform.GetComponent<ObjectGroupId>().material;
                 changeOutlineThickness(objToRemove, 1.0f);
-                changeObjectPhysics(objToRemove, false, 10.0f, 9.0f, 9.0f);
-                if (MainController.control.objSelected.Count == 0) {
-                    MainController.control.isMultipleSelection = false;
-                    changeObjectPhysics(objToRemove, true, 1.0f, 9.0f, 9.0f);
+
+                foreach (var player in GameObject.FindGameObjectsWithTag("player")) {
+                    if (player.GetComponent<NetworkIdentity>().isLocalPlayer) continue;
+                    var selected = new List<int>(player.GetComponent<NetHandleSelectionTouch>().objSelectedShared);
+                    if (selected.Count == 0) continue;
+
+                    foreach (var ind in selected) {
+                        if (objToRemove == ind)
+                            isSelectedByOther = true;
+                    }
+
                 }
+                if (!isSelectedByOther) {
+                    changeObjectPhysics(objToRemove, true, 12.0f, 2.0f, 2.0f);
+                    this.gameObject.GetComponent<HandleNetworkFunctions>().CmdSyncPhysicsObj(objToRemove, true, 12.0f, 2.0f, 2.0f);
+                }
+                if (objSelected.Count == 0) {
+                    MainController.control.isMultipleSelection = false;
+
+                }
+                objSelected.Remove(objToRemove);
                 return;
             }
 
             if (DataSyncRef.Groups[index] != -1) { // if the object is in a group
                 int idToSelect = DataSyncRef.Groups[index]; // take the obj id
-                if (MainController.control.objSelected.Count > 0 && DataSyncRef.Groups[MainController.control.objSelected[0]] == idToSelect)
+                if (objSelected.Count > 0 && DataSyncRef.Groups[objSelected[0]] == idToSelect)
                     Select(index);
-                else {
-                    for (int i = 0; i < trackedObjects.transform.childCount; i++) { // and find the other objects in the same group
-                        if (DataSyncRef.Groups[i] == idToSelect) {
-                            Select(i); // select them
-                        }
-                    }
-                }
-
-            } else {
-                Select(index);
+                else 
+                    selectAllObjectsSameGroup(idToSelect);
+                    
             }
-
+            else
+                Select(index);
         }
     }
 }

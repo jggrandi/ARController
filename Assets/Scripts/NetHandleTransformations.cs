@@ -5,10 +5,13 @@ using UnityEngine.Networking;
 
 namespace Lean.Touch {
 
+    
     public class NetHandleTransformations : NetworkBehaviour {
         
         public GameObject lockedObjects;
         public GameObject trackedObjects;
+        public GameObject mainHandler;
+
         //public LayerMask LayerMask = Physics.DefaultRaycastLayers;
         [Tooltip("Ignore fingers with StartedOverGui?")]
         public bool IgnoreGuiFingers = true;
@@ -21,10 +24,10 @@ namespace Lean.Touch {
         //int currentOperation = 0; /* move rotate resize move_cel */
 
         void Start() {
-            trackedObjects = GameObject.Find("TrackedObjects");            
+            trackedObjects = GameObject.Find("TrackedObjects");
+            mainHandler = GameObject.Find("MainHandler");
         }
-
-
+        
         string log ="";
 
         void OnGUI() {
@@ -44,7 +47,7 @@ namespace Lean.Touch {
                 CmdUpdateModality(1);
                 Matrix4x4 step = prevMatrix * camMatrix.inverse;
 
-                foreach (int index in MainController.control.objSelected) {
+                foreach (int index in gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelected) {
                     var g = ObjectManager.Get(index);
                     //var gSharp = new GameObject();  // The comments are for smoothed movements. Buggy: it is creating empty objects. 
                     //gSharp.transform.position = g.transform.position;
@@ -123,7 +126,7 @@ namespace Lean.Touch {
         private void OnFingerTap(LeanFinger finger) {
             if (TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIndex] == 1) return;
             translationZ = 1;
-            if (MainController.control.objSelected.Count != 0)
+            if (gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelected.Count != 0)
                 MainController.control.isTapForTransform = true;
 
         }
@@ -145,13 +148,13 @@ namespace Lean.Touch {
 
             this.gameObject.GetComponent<NetHandleSelectionTouch>().unselectAllCount = 0;
 
-            foreach (var index in MainController.control.objSelected) {
+            foreach (var index in gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelected) {
                 if (translationZ < 2) {
                     Vector3 right = Camera.main.transform.right.normalized * finger.ScreenDelta.x * transFactor * Utils.ToutchSensibility;
                     Vector3 up = Camera.main.transform.up.normalized * finger.ScreenDelta.y * transFactor * Utils.ToutchSensibility;
                     this.gameObject.transform.GetComponent<HandleNetworkFunctions>().Translate(index, Utils.PowVec3(right + up, 1.2f));
                 } else if (translationZ == 2) {
-                    Vector3 avg = avgCenterOfObjects(MainController.control.objSelected);
+                    Vector3 avg = avgCenterOfObjects(gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelected);
                     Vector3 translate = (avg - Camera.main.transform.position).normalized * finger.ScreenDelta.y * transFactor * Utils.ToutchSensibility; // obj pos - cam pos
 
                     this.gameObject.GetComponent<HandleNetworkFunctions>().Translate(index, Utils.PowVec3(translate, 1.2f));
@@ -173,7 +176,8 @@ namespace Lean.Touch {
                 CmdUpdateModality(2);
             else
                 CmdUpdateModality(0);
-            Vector3 avg = avgCenterOfObjects(MainController.control.objSelected);
+            
+            Vector3 avg = avgCenterOfObjects(gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelected);
             Vector3 axis, axisTwist;
 			float angle = LeanGesture.GetScreenDelta(fingers).magnitude * 0.3f;
             
@@ -183,7 +187,7 @@ namespace Lean.Touch {
             float pos = LeanGesture.GetScreenDelta(fingers).magnitude * 0.3f;
             float scale = LeanGesture.GetPinchScale(fingers);
             
-            foreach (int index in MainController.control.objSelected) {
+            foreach (int index in gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelected) {
                 var g = ObjectManager.Get(index);
                 if (g.GetComponent<ParticleSystem>() != null) {
                     var dir = LeanGesture.GetScreenDelta(fingers);

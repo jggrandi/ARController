@@ -37,6 +37,34 @@ public class HandleNetworkFunctions : NetworkBehaviour {
         if (scale != Vector3.zero) g.transform.localScale = scale;
     }
 
+    [Command]
+    public void CmdSyncPhysicsObj(int index, bool gravity, float mass, float drag, float adrag) {
+
+        var g = ObjectManager.Get(index);
+        g.transform.GetComponent<Rigidbody>().useGravity = gravity;
+        g.transform.GetComponent<Rigidbody>().mass = mass;
+        g.transform.GetComponent<Rigidbody>().drag = drag;
+        g.transform.GetComponent<Rigidbody>().angularDrag = adrag;
+        RpcSyncPhysics(index, gravity, mass, drag, adrag);
+    }
+
+    //[Command]
+    //public void CmdSyncPhysicsAll(int index) {
+    //    //if (TrackedObjects == null) TrackedObjects = GameObject.Find("TrackedObjects");
+    //    //for (int i = 0; i < TrackedObjects.transform.childCount; i++) {
+    //        SyncPhysicsObj(index);
+    //    //}
+    //}
+
+    [ClientRpc]
+    public void RpcSyncPhysics(int index, bool gravity, float mass, float drag, float adrag) {
+        var g = ObjectManager.Get(index);
+        g.transform.GetComponent<Rigidbody>().useGravity = gravity;
+        g.transform.GetComponent<Rigidbody>().mass = mass;
+        g.transform.GetComponent<Rigidbody>().drag = drag;
+        g.transform.GetComponent<Rigidbody>().angularDrag = adrag;
+    }
+
     public void Start() {
         TrackedObjects = GameObject.Find("TrackedObjects");
     }

@@ -1,13 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.Networking;
+using System.Collections.Generic;
 
 public class NetHandleGroup : NetworkBehaviour {
 
     DataSync dataSync;
+
     public void Start() {
         GameObject handler = GameObject.Find("MainHandler");
-        if(handler != null)
+        
+        if (handler != null)
             dataSync = handler.GetComponent<DataSync>();
     }
 
@@ -16,7 +19,7 @@ public class NetHandleGroup : NetworkBehaviour {
     }
 
     public void CreateGroup() {
-        foreach (int index in MainController.control.objSelected) {
+        foreach (int index in gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelected) {
             CmdNewGroup(index);
         }
         CmdIncrementGroupCount();
@@ -26,7 +29,7 @@ public class NetHandleGroup : NetworkBehaviour {
 
     public void UnGroup() {
         
-        foreach (int index in MainController.control.objSelected) {
+        foreach (int index in gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelected) {
             CmdSetGroup(index, -1);
             //var g = Utils.GetByIndex(index);
             //g.GetComponent<Renderer>().material = g.GetComponent<ObjectGroupId>().material;
@@ -50,6 +53,5 @@ public class NetHandleGroup : NetworkBehaviour {
     public void CmdIncrementGroupCount() {
         dataSync.GroupCount++;
     }
-
 
 }

@@ -16,7 +16,7 @@ public class MainController : MonoBehaviour {
     public Utils.Transformations transformationNow = 0;
     public bool lockTransform = false;
     public bool groupButtonActive = false;
-    public List<int> objSelected = new List<int>();
+    
 
     public int idAvaiableNow = 0;
 

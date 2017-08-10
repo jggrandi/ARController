@@ -66,10 +66,17 @@ public class DataSync : NetworkBehaviour {
 
     }
 
-    void listToSyncList(ref List<int> list, ref SyncListInt syncList) {
+    public void listToSyncList(ref List<int> list, ref SyncListInt syncList) {
         syncList.Clear();
         for (int i = 0; i < list.Count; i++) {
             syncList.Add(list[i]);
+        }
+    }
+
+    public void syncListToList(ref SyncListInt syncList, ref List<int> list) {
+        list.Clear();
+        for (int i = 0; i < syncList.Count; i++) {
+            list.Add(syncList[i]);
         }
     }
 
