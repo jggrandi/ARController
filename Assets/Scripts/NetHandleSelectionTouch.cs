@@ -388,8 +388,10 @@ namespace Lean.Touch {
 
                 }
                 if (!isSelectedByOther) {
-                    changeObjectPhysics(i, true, 12.0f, 2.0f, 2.0f);
-                    this.gameObject.GetComponent<HandleNetworkFunctions>().CmdSyncPhysicsObj(i, true, 12.0f, 2.0f, 2.0f);
+                    if (ObjectManager.Get(i).GetComponent<Rigidbody>()) {
+                        changeObjectPhysics(i, true, 12.0f, 2.0f, 2.0f);
+                        this.gameObject.GetComponent<HandleNetworkFunctions>().CmdSyncPhysicsObj(i, true, 12.0f, 2.0f, 2.0f);
+                    }
                 }
                 changeOutlineThickness(i, 1.0f);
 
@@ -403,8 +405,10 @@ namespace Lean.Touch {
         public void Select(int index) {
             objSelected.Add(index);
             changeOutlineThickness(index, 1.08f);
-            changeObjectPhysics(index, false, 1.0f, 9.0f, 9.0f);
-            this.gameObject.GetComponent<HandleNetworkFunctions>().CmdSyncPhysicsObj(index, false, 1.0f, 9.0f, 9.0f);
+            if (ObjectManager.Get(index).GetComponent<Rigidbody>()) {
+                changeObjectPhysics(index, false, 1.0f, 9.0f, 9.0f);
+                this.gameObject.GetComponent<HandleNetworkFunctions>().CmdSyncPhysicsObj(index, false, 1.0f, 9.0f, 9.0f);
+            }
         }
 
         public void Select(LeanFinger finger, Component obj) {
@@ -442,8 +446,10 @@ namespace Lean.Touch {
 
                 }
                 if (!isSelectedByOther) {
-                    changeObjectPhysics(objToRemove, true, 12.0f, 2.0f, 2.0f);
-                    this.gameObject.GetComponent<HandleNetworkFunctions>().CmdSyncPhysicsObj(objToRemove, true, 12.0f, 2.0f, 2.0f);
+                    if (ObjectManager.Get(objToRemove).GetComponent<Rigidbody>()) {
+                        changeObjectPhysics(objToRemove, true, 12.0f, 2.0f, 2.0f);
+                        this.gameObject.GetComponent<HandleNetworkFunctions>().CmdSyncPhysicsObj(objToRemove, true, 12.0f, 2.0f, 2.0f);
+                    }
                 }
                 if (objSelected.Count == 0) {
                     MainController.control.isMultipleSelection = false;

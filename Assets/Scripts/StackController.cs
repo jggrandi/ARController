@@ -137,8 +137,8 @@ public class StackController : NetworkBehaviour {
         }
 
 
-        foreach (Transform child in trackedObjects.transform) // Disable all objects.
-            child.gameObject.SetActive(false);
+        //foreach (Transform child in trackedObjects.transform) // Disable all objects.
+        //    child.gameObject.SetActive(false);
 
         if (TestController.tcontrol.sceneIndex == 0) // if it is the howtouse scene, activate only one piece without their ghost
             trackedObjects.transform.GetChild(0).gameObject.SetActive(true);
