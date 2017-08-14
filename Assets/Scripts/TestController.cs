@@ -18,9 +18,6 @@ public class TestController : NetworkBehaviour {
     [SyncVar]
     public int sceneIndex = 0;
 
-    public int userID = 0;
-
-
     //public float[] spawnDistances = {
     //    -0.9719447f,  0.7384897f,   0.0f,        //1-near
     //    -0.5855348f,  0.642159f,    0.7983765f,  //1-near

@@ -33,8 +33,6 @@ public class SetupScene : NetworkBehaviour {
         } else {
             GameObject.Find("PanelClient").gameObject.SetActive(true);
             GameObject.Find("PanelServer").gameObject.SetActive(false);
-            if(TestController.tcontrol.userID != 0)
-                GameObject.Find("InputFieldUserID").GetComponent<InputField>().text = TestController.tcontrol.userID.ToString();
         }
     }
 
@@ -55,11 +53,6 @@ public class SetupScene : NetworkBehaviour {
 
         CmdUpdateGroup();
         UpdateScene();
-    }
-
-    public void UpdataUserId() {
-        if (GameObject.Find("InputFieldUserID").GetComponent<InputField>().text == "") return;
-        TestController.tcontrol.userID = int.Parse(GameObject.Find("InputFieldUserID").GetComponent<InputField>().text);
     }
 
     void UpdateScene() {

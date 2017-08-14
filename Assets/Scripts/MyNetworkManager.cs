@@ -8,7 +8,8 @@ using UnityEngine.SceneManagement;
 
 public class MyNetworkManager : NetworkManager {
 
-    
+    public string userID;
+
 
     public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId) {
         if (TestController.tcontrol.sceneIndex == TestController.tcontrol.tasksToPermute + 1) return; //The +1 is because of the howtouse initial task
@@ -46,6 +47,7 @@ public class MyNetworkManager : NetworkManager {
     }
 
     public void JoinGame() {
+        if (!SetUserID()) return;
         SetPort();
         SetIpAddress();
         NetworkManager.singleton.StartClient();
@@ -54,6 +56,15 @@ public class MyNetworkManager : NetworkManager {
     void SetIpAddress() {
         string ipAddress = GameObject.Find("InputFieldIPAddress").transform.FindChild("Text").GetComponent<Text>().text;
         NetworkManager.singleton.networkAddress = ipAddress;
+    }
+
+    bool SetUserID() {
+        string uID = GameObject.Find("UserID").transform.FindChild("Text").GetComponent<Text>().text;
+        if (uID.Length != 0){
+            userID = uID;
+            return true;
+        }
+        return false;
     }
 
 }
