@@ -85,7 +85,7 @@ public class SetupScene : NetworkBehaviour {
     void CmdStartScene() {
         switch (TestController.tcontrol.sceneIndex) {
             case 0:
-                MyNetworkManager.singleton.ServerChangeScene("m0");
+                MyNetworkManager.singleton.ServerChangeScene("Trainning");
                 break;
             case 1:
                 MyNetworkManager.singleton.ServerChangeScene("m1");

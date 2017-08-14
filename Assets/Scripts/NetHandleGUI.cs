@@ -77,17 +77,22 @@ public class NetHandleGUI : NetworkBehaviour {
         if (TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIndex] == 0) {
             GameObject.Find("lock").gameObject.SetActive(false);
         }
+        if (TestController.tcontrol.sceneIndex == 0) { //if it is the trainning scene
+            guiOk.SetActive(true);
+            btnOk.SetActive(true);
+        }
     }
 
     private void Update() {
-        if (playerObject.gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelected.Count > 0) {
-            guiOk.SetActive(true);
-            btnOk.SetActive(true);
-        } else {
-            guiOk.SetActive(false);
-            btnOk.SetActive(false);
+        if (TestController.tcontrol.sceneIndex != 0) { // if it is not the trainning scene
+            if (playerObject.gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelected.Count > 0) {
+                guiOk.SetActive(true);
+                btnOk.SetActive(true);
+            } else {
+                guiOk.SetActive(false);
+                btnOk.SetActive(false);
+            }
         }
-
         if (playerObject.gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelected.Count > 1) {
 
             int groupSelected = -2;
@@ -132,10 +137,10 @@ public class NetHandleGUI : NetworkBehaviour {
 
 
     }
-    public void CloseInstructions() {
-        GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(true);
-        GameObject.Find("Canvas").transform.GetChild(2).gameObject.SetActive(true);
-        GameObject.Find("Instructions").SetActive(false);
+    //public void CloseInstructions() {
+    //    GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(true);
+    //    GameObject.Find("Canvas").transform.GetChild(2).gameObject.SetActive(true);
+    //    GameObject.Find("Instructions").SetActive(false);
 
-    }
+    //}
 }
