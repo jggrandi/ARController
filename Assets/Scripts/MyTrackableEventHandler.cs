@@ -6,7 +6,7 @@ Confidential and Proprietary - Protected under copyright and other laws.
 
 using UnityEngine;
 using System.Collections;
-
+using System.Collections.Generic;
 
 namespace Vuforia {
 
@@ -21,7 +21,7 @@ namespace Vuforia {
         #endregion // PRIVATE_MEMBER_VARIABLES
 
         public GameObject TrackedObjects;
-        
+        public List<int> trackedTargets;
         #region UNTIY_MONOBEHAVIOUR_METHODS
 
         void Awake() {
@@ -31,6 +31,7 @@ namespace Vuforia {
             if (mTrackableBehaviour) {
                 mTrackableBehaviour.RegisterTrackableEventHandler(this);
             }
+
         }
 
         #endregion // UNTIY_MONOBEHAVIOUR_METHODS
@@ -43,9 +44,7 @@ namespace Vuforia {
         /// Implementation of the ITrackableEventHandler function called when the
         /// tracking state changes.
         /// </summary>
-        public void OnTrackableStateChanged(
-                                        TrackableBehaviour.Status previousStatus,
-                                        TrackableBehaviour.Status newStatus) {
+        public void OnTrackableStateChanged(TrackableBehaviour.Status previousStatus,TrackableBehaviour.Status newStatus) {
             if (newStatus == TrackableBehaviour.Status.DETECTED ||
                 newStatus == TrackableBehaviour.Status.TRACKED ||
                 newStatus == TrackableBehaviour.Status.EXTENDED_TRACKED) {
@@ -62,39 +61,63 @@ namespace Vuforia {
         #region PRIVATE_METHODS
 
 
+        private bool findTrackable(int i) {
+            foreach (int value in trackedTargets)
+                if (value == mTrackableBehaviour.Trackable.ID)
+                    return true;
+            return false;
+        } 
+
         private void OnTrackingFound() {
             Renderer[] rendererComponents = TrackedObjects.GetComponentsInChildren<Renderer>(true);
             Collider[] colliderComponents = TrackedObjects.GetComponentsInChildren<Collider>(true);
-                       
-            foreach (Renderer component in rendererComponents) {
-                component.enabled = true;
-            }
+            Rigidbody[] rigidbodyComponents = TrackedObjects.GetComponentsInChildren<Rigidbody>(true);
 
-            foreach (Collider component in colliderComponents)
+            foreach (Renderer component in rendererComponents)
                 component.enabled = true;
             
-            MainController.control.targetsTrackedNow++;
+            foreach (Collider component in colliderComponents)
+                component.enabled = true;
 
+            foreach (Rigidbody component in rigidbodyComponents) {
+                component.detectCollisions = true;
+                component.isKinematic = false;
+            }
+
+            
+            if(!findTrackable(mTrackableBehaviour.Trackable.ID))
+                trackedTargets.Add(mTrackableBehaviour.Trackable.ID);
+
+            Debug.Log("Qnt Targets " + trackedTargets.Count );
         }
 
 
         private void OnTrackingLost() {
             Renderer[] rendererComponents = TrackedObjects.GetComponentsInChildren<Renderer>(true);
             Collider[] colliderComponents = TrackedObjects.GetComponentsInChildren<Collider>(true);
+            Rigidbody[] rigidbodyComponents = TrackedObjects.GetComponentsInChildren<Rigidbody>(true);
 
-            MainController.control.targetsTrackedNow--;
+            if (findTrackable(mTrackableBehaviour.Trackable.ID)) 
+                trackedTargets.Remove(mTrackableBehaviour.Trackable.ID);
+            Debug.Log("Qnt Targets " + trackedTargets.Count);
+            if (trackedTargets.Count <= 0) { 
 
-            if (MainController.control.targetsTrackedNow <= 0) {
-                MainController.control.targetsTrackedNow = 0;
-                foreach (Renderer component in rendererComponents)
+            //if (MainController.control.targetsTrackedNow <= 0) {
+            //    MainController.control.targetsTrackedNow = 0;
+            foreach (Renderer component in rendererComponents)
                     component.enabled = false;
                 
                 foreach (Collider component in colliderComponents)
                     component.enabled = false;
-                
+
+                foreach (Rigidbody component in rigidbodyComponents) {
+                    component.detectCollisions = false;
+                    component.isKinematic = true;
+                }
+
             }
 
-            //Debug.Log("Trackable " + mTrackableBehaviour.TrackableName + " lost");
+            
         }
 
         #endregion // PRIVATE_METHODS
