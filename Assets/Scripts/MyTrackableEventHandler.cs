@@ -63,7 +63,7 @@ namespace Vuforia {
 
         private bool findTrackable(int i) {
             foreach (int value in trackedTargets)
-                if (value == mTrackableBehaviour.Trackable.ID)
+                if (value == i)
                     return true;
             return false;
         } 
@@ -88,7 +88,8 @@ namespace Vuforia {
             if(!findTrackable(mTrackableBehaviour.Trackable.ID))
                 trackedTargets.Add(mTrackableBehaviour.Trackable.ID);
 
-            Debug.Log("Qnt Targets " + trackedTargets.Count );
+            //Debug.Log("Qnt Targets " + trackedTargets.Count );
+            //Debug.Log("ID " + mTrackableBehaviour.Trackable.ID);
         }
 
 
@@ -99,7 +100,7 @@ namespace Vuforia {
 
             if (findTrackable(mTrackableBehaviour.Trackable.ID)) 
                 trackedTargets.Remove(mTrackableBehaviour.Trackable.ID);
-            Debug.Log("Qnt Targets " + trackedTargets.Count);
+            //Debug.Log("Qnt Targets " + trackedTargets.Count);
             if (trackedTargets.Count <= 0) { 
 
             //if (MainController.control.targetsTrackedNow <= 0) {

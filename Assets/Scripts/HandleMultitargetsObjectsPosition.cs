@@ -17,18 +17,18 @@ public class HandleMultitargetsObjectsPosition : MonoBehaviour
         mCamSettings.SwitchAutofocus(true);
         mTrackableSettings = FindObjectOfType<TrackableSettings>();
         mTrackableSettings.SwitchExtendedTracking(true);
-        Debug.Log(imageTargets.transform.childCount);
-        for (int i = 0; i < imageTargets.transform.childCount; i++) {
-            GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            cube.transform.parent = imageTargets.transform.GetChild(i).transform;
-            cube.transform.position = Vector3.zero;
-            cube.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+        //Debug.Log(imageTargets.transform.childCount);
+        //for (int i = 0; i < imageTargets.transform.childCount; i++) {
+        //    GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        //    cube.transform.parent = imageTargets.transform.GetChild(i).transform;
+        //    cube.transform.position = Vector3.zero;
+        //    cube.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
             
-            cube.transform.GetComponent<BoxCollider>().enabled = false;
-            cube.transform.GetComponent<MeshRenderer>().enabled = false;
-            //imageTargets.transform.GetChild(i).GetChild(0).transform.position = Vector3.zero;
-            //imageTargets.transform.GetChild(i).GetChild(0).transform.rotation = Quaternion.identity;
-        }
+        //    cube.transform.GetComponent<BoxCollider>().enabled = false;
+        //    cube.transform.GetComponent<MeshRenderer>().enabled = false;
+        //    //imageTargets.transform.GetChild(i).GetChild(0).transform.position = Vector3.zero;
+        //    //imageTargets.transform.GetChild(i).GetChild(0).transform.rotation = Quaternion.identity;
+        //}
     }
 
     // Update is called once per frame

@@ -80,8 +80,8 @@ public class HandleNetworkFunctions : NetworkBehaviour {
 
     [Command]
     public void CmdLockTransform(int index, Vector3 position, Quaternion rotation) {
-        //RpcLockTransform(index, position, rotation);
-        RpcSyncObj(index, position, rotation, Vector3.zero);
+        RpcLockTransform(index, position, rotation);
+        //RpcSyncObj(index, position, rotation, Vector3.zero);
     }
     public void LockTransform(int index, Vector3 position, Quaternion rotation) {
         position = GetLocalTransform().InverseTransformPoint(position);
