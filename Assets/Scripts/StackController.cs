@@ -138,15 +138,15 @@ public class StackController : NetworkBehaviour {
         //foreach (Transform child in trackedObjects.transform) // Disable all objects.
         //    child.gameObject.SetActive(false);
 
-        if (TestController.tcontrol.sceneIndex == 0) // if it is the howtouse scene, activate only one piece without their ghost
-            trackedObjects.transform.GetChild(0).gameObject.SetActive(true);
+        //if (TestController.tcontrol.sceneIndex == 0) // if it is the howtouse scene, activate only one piece without their ghost
+        //    trackedObjects.transform.GetChild(0).gameObject.SetActive(true);
 
-        if (TestController.tcontrol.sceneIndex != 0 && dataSync.pieceTraining == 0) { // if is not the howtouse scene and is the first piece, activate the first tranning piece.
-            trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 4).gameObject.SetActive(true); // activate the moving object 
-            trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 3).gameObject.SetActive(true); // and its ghost, here the ghost is the next piece
-            childMoving = trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 4); // take the moving object 
-            childStatic = trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 3); // and its ghost
-        }
+        //if (TestController.tcontrol.sceneIndex != 0 && dataSync.pieceTraining == 0) { // if is not the howtouse scene and is the first piece, activate the first tranning piece.
+        //    trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 4).gameObject.SetActive(true); // activate the moving object 
+        //    trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 3).gameObject.SetActive(true); // and its ghost, here the ghost is the next piece
+        //    childMoving = trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 4); // take the moving object 
+        //    childStatic = trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 3); // and its ghost
+        //}
     }
 
     void checkIfUsersFinished() {
@@ -160,69 +160,66 @@ public class StackController : NetworkBehaviour {
 
     void Update() {
         if (!isLocalPlayer) return;
-        if (dataSync.pieceActiveNow == halfObjects) return;
+       // if (dataSync.pieceActiveNow == halfObjects) return;
         if (TestController.tcontrol.sceneIndex == 0)
             checkIfUsersFinished();
 
 
-        if (dataSync.pieceTraining == 1) {
-            trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 4).gameObject.SetActive(false);
-            trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 3).gameObject.SetActive(false);
+        //if (dataSync.pieceTraining == 1) {
+        //    trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 4).gameObject.SetActive(false);
+        //    trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 3).gameObject.SetActive(false);
 
-            trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 2).gameObject.SetActive(true);
-            trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 1).gameObject.SetActive(true);
-            childMoving = trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 2); // take the moving object 
-            childStatic = trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 1); // and its ghost
-        } else if (dataSync.pieceTraining == 0) { //if user is in the training mode
-
-
-            trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 4).gameObject.SetActive(true);
-            trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 3).gameObject.SetActive(true);
+        //    trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 2).gameObject.SetActive(true);
+        //    trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 1).gameObject.SetActive(true);
+        //    childMoving = trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 2); // take the moving object 
+        //    childStatic = trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 1); // and its ghost
+        //} else if (dataSync.pieceTraining == 0) { //if user is in the training mode
 
 
-            childMoving = trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 4); // take the moving object 
-            childStatic = trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 3); // and its ghost
+        //    trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 4).gameObject.SetActive(true);
+        //    trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 3).gameObject.SetActive(true);
 
-        } else { // if user is not in the training mode
 
-            trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 2).gameObject.SetActive(false);
-            trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 1).gameObject.SetActive(false);
+        //    childMoving = trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 4); // take the moving object 
+        //    childStatic = trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 3); // and its ghost
 
-            childMoving = trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]); // take the moving object 
-            childStatic = trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow] + halfObjects); // and its ghost
+        //} else { // if user is not in the training mode
+
+        //    trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 2).gameObject.SetActive(false);
+        //    trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 1).gameObject.SetActive(false);
+
+        //    childMoving = trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]); // take the moving object 
+        //    childStatic = trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow] + halfObjects); // and its ghost
             
-            for(int i = 0; i < dataSync.piecesList.Count; i++) {
-                bool activeState = trackedObjects.transform.GetChild(dataSync.piecesList[i]).gameObject.activeSelf;
-                if (i == dataSync.pieceActiveNow && activeState == false) {
+        //    for(int i = 0; i < dataSync.piecesList.Count; i++) {
+        //        bool activeState = trackedObjects.transform.GetChild(dataSync.piecesList[i]).gameObject.activeSelf;
+        //        if (i == dataSync.pieceActiveNow && activeState == false) {
                     
-                    trackedObjects.transform.GetChild(dataSync.piecesList[i]).gameObject.SetActive(true);
-                    trackedObjects.transform.GetChild(dataSync.piecesList[i] + halfObjects).gameObject.SetActive(true);
+        //            trackedObjects.transform.GetChild(dataSync.piecesList[i]).gameObject.SetActive(true);
+        //            trackedObjects.transform.GetChild(dataSync.piecesList[i] + halfObjects).gameObject.SetActive(true);
 
-                } else if(i != dataSync.pieceActiveNow && activeState == true) {
+        //        } else if(i != dataSync.pieceActiveNow && activeState == true) {
                     
-                    trackedObjects.transform.GetChild(dataSync.piecesList[i]).gameObject.SetActive(false); // disable the previous object
-                    trackedObjects.transform.GetChild(dataSync.piecesList[i] + halfObjects).gameObject.SetActive(false); //and its ghost
-                    setSpawnPos(i);
-                    setSpawnRot(i);
+        //            trackedObjects.transform.GetChild(dataSync.piecesList[i]).gameObject.SetActive(false); // disable the previous object
+        //            trackedObjects.transform.GetChild(dataSync.piecesList[i] + halfObjects).gameObject.SetActive(false); //and its ghost
+        //            setSpawnPos(i);
+        //            setSpawnRot(i);
 
-                }
-            }
+        //        }
+        //    }
             
-        }
+        //}
 
-        movingObjMatrixTrans = Matrix4x4.TRS(childMoving.transform.position, Quaternion.identity, new Vector3(1.0f, 1.0f, 1.0f));
-        movingObjMatrixRot = Matrix4x4.TRS(new Vector3(0, 0, 0), childMoving.transform.rotation, new Vector3(1.0f, 1.0f, 1.0f));
+        //movingObjMatrixTrans = Matrix4x4.TRS(childMoving.transform.position, Quaternion.identity, new Vector3(1.0f, 1.0f, 1.0f));
+        //movingObjMatrixRot = Matrix4x4.TRS(new Vector3(0, 0, 0), childMoving.transform.rotation, new Vector3(1.0f, 1.0f, 1.0f));
 
-        staticObjMatrixTrans = Matrix4x4.TRS(childStatic.transform.position, Quaternion.identity, new Vector3(1.0f, 1.0f, 1.0f));
-        staticObjMatrixRot = Matrix4x4.TRS(new Vector3(0, 0, 0), childStatic.transform.rotation, new Vector3(1.0f, 1.0f, 1.0f));
+        //staticObjMatrixTrans = Matrix4x4.TRS(childStatic.transform.position, Quaternion.identity, new Vector3(1.0f, 1.0f, 1.0f));
+        //staticObjMatrixRot = Matrix4x4.TRS(new Vector3(0, 0, 0), childStatic.transform.rotation, new Vector3(1.0f, 1.0f, 1.0f));
 
-        dataSync.errorTranslation = Utils.distMatrices(movingObjMatrixTrans, staticObjMatrixTrans);
-        dataSync.errorRotation = Utils.distMatrices(movingObjMatrixRot, staticObjMatrixRot);
-        dataSync.errorRotationAngle = Quaternion.Angle(childMoving.transform.rotation, childStatic.transform.rotation);
+        //dataSync.errorTranslation = Utils.distMatrices(movingObjMatrixTrans, staticObjMatrixTrans);
+        //dataSync.errorRotation = Utils.distMatrices(movingObjMatrixRot, staticObjMatrixRot);
+        //dataSync.errorRotationAngle = Quaternion.Angle(childMoving.transform.rotation, childStatic.transform.rotation);
 
-        //float angle;
-        //Vector3 vec;
-        //childMoving.transform.rotation.ToAngleAxis(out angle, out vec);
         
     }
 

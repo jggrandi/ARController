@@ -26,9 +26,12 @@ public class ObjectManager : MonoBehaviour {
 
         
         trackedObjects = GameObject.Find("TrackedObjects");
+        GameObject pai = GameObject.Find("Objects");
         if (TestController.tcontrol.sceneIndex == 0)
-             parent = GameObject.Find("HowToUseObjects").transform;
-
+            parent = pai.transform.Find("HowToUseObjects").transform;
+        else
+            parent = pai.transform.Find("TaskObjects").transform;
+                    
         int count = parent.childCount;
         for (int i = 0; i < count; i++) {
             GameObject obj = parent.GetChild(0).transform.gameObject;

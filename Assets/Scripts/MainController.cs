@@ -26,6 +26,13 @@ public class MainController : MonoBehaviour {
     void Awake() {
 
         control = this;
+
+        if (TestController.tcontrol.sceneIndex == 2) 
+            GameObject.Find("Objects").transform.Find("WallTask2").gameObject.SetActive(true);
+        else if (TestController.tcontrol.sceneIndex == 3)
+            GameObject.Find("Objects").transform.Find("WallTask3").gameObject.SetActive(true);
+        
+
         //if (trackedObjects != null) {
         //    for (int i = 0; i < trackedObjects.transform.childCount; i++) {
         //        GameObject obj = trackedObjects.transform.GetChild(i).transform.gameObject;
@@ -35,9 +42,9 @@ public class MainController : MonoBehaviour {
         //    }
         //}
 
-             
+
         // Handle the screen orientation
-        
+
         Screen.autorotateToLandscapeLeft = Landscape;
         Screen.autorotateToLandscapeRight = Landscape;
         Screen.autorotateToPortraitUpsideDown = !Landscape;
