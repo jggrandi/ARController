@@ -124,7 +124,7 @@ namespace Lean.Touch {
 
         float transFactor = 0.005f;
         private void OnFingerTap(LeanFinger finger) {
-            if (TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIndex] == 1) return;
+            //if (TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIndex] == 1) return;
             translationZ = 1;
             if (gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelected.Count != 0)
                 MainController.control.isTapForTransform = true;
@@ -135,7 +135,7 @@ namespace Lean.Touch {
             if (!isLocalPlayer) return;
             if (IgnoreGuiFingers == true && finger.StartedOverGui == true) return;
             if (LeanTouch.Fingers.Count != 1) return;
-            if (TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIndex] == 1) return;
+            //if (TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIndex] == 1) return;
 
             if (translationZ == 1)
                 translationZ = 2;
@@ -170,7 +170,7 @@ namespace Lean.Touch {
         public void OnGesture(List<LeanFinger> fingers) {  // two fingers on screen
             if (!isLocalPlayer) return;
             if (LeanTouch.Fingers.Count != 2) return;
-            if (TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIndex] == 1) return;
+            //if (TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIndex] == 1) return;
 
             if (MainController.control.lockTransform)
                 CmdUpdateModality(2);

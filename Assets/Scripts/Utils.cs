@@ -100,6 +100,7 @@ public static class Utils {
     }
 
     public static int GetIndex(GameObject g) {
+        if (g.GetComponent<ObjectGroupId>() == null) return -1;
         return g.GetComponent<ObjectGroupId>().index;
     }
 

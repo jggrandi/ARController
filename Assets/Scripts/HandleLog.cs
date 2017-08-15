@@ -36,27 +36,27 @@ public class HandleLog : NetworkBehaviour {
         if (!isServer ) return;
         if (TestController.tcontrol.sceneIndex == 0 ) return;
 
-        foreach (var player in GameObject.FindGameObjectsWithTag("player")) {
-            if (!player.GetComponent<NetworkIdentity>().isLocalPlayer) {
-                camPos = player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().CameraPosition;
-                targetsTracked = player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().targetsTracked;
-                modality = player.GetComponent<Lean.Touch.NetHandleTransformations>().modality;
-                if (player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelectedShared.Count != 0) {
-                    isObjSelected = true;
-                    if (time == 0.0f)
-                        time = Time.realtimeSinceStartup;
-                } else {
-                    isObjSelected = false;
-                }
-            }
-        }
+  //      foreach (var player in GameObject.FindGameObjectsWithTag("player")) {
+  //          if (!player.GetComponent<NetworkIdentity>().isLocalPlayer) {
+  //              camPos = player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().CameraPosition;
+  //              targetsTracked = player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().targetsTracked;
+  //              modality = player.GetComponent<Lean.Touch.NetHandleTransformations>().modality;
+  //              if (player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelectedShared.Count != 0) {
+  //                  isObjSelected = true;
+  //                  if (time == 0.0f)
+  //                      time = Time.realtimeSinceStartup;
+  //              } else {
+  //                  isObjSelected = false;
+  //              }
+  //          }
+  //      }
         
-		if (countFrames % 5 == 0 ) { //&& dataSync.pieceActiveNow < dataSync.piecesList.Count
-            if(dataSync.pieceTraining < 2)
-			    log.saveVerbose(true, dataSync.pieceTraining, isObjSelected, -1, -1, -1, modality, trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]).gameObject, camPos, dataSync.errorTranslation, dataSync.errorRotation, dataSync.errorRotationAngle, targetsTracked);
-            else
-                log.saveVerbose(false, dataSync.piecesList[dataSync.pieceActiveNow], isObjSelected, dataSync.posList[dataSync.piecesList[dataSync.pieceActiveNow]], dataSync.rotationsList[dataSync.pieceActiveNow], dataSync.vecRotAngle[dataSync.rotationsList[dataSync.pieceActiveNow]], modality, trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]).gameObject, camPos, dataSync.errorTranslation, dataSync.errorRotation, dataSync.errorRotationAngle, targetsTracked);
-        }
+		//if (countFrames % 5 == 0 ) { //&& dataSync.pieceActiveNow < dataSync.piecesList.Count
+  //          if(dataSync.pieceTraining < 2)
+		//	    log.saveVerbose(true, dataSync.pieceTraining, isObjSelected, -1, -1, -1, modality, trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]).gameObject, camPos, dataSync.errorTranslation, dataSync.errorRotation, dataSync.errorRotationAngle, targetsTracked);
+  //          else
+  //              log.saveVerbose(false, dataSync.piecesList[dataSync.pieceActiveNow], isObjSelected, dataSync.posList[dataSync.piecesList[dataSync.pieceActiveNow]], dataSync.rotationsList[dataSync.pieceActiveNow], dataSync.vecRotAngle[dataSync.rotationsList[dataSync.pieceActiveNow]], modality, trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]).gameObject, camPos, dataSync.errorTranslation, dataSync.errorRotation, dataSync.errorRotationAngle, targetsTracked);
+  //      }
 
         countFrames++;
     }
