@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.Networking;
 using System.Collections.Generic;
 
+
 public class NetHandleGUI : NetworkBehaviour {
 
     public GameObject selectTranslate;
@@ -16,7 +17,11 @@ public class NetHandleGUI : NetworkBehaviour {
     public GameObject trackedObjects;
 
     public GameObject playerObject;
-    //List<int> listSelected;
+    int uId;
+
+    DataSync DataSyncRef;
+    GameObject handler;
+    GameObject NetManager;
 
     public void buttonLock () {
         MainController.control.lockTransform = true;
@@ -48,9 +53,15 @@ public class NetHandleGUI : NetworkBehaviour {
 
     }
 
-    public void buttonOk() {
+    
+    public void buttonOk() { // if user click in the ok button
         if (btnOk.activeInHierarchy) {
-            playerObject.GetComponent<StackController>().SetNextPiece();
+            if (TestController.tcontrol.sceneIndex == 0 ) { //if in trainning
+                
+                playerObject.GetComponent<HandleUsersConnected>().AddUsersDone(uId); //add the user id to the done list
+                guiOk.SetActive(false); // deactivate the ok button.
+            } else
+                playerObject.GetComponent<StackController>().SetNextPiece();
         } 
     }
 
@@ -70,17 +81,28 @@ public class NetHandleGUI : NetworkBehaviour {
         }
     }
 
-    DataSync DataSyncRef;
-    public void Start() {
-        DataSyncRef = GameObject.Find("MainHandler").GetComponent<DataSync>();
-        //listSelected = playerObject.gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelected;
-        if (TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIndex] == 0) {
-            GameObject.Find("lock").gameObject.SetActive(false);
+
+    IEnumerator Start() {
+        yield return new WaitForSeconds(1f); //Delay start, wait for the players.
+        handler = GameObject.Find("MainHandler");
+        NetManager = GameObject.Find("NetworkManager");
+        //if (handler == null) return;
+        //if (NetManager == null) return;
+
+        DataSyncRef = handler.GetComponent<DataSync>();
+        uId = int.Parse(NetManager.GetComponent<MyNetworkManager>().userID); //get the user id
+        
+        if (playerObject.GetComponent<HandleUsersConnected>().FindUser(uId)) { //if the user connected and he is on the list, it is possible that he was connected and already have clicked on the ok in the past
+            guiOk.SetActive(false);
+            btnOk.SetActive(false);
         }
-        if (TestController.tcontrol.sceneIndex == 0) { //if it is the trainning scene
+        else if (TestController.tcontrol.sceneIndex == 0) { //if it is the trainning scene
             guiOk.SetActive(true);
             btnOk.SetActive(true);
         }
+
+
+
     }
 
     private void Update() {

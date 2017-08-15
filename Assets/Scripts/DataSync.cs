@@ -21,6 +21,11 @@ public class DataSync : NetworkBehaviour {
     public int GroupCount = 0;
     public GameObject playerObject;
 
+    [SyncVar]
+    public int usersConnected = 0;
+    public SyncListInt usersDone = new SyncListInt();
+
+
     public float errorTranslation;
     public float errorRotation;
 	public float errorRotationAngle;

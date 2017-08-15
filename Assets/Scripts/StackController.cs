@@ -151,10 +151,20 @@ public class StackController : NetworkBehaviour {
         }
     }
 
+    void checkIfUsersFinishedTrainning() {
+        if (dataSync.usersDone.Count == 0) return;
+        if (!isServer) return;
+        //if (dataSync.usersConnected - 1 == dataSync.usersDone.Count) { // -1 because the server counts as a connected player
+        if (dataSync.usersDone.Count == 2) { //hard coded for 2 players.. it will not work for players != 2 
+            CmdChangeScene();
+        }
+    }
+
     void Update() {
         if (!isLocalPlayer) return;
         if (dataSync.pieceActiveNow == halfObjects) return;
-        if (TestController.tcontrol.sceneIndex == 0) return;
+        if (TestController.tcontrol.sceneIndex == 0)
+            checkIfUsersFinishedTrainning();
 
 
         if (dataSync.pieceTraining == 1) {
