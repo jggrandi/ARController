@@ -26,14 +26,14 @@ public class MainController : MonoBehaviour {
     void Awake() {
 
         control = this;
-        if (trackedObjects != null) {
-            for (int i = 0; i < trackedObjects.transform.childCount; i++) {
-                GameObject obj = trackedObjects.transform.GetChild(i).transform.gameObject;
-                obj.AddComponent<ObjectGroupId>();
-                //obj.GetComponent<ObjectGroupId>().material = obj.GetComponent<Renderer>().material;
-                obj.GetComponent<ObjectGroupId>().index = i;
-            }
-        }
+        //if (trackedObjects != null) {
+        //    for (int i = 0; i < trackedObjects.transform.childCount; i++) {
+        //        GameObject obj = trackedObjects.transform.GetChild(i).transform.gameObject;
+        //        obj.AddComponent<ObjectGroupId>();
+        //        //obj.GetComponent<ObjectGroupId>().material = obj.GetComponent<Renderer>().material;
+        //        obj.GetComponent<ObjectGroupId>().index = i;
+        //    }
+        //}
 
              
         // Handle the screen orientation

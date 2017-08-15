@@ -83,22 +83,7 @@ public class SetupScene : NetworkBehaviour {
 
     [Command]
     void CmdStartScene() {
-        switch (TestController.tcontrol.sceneIndex) {
-            case 0:
-                MyNetworkManager.singleton.ServerChangeScene("Trainning");
-                break;
-            case 1:
-                MyNetworkManager.singleton.ServerChangeScene("m1");
-                break;
-            case 2:
-                MyNetworkManager.singleton.ServerChangeScene("m2");
-                break;
-            case 3:
-                MyNetworkManager.singleton.ServerChangeScene("m3");
-                break;
-            default:
-                break;
-        }
+        MyNetworkManager.singleton.ServerChangeScene("Trainning");
     }
 
     [Command]

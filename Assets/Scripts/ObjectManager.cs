@@ -7,6 +7,9 @@ public class ObjectManager : MonoBehaviour {
     public List<GameObject> list;
     public static ObjectManager manager;
 
+    public GameObject trackedObjects;
+    Transform parent;
+
     public static GameObject Get(int i) {
         return manager.list[i];
     }
@@ -20,18 +23,22 @@ public class ObjectManager : MonoBehaviour {
     }
 
     void Awake() {
-        var parent = GameObject.Find("TrackedObjects").transform;
 
-        if (parent == null) return;
         
-        for (int i = 0; i < parent.childCount; i++) {
-            list.Add(parent.GetChild(i).gameObject);
+        trackedObjects = GameObject.Find("TrackedObjects");
+        if (TestController.tcontrol.sceneIndex == 0)
+             parent = GameObject.Find("HowToUseObjects").transform;
+
+        int count = parent.childCount;
+        for (int i = 0; i < count; i++) {
+            GameObject obj = parent.GetChild(0).transform.gameObject;
+            obj.AddComponent<ObjectGroupId>();
+            obj.GetComponent<ObjectGroupId>().index = i;
+            list.Add(parent.GetChild(0).gameObject);
+            parent.GetChild(0).transform.parent = trackedObjects.transform;
+
         }
-        parent = GameObject.Find("TrainingObjects").transform;
-        if (parent == null) return;
-        for (int i = 0; i < parent.childCount; i++) {
-            list.Add(parent.GetChild(i).gameObject);
-        }
+
         manager = this;
     }
 

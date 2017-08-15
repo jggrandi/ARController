@@ -11,7 +11,7 @@ public class StackController : NetworkBehaviour {
     public GameObject playerObject;
 
     GameObject trackedObjects;
-    GameObject trainingObjects;
+    GameObject howToUseObjects;
     //int[] objectsOrder;
 
     public int halfObjects;
@@ -47,42 +47,42 @@ public class StackController : NetworkBehaviour {
 
     void OnGUI() {
 
-        GameObject handler = GameObject.Find("MainHandler");
-        if (handler == null) return;
+        //GameObject handler = GameObject.Find("MainHandler");
+        //if (handler == null) return;
 
-        titleStyle.fontSize = 50;
-        titleStyle.fontStyle = FontStyle.Bold;
-        titleStyle.alignment = TextAnchor.MiddleCenter;
+        //titleStyle.fontSize = 50;
+        //titleStyle.fontStyle = FontStyle.Bold;
+        //titleStyle.alignment = TextAnchor.MiddleCenter;
 
 
         
-        titleStyle2.fontSize = 50;
-        titleStyle2.fontStyle = FontStyle.Bold;
-        titleStyle2.alignment = TextAnchor.MiddleCenter;
+        //titleStyle2.fontSize = 50;
+        //titleStyle2.fontStyle = FontStyle.Bold;
+        //titleStyle2.alignment = TextAnchor.MiddleCenter;
 
-        if (dataSync.errorRotationAngle < 3.0f)
-            titleStyle.normal.textColor = Color.green;
-        else
-            titleStyle.normal.textColor = Color.white;
+        //if (dataSync.errorRotationAngle < 3.0f)
+        //    titleStyle.normal.textColor = Color.green;
+        //else
+        //    titleStyle.normal.textColor = Color.white;
 
-        if (dataSync.errorTranslation < 0.13f)
-            titleStyle2.normal.textColor = Color.green;
-        else
-            titleStyle2.normal.textColor = Color.white;
+        //if (dataSync.errorTranslation < 0.13f)
+        //    titleStyle2.normal.textColor = Color.green;
+        //else
+        //    titleStyle2.normal.textColor = Color.white;
 
 
-        if (dataSync.pieceTraining == 0 && TestController.tcontrol.sceneIndex != 0) {
-            GUI.Label(new Rect(Screen.width / 2, 40, 50, 50), "Diff Angle: " + dataSync.errorRotationAngle.ToString("F2") , titleStyle);
-            GUI.Label(new Rect(Screen.width / 2, 80, 50, 50), "Diff Pos:   " + dataSync.errorTranslation.ToString("F2"), titleStyle2);
-        }
+        //if (dataSync.pieceTraining == 0 && TestController.tcontrol.sceneIndex != 0) {
+        //    GUI.Label(new Rect(Screen.width / 2, 40, 50, 50), "Diff Angle: " + dataSync.errorRotationAngle.ToString("F2") , titleStyle);
+        //    GUI.Label(new Rect(Screen.width / 2, 80, 50, 50), "Diff Pos:   " + dataSync.errorTranslation.ToString("F2"), titleStyle2);
+        //}
 
-        if(dataSync.pieceTraining == 1) {
-            if (showErrorTraining2) {
-                GUI.Box(new Rect(0, 0, Screen.width, Screen.height), "");
-                GUI.Label(new Rect(Screen.width / 2, 40, 50, 50), "Diff Angle: " + dataSync.errorRotationAngle.ToString("F2"), titleStyle);
-                GUI.Label(new Rect(Screen.width / 2, 80, 50, 50), "Diff Pos:   " + dataSync.errorTranslation.ToString("F2"), titleStyle2);
-            }
-        }
+        //if(dataSync.pieceTraining == 1) {
+        //    if (showErrorTraining2) {
+        //        GUI.Box(new Rect(0, 0, Screen.width, Screen.height), "");
+        //        GUI.Label(new Rect(Screen.width / 2, 40, 50, 50), "Diff Angle: " + dataSync.errorRotationAngle.ToString("F2"), titleStyle);
+        //        GUI.Label(new Rect(Screen.width / 2, 80, 50, 50), "Diff Pos:   " + dataSync.errorTranslation.ToString("F2"), titleStyle2);
+        //    }
+        //}
     }
 
 
@@ -110,31 +110,29 @@ public class StackController : NetworkBehaviour {
 
         if (!isLocalPlayer) return;
 
-        trackedObjects = GameObject.Find("TrackedObjects");
-        trainingObjects = GameObject.Find("TrainingObjects");
+        
 
-        int count = 0;
-        for (int i = trackedObjects.transform.childCount; i < trainingObjects.transform.childCount + trackedObjects.transform.childCount; i++) {
+    //        for (int i = trackedObjects.transform.childCount; i < trainingObjects.transform.childCount + trackedObjects.transform.childCount; i++) {
 
-            GameObject obj = trainingObjects.transform.GetChild(count).transform.gameObject;
-            obj.AddComponent<ObjectGroupId>();
-            //obj.GetComponent<ObjectGroupId>().material = obj.GetComponent<Renderer>().material;
-            obj.GetComponent<ObjectGroupId>().index = i;
-            count++;
-        }
+    //        GameObject obj = trainingObjects.transform.GetChild(count).transform.gameObject;
+    //        obj.AddComponent<ObjectGroupId>();
+    //        //obj.GetComponent<ObjectGroupId>().material = obj.GetComponent<Renderer>().material;
+    //        obj.GetComponent<ObjectGroupId>().index = i;
+    //        count++;
+    //    }
 
-        halfObjects = trackedObjects.transform.childCount / 2; // The objs/2 values are the moving objects. -2 to discard the training pieces in the end
-        if (TestController.tcontrol.sceneIndex != 0) { // if it is not the howtouse scene
-            for (int i = 0; i < halfObjects; i++) {
-				setSpawnPos (i);
-				setSpawnRot (i);
-            }
+    //    halfObjects = trackedObjects.transform.childCount / 2; // The objs/2 values are the moving objects. -2 to discard the training pieces in the end
+    //    if (TestController.tcontrol.sceneIndex != 0) { // if it is not the howtouse scene
+    //        for (int i = 0; i < halfObjects; i++) {
+				//setSpawnPos (i);
+				//setSpawnRot (i);
+    //        }
 
-            int index = trainingObjects.transform.childCount;
-            for (int i = 0; i < index; i++) {
-                trainingObjects.transform.GetChild(0).transform.parent = trackedObjects.transform;
-            }
-        }
+    //        int index = trainingObjects.transform.childCount;
+    //        for (int i = 0; i < index; i++) {
+    //            trainingObjects.transform.GetChild(0).transform.parent = trackedObjects.transform;
+    //        }
+    //    }
 
 
         //foreach (Transform child in trackedObjects.transform) // Disable all objects.
@@ -151,7 +149,7 @@ public class StackController : NetworkBehaviour {
         }
     }
 
-    void checkIfUsersFinishedTrainning() {
+    void checkIfUsersFinished() {
         if (dataSync.usersDone.Count == 0) return;
         if (!isServer) return;
         //if (dataSync.usersConnected - 1 == dataSync.usersDone.Count) { // -1 because the server counts as a connected player
@@ -164,7 +162,7 @@ public class StackController : NetworkBehaviour {
         if (!isLocalPlayer) return;
         if (dataSync.pieceActiveNow == halfObjects) return;
         if (TestController.tcontrol.sceneIndex == 0)
-            checkIfUsersFinishedTrainning();
+            checkIfUsersFinished();
 
 
         if (dataSync.pieceTraining == 1) {
