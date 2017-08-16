@@ -19,12 +19,7 @@ public class ObjectManager : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        
-    }
 
-    void Awake() {
-
-        
         trackedObjects = GameObject.Find("TrackedObjects");
         GameObject pai = GameObject.Find("Objects");
         if (TestController.tcontrol.sceneIndex == 0)

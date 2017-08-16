@@ -12,6 +12,9 @@ public class StackController : NetworkBehaviour {
 
     GameObject trackedObjects;
     GameObject howToUseObjects;
+
+    GameObject ghosts;
+
     //int[] objectsOrder;
 
     public int halfObjects;
@@ -21,14 +24,17 @@ public class StackController : NetworkBehaviour {
 
     Matrix4x4 movingObjMatrixTrans;
     Matrix4x4 movingObjMatrixRot;
+    Matrix4x4 movingObjMatrixScale;
 
     Matrix4x4 staticObjMatrixTrans;
     Matrix4x4 staticObjMatrixRot;
+    Matrix4x4 staticObjMatrixScale;
 
 
     DataSync dataSync;
 	bool redoList = false;
 
+    int piecesRemaining;
 
     bool showErrorTraining2 = false;
 
@@ -86,53 +92,70 @@ public class StackController : NetworkBehaviour {
     }
 
 
-	void setSpawnPos(int id){
-		float x = TestController.tcontrol.spawnDistances[dataSync.posList[id] * 3];
-		float y = TestController.tcontrol.spawnDistances[dataSync.posList[id] * 3 + 1];
-		float z = TestController.tcontrol.spawnDistances[dataSync.posList[id] * 3 + 2];
-        trackedObjects.transform.GetChild(id).transform.position = new Vector3(x, y, z);
-	}
+    //void setSpawnPos(int id){
+    //	float x = TestController.tcontrol.spawnDistances[dataSync.posList[id] * 3];
+    //	float y = TestController.tcontrol.spawnDistances[dataSync.posList[id] * 3 + 1];
+    //	float z = TestController.tcontrol.spawnDistances[dataSync.posList[id] * 3 + 2];
+    //       trackedObjects.transform.GetChild(id).transform.position = new Vector3(x, y, z);
+    //}
 
-	void setSpawnRot(int id){
-		float rx = TestController.tcontrol.spawnRotations[dataSync.rotationsList[id] * 4];
-		float ry = TestController.tcontrol.spawnRotations[dataSync.rotationsList[id] * 4 + 1];
-		float rz = TestController.tcontrol.spawnRotations[dataSync.rotationsList[id] * 4 + 2];
-		float rw = TestController.tcontrol.spawnRotations[dataSync.rotationsList[id] * 4 + 3];
-		trackedObjects.transform.GetChild(id).transform.rotation = new Quaternion(rx, ry, rz, rw);
-	}
+    //void setSpawnRot(int id){
+    //	float rx = TestController.tcontrol.spawnRotations[dataSync.rotationsList[id] * 4];
+    //	float ry = TestController.tcontrol.spawnRotations[dataSync.rotationsList[id] * 4 + 1];
+    //	float rz = TestController.tcontrol.spawnRotations[dataSync.rotationsList[id] * 4 + 2];
+    //	float rw = TestController.tcontrol.spawnRotations[dataSync.rotationsList[id] * 4 + 3];
+    //	trackedObjects.transform.GetChild(id).transform.rotation = new Quaternion(rx, ry, rz, rw);
+    //}
 
 
     void Start() {
         GameObject handler = GameObject.Find("MainHandler");
+        trackedObjects = GameObject.Find("TrackedObjects");
+
+        if (TestController.tcontrol.sceneIndex == 0) return;
+
+        ghosts = GameObject.Find("Ghosts");
         
+        if (ghosts == null) return;
+
         if (handler == null) return;
         dataSync = handler.GetComponent<DataSync>();
 
         if (!isLocalPlayer) return;
 
-        
+        piecesRemaining = dataSync.piecesList.Count;
 
-    //        for (int i = trackedObjects.transform.childCount; i < trainingObjects.transform.childCount + trackedObjects.transform.childCount; i++) {
+        trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]).gameObject.SetActive(true); //activate the first piece
+        ghosts.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]).gameObject.SetActive(true); //activate the respective destination (static) piece.
+        childMoving = trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]);
+        childStatic = ghosts.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]).transform;
 
-    //        GameObject obj = trainingObjects.transform.GetChild(count).transform.gameObject;
-    //        obj.AddComponent<ObjectGroupId>();
-    //        //obj.GetComponent<ObjectGroupId>().material = obj.GetComponent<Renderer>().material;
-    //        obj.GetComponent<ObjectGroupId>().index = i;
-    //        count++;
-    //    }
+        for(int i = 0; i < dataSync.piecesList.Count; i++) {
+            trackedObjects.transform.GetChild(dataSync.piecesList[i]).gameObject.SetActive(dataSync.activeState[i]);
+        }
 
-    //    halfObjects = trackedObjects.transform.childCount / 2; // The objs/2 values are the moving objects. -2 to discard the training pieces in the end
-    //    if (TestController.tcontrol.sceneIndex != 0) { // if it is not the howtouse scene
-    //        for (int i = 0; i < halfObjects; i++) {
-				//setSpawnPos (i);
-				//setSpawnRot (i);
-    //        }
 
-    //        int index = trainingObjects.transform.childCount;
-    //        for (int i = 0; i < index; i++) {
-    //            trainingObjects.transform.GetChild(0).transform.parent = trackedObjects.transform;
-    //        }
-    //    }
+        //        for (int i = trackedObjects.transform.childCount; i < trainingObjects.transform.childCount + trackedObjects.transform.childCount; i++) {
+
+        //        GameObject obj = trainingObjects.transform.GetChild(count).transform.gameObject;
+        //        obj.AddComponent<ObjectGroupId>();
+        //        //obj.GetComponent<ObjectGroupId>().material = obj.GetComponent<Renderer>().material;
+        //        obj.GetComponent<ObjectGroupId>().index = i;
+        //        count++;
+        //    }
+
+        //    halfObjects = trackedObjects.transform.childCount / 2; // The objs/2 values are the moving objects. -2 to discard the training pieces in the end
+        //    if (TestController.tcontrol.sceneIndex != 0) { // if it is not the howtouse scene
+        //        for (int i = 0; i < halfObjects; i++) {
+        //setSpawnPos (i);
+        //setSpawnRot (i);
+        //        }
+
+        //        int index = trainingObjects.transform.childCount;
+        //        for (int i = 0; i < index; i++) {
+        //            trainingObjects.transform.GetChild(0).transform.parent = trackedObjects.transform;
+        //        }
+        //    }
 
 
         //foreach (Transform child in trackedObjects.transform) // Disable all objects.
@@ -160,9 +183,12 @@ public class StackController : NetworkBehaviour {
 
     void Update() {
         if (!isLocalPlayer) return;
-       // if (dataSync.pieceActiveNow == halfObjects) return;
-        if (TestController.tcontrol.sceneIndex == 0)
+        // if (dataSync.pieceActiveNow == halfObjects) return;
+        if (TestController.tcontrol.sceneIndex == 0) { // if it is the how to use scene
             checkIfUsersFinished();
+            return;
+        }
+        if (piecesRemaining == 0) return;
 
 
         //if (dataSync.pieceTraining == 1) {
@@ -188,39 +214,130 @@ public class StackController : NetworkBehaviour {
         //    trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 2).gameObject.SetActive(false);
         //    trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 1).gameObject.SetActive(false);
 
-        //    childMoving = trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]); // take the moving object 
-        //    childStatic = trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow] + halfObjects); // and its ghost
-            
-        //    for(int i = 0; i < dataSync.piecesList.Count; i++) {
-        //        bool activeState = trackedObjects.transform.GetChild(dataSync.piecesList[i]).gameObject.activeSelf;
-        //        if (i == dataSync.pieceActiveNow && activeState == false) {
-                    
-        //            trackedObjects.transform.GetChild(dataSync.piecesList[i]).gameObject.SetActive(true);
-        //            trackedObjects.transform.GetChild(dataSync.piecesList[i] + halfObjects).gameObject.SetActive(true);
+        //        childMoving = trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]); // take the moving object 
+        //        childStatic = ghosts.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]); // and its ghost
 
-        //        } else if(i != dataSync.pieceActiveNow && activeState == true) {
-                    
-        //            trackedObjects.transform.GetChild(dataSync.piecesList[i]).gameObject.SetActive(false); // disable the previous object
-        //            trackedObjects.transform.GetChild(dataSync.piecesList[i] + halfObjects).gameObject.SetActive(false); //and its ghost
-        //            setSpawnPos(i);
-        //            setSpawnRot(i);
+        //for (int i = 0; i < ghosts.transform.childCount; i++) {
+        //    bool activeState = ghosts.transform.GetChild(i).gameObject.activeSelf;
+        //    if (i == dataSync.pieceActiveNow && activeState == false) {
 
-        //        }
+        //        //trackedObjects.transform.GetChild(dataSync.piecesList[i]).gameObject.SetActive(true);
+        //        ghosts.transform.GetChild(dataSync.piecesList[i]).gameObject.SetActive(true);
+
+        //    } else if (i != dataSync.pieceActiveNow && activeState == true) {
+
+        //        trackedObjects.transform.GetChild(dataSync.piecesList[i]).gameObject.SetActive(false); // disable the previous object
+        //        ghosts.transform.GetChild(dataSync.piecesList[i]).gameObject.SetActive(false); //and its ghost
+
+        //        // NEED TO DESELECT THE PIECE FOR ALL USERS
+
+        //        //setSpawnPos(i);
+        //        //setSpawnRot(i);
+
         //    }
-            
         //}
 
-        //movingObjMatrixTrans = Matrix4x4.TRS(childMoving.transform.position, Quaternion.identity, new Vector3(1.0f, 1.0f, 1.0f));
-        //movingObjMatrixRot = Matrix4x4.TRS(new Vector3(0, 0, 0), childMoving.transform.rotation, new Vector3(1.0f, 1.0f, 1.0f));
+        for (int i = 0; i < dataSync.piecesList.Count; i++) {
+            bool activeState = ghosts.transform.GetChild(dataSync.piecesList[i]).gameObject.activeSelf;
+            if(activeState == false && dataSync.pieceActiveNow == i) {
+                ghosts.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]).gameObject.SetActive(true);
+            } else if( activeState == true && dataSync.pieceActiveNow != i) {
+                CmdChangeActiveState(i, false);
+                trackedObjects.transform.GetChild(dataSync.piecesList[i]).gameObject.SetActive(false); // disable the previous object
+                ghosts.transform.GetChild(dataSync.piecesList[i]).gameObject.SetActive(false); //and its ghost
+            }
+        }
 
-        //staticObjMatrixTrans = Matrix4x4.TRS(childStatic.transform.position, Quaternion.identity, new Vector3(1.0f, 1.0f, 1.0f));
-        //staticObjMatrixRot = Matrix4x4.TRS(new Vector3(0, 0, 0), childStatic.transform.rotation, new Vector3(1.0f, 1.0f, 1.0f));
+        childMoving = trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]); // take the moving object 
+        childStatic = ghosts.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]); // and its ghost
 
-        //dataSync.errorTranslation = Utils.distMatrices(movingObjMatrixTrans, staticObjMatrixTrans);
-        //dataSync.errorRotation = Utils.distMatrices(movingObjMatrixRot, staticObjMatrixRot);
-        //dataSync.errorRotationAngle = Quaternion.Angle(childMoving.transform.rotation, childStatic.transform.rotation);
-
+        movingObjMatrixTrans = Matrix4x4.TRS(childMoving.transform.position, Quaternion.identity, new Vector3(1.0f, 1.0f, 1.0f));
+        movingObjMatrixRot = Matrix4x4.TRS(new Vector3(0, 0, 0), childMoving.transform.rotation, new Vector3(1.0f, 1.0f, 1.0f));
         
+
+        staticObjMatrixTrans = Matrix4x4.TRS(childStatic.transform.position, Quaternion.identity, new Vector3(1.0f, 1.0f, 1.0f));
+        staticObjMatrixRot = Matrix4x4.TRS(new Vector3(0, 0, 0), childStatic.transform.rotation, new Vector3(1.0f, 1.0f, 1.0f));
+        
+        dataSync.errorTranslation = Utils.distMatrices(movingObjMatrixTrans, staticObjMatrixTrans);
+        dataSync.errorRotation = Utils.distMatrices(movingObjMatrixRot, staticObjMatrixRot);
+        dataSync.errorRotationAngle = Quaternion.Angle(childMoving.transform.rotation, childStatic.transform.rotation);
+        dataSync.errorScale = Mathf.Abs(childMoving.localScale.x - childStatic.localScale.x);
+
+        //if(dataSync.errorTranslation < 0.15f && dataSync.errorRotationAngle < 5.0f && dataSync.errorScale < 0.01f) {
+        if (dataSync.errorTranslation < 0.65f && dataSync.errorRotationAngle < 15.0f && dataSync.errorScale < 0.1f) { //relaxed values
+            SetNextPiece();
+        }
+
+
+    }
+
+
+    public void SetNextPiece() {
+
+
+
+
+        //childMoving = null;
+        //childStatic = null;
+
+        //trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]).gameObject.SetActive(false); // disable the previous object
+        //ghosts.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]).gameObject.SetActive(false); //and its ghost
+
+        dataSync.pieceActiveNow++;
+
+        if (dataSync.pieceActiveNow == dataSync.piecesList.Count)
+            CmdChangeScene();
+
+        CmdSetEnabledObject(dataSync.pieceActiveNow);
+
+        //childMoving = trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]); // take the moving object 
+        //childStatic = ghosts.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]); // and its ghost
+
+        //ghosts.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]).gameObject.SetActive(true); //and its ghost
+
+        //if (TestController.tcontrol.sceneIndex == 0) // if it is howtouse scene, after the first piece the setup scene is loaded.
+        //    CmdChangeScene();
+
+        //gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelected.Clear();
+        //CmdClearSelection();
+
+        //CmdSaveResumed();
+
+        //if (dataSync.pieceTraining < 2) { // if user in the training, go to next training piece.
+
+        //    if (dataSync.pieceTraining == 1) {
+        //        StartCoroutine(showError());
+        //    } else {
+        //        CmdPieceTrainingActiveNow();
+        //    }
+        //    CmdSetEnabledObject(0);
+        //} else {
+
+        //    if ((dataSync.errorTranslation > 0.15f || dataSync.errorRotationAngle > 15.0f) && !redoList) // if the piece is coarse docked.. add it to redo list.
+        //        CmdAddToRedo();
+
+        //    if (dataSync.pieceActiveNow == halfObjects - 1 && !redoList) {
+        //        redoList = true;
+        //    }
+
+        //    if(redoList && dataSync.piecesListRedo.Count <= 0) {
+        //        CmdChangeScene();
+        //        return;
+        //    }
+
+        //    if (!redoList) {
+        //        CmdSetEnabledObject(dataSync.pieceActiveNow+1);
+        //    }else {
+        //        CmdSetEnabledObject(dataSync.piecesListRedo[0]);
+        //        CmdRemoveFromRedo(0);
+
+        //    }
+        //}
+    }
+
+    [Command]
+    void CmdChangeActiveState(int index,bool state) {
+        dataSync.activeState[index] = state;
     }
 
     [Command]
@@ -242,7 +359,7 @@ public class StackController : NetworkBehaviour {
 
     [ClientRpc]
     void RpcPieceTrainingActiveNow() {
-        dataSync.pieceTraining++;
+        //        dataSync.pieceTraining++;
     }
 
     [Command]
@@ -264,14 +381,14 @@ public class StackController : NetworkBehaviour {
 
     [Command]
     void CmdAddToRedo() {
-        dataSync.piecesListRedo.Add(dataSync.pieceActiveNow);
+        //        dataSync.piecesListRedo.Add(dataSync.pieceActiveNow);
     }
 
     [Command]
     void CmdRemoveFromRedo(int id) {
-        dataSync.piecesListRedo.RemoveAt(id);
+        //        dataSync.piecesListRedo.RemoveAt(id);
     }
-    
+
     [ClientRpc]
     void RpcDeactivatePiece(int id) {
         trackedObjects.transform.GetChild(id).gameObject.SetActive(false); // disable the previous object
@@ -284,8 +401,8 @@ public class StackController : NetworkBehaviour {
 
     [ClientRpc]
     void RpcSpawnPos(int id) {
-        setSpawnPos(id);
-        setSpawnRot(id);
+        //        setSpawnPos(id);
+        //        setSpawnRot(id);
     }
 
     [Command]
@@ -298,46 +415,5 @@ public class StackController : NetworkBehaviour {
         GameObject.Find("MainHandler").gameObject.transform.GetComponent<HandleLog>().SaveResumed();
     }
 
-    public void SetNextPiece() {
-
-        if (TestController.tcontrol.sceneIndex == 0) // if it is howtouse scene, after the first piece the setup scene is loaded.
-            CmdChangeScene();
-
-        gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelected.Clear();
-        CmdClearSelection();
-
-        CmdSaveResumed();
-
-        if (dataSync.pieceTraining < 2) { // if user in the training, go to next training piece.
-
-            if (dataSync.pieceTraining == 1) {
-                StartCoroutine(showError());
-            } else {
-                CmdPieceTrainingActiveNow();
-            }
-            CmdSetEnabledObject(0);
-        } else {
-
-            if ((dataSync.errorTranslation > 0.15f || dataSync.errorRotationAngle > 15.0f) && !redoList) // if the piece is coarse docked.. add it to redo list.
-                CmdAddToRedo();
-
-            if (dataSync.pieceActiveNow == halfObjects - 1 && !redoList) {
-                redoList = true;
-            }
-
-            if(redoList && dataSync.piecesListRedo.Count <= 0) {
-                CmdChangeScene();
-                return;
-            }
-
-            if (!redoList) {
-                CmdSetEnabledObject(dataSync.pieceActiveNow+1);
-            }else {
-                CmdSetEnabledObject(dataSync.piecesListRedo[0]);
-                CmdRemoveFromRedo(0);
-
-            }
-        }
-    }
 }
 

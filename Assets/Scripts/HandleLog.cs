@@ -62,12 +62,12 @@ public class HandleLog : NetworkBehaviour {
     }
 
     public void SaveResumed() {
-        time = Time.realtimeSinceStartup - time;
-        if(dataSync.pieceTraining < 2)
-            log.saveResume(true, dataSync.pieceTraining, -1, -1, -1, time, dataSync.errorTranslation, dataSync.errorRotation, dataSync.errorRotationAngle);
-        else
-            log.saveResume(false, dataSync.piecesList[dataSync.pieceActiveNow], dataSync.posList[dataSync.piecesList[dataSync.pieceActiveNow]], dataSync.rotationsList[dataSync.pieceActiveNow], dataSync.vecRotAngle[dataSync.rotationsList[dataSync.pieceActiveNow]], time, dataSync.errorTranslation, dataSync.errorRotation, dataSync.errorRotationAngle);
-        time = 0.0f;
+        //time = Time.realtimeSinceStartup - time;
+        //if(dataSync.pieceTraining < 2)
+        //    log.saveResume(true, dataSync.pieceTraining, -1, -1, -1, time, dataSync.errorTranslation, dataSync.errorRotation, dataSync.errorRotationAngle);
+        //else
+        //    log.saveResume(false, dataSync.piecesList[dataSync.pieceActiveNow], dataSync.posList[dataSync.piecesList[dataSync.pieceActiveNow]], dataSync.rotationsList[dataSync.pieceActiveNow], dataSync.vecRotAngle[dataSync.rotationsList[dataSync.pieceActiveNow]], time, dataSync.errorTranslation, dataSync.errorRotation, dataSync.errorRotationAngle);
+        //time = 0.0f;
     }
 
 

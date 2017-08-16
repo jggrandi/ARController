@@ -38,8 +38,28 @@ public class HandleNetworkFunctions : NetworkBehaviour {
     }
 
     [Command]
-    public void CmdSyncPhysicsObj(int index, bool gravity, float mass, float drag, float adrag) {
+    public void CmdSyncAllPhysics() {
+        if (TrackedObjects == null) TrackedObjects = GameObject.Find("TrackedObjects");
+        for (int i = 0; i < TrackedObjects.transform.childCount; i++) {
+            SyncPhysics(i);
+        }
+    }
 
+    public void SyncPhysics(int index, bool grav = true, bool mass = true, bool drag = true, bool adrag = true) { 
+        bool gg = false;
+        float m = 0.0f;
+        float d = 0.0f;
+        float a = 0.0f;
+        var g = ObjectManager.Get(index);
+        if (grav) gg = g.transform.GetComponent<Rigidbody>().useGravity;
+        if (mass) m  = g.transform.GetComponent<Rigidbody>().mass;
+        if (drag) d  = g.transform.GetComponent<Rigidbody>().drag;
+        if (adrag) a = g.transform.GetComponent<Rigidbody>().angularDrag;
+        RpcSyncPhysics(index, gg, m, d, a);
+    }
+
+    [Command]
+    public void CmdSyncPhysicsObj(int index, bool gravity, float mass, float drag, float adrag) {
         var g = ObjectManager.Get(index);
         g.transform.GetComponent<Rigidbody>().useGravity = gravity;
         g.transform.GetComponent<Rigidbody>().mass = mass;
@@ -209,6 +229,7 @@ public class HandleNetworkFunctions : NetworkBehaviour {
 
     public override void OnStartLocalPlayer() {
         CmdSyncAll();
+        CmdSyncAllPhysics();
     }
 
 }

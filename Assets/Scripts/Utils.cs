@@ -246,6 +246,24 @@ public static class Utils {
         return randomNumbers;
     }
 
+    static public List<int> randomizeVector(int begin, int end) {
+
+        var randomNumbers = new List<int>();
+        var numbers = new List<int>();
+
+
+        for (int i = begin; i < end; i++) // numbers  to be randomized
+            numbers.Add(i);
+
+        for (int i = begin; i < end; i++) {
+            var thisNumber = UnityEngine.Random.Range(0, numbers.Count);
+            randomNumbers.Add(numbers[thisNumber]);
+            numbers.RemoveAt(thisNumber);
+        }
+        return randomNumbers;
+    }
+
+
     static public List<int> randomizeVector(int[] vec) {
 
         var randomNumbers = new List<int>();
