@@ -53,16 +53,17 @@ public class NetHandleGUI : NetworkBehaviour {
 
     }
 
-    
+
     public void buttonOk() { // if user click in the ok button
         if (btnOk.activeInHierarchy) {
-            if (TestController.tcontrol.sceneIndex == 0 ) { //if in trainning
-                
+            if (TestController.tcontrol.sceneIndex == 0) { //if in trainning
+
                 playerObject.GetComponent<HandleUsersConnected>().AddUsersDone(uId); //add the user id to the done list
                 guiOk.SetActive(false); // deactivate the ok button.
-            } else
-                playerObject.GetComponent<StackController>().SetNextPiece();
-        } 
+                                        //} else
+                                        //    playerObject.GetComponent<StackController>().SetNextPiece();
+            }
+        }
     }
 
     public void toggleGroup() {

@@ -8,8 +8,6 @@ using UnityEngine.SceneManagement;
 
 public class StackController : NetworkBehaviour {
 
-    public GameObject playerObject;
-
     GameObject trackedObjects;
     GameObject howToUseObjects;
 
@@ -17,24 +15,21 @@ public class StackController : NetworkBehaviour {
 
     //int[] objectsOrder;
 
-    public int halfObjects;
-    public int halfTrainingObjects;
-    Transform childMoving;
-    Transform childStatic;
+    //public int halfObjects;
+    //public int halfTrainingObjects;
+    public List<Transform> childMoving = new List<Transform>();
+    public List<Transform> childStatic = new List<Transform>();
 
-    Matrix4x4 movingObjMatrixTrans;
-    Matrix4x4 movingObjMatrixRot;
-    Matrix4x4 movingObjMatrixScale;
+    List<Matrix4x4> movingObjMatrixTrans = new List<Matrix4x4>() { Matrix4x4.identity, Matrix4x4.identity};
+    List<Matrix4x4> movingObjMatrixRot = new List<Matrix4x4>() { Matrix4x4.identity, Matrix4x4.identity };
 
-    Matrix4x4 staticObjMatrixTrans;
-    Matrix4x4 staticObjMatrixRot;
-    Matrix4x4 staticObjMatrixScale;
+    List<Matrix4x4> staticObjMatrixTrans = new List<Matrix4x4>() { Matrix4x4.identity, Matrix4x4.identity };
+    List<Matrix4x4> staticObjMatrixRot = new List<Matrix4x4>() { Matrix4x4.identity, Matrix4x4.identity };
+
 
 
     DataSync dataSync;
 	bool redoList = false;
-
-    int piecesRemaining;
 
     bool showErrorTraining2 = false;
 
@@ -123,15 +118,17 @@ public class StackController : NetworkBehaviour {
 
         if (!isLocalPlayer) return;
 
-        piecesRemaining = dataSync.piecesList.Count;
-
-        trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]).gameObject.SetActive(true); //activate the first piece
-        ghosts.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]).gameObject.SetActive(true); //activate the respective destination (static) piece.
-        childMoving = trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]);
-        childStatic = ghosts.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]).transform;
-
-        for(int i = 0; i < dataSync.piecesList.Count; i++) {
-            trackedObjects.transform.GetChild(dataSync.piecesList[i]).gameObject.SetActive(dataSync.activeState[i]);
+        for (int i = 0; i < dataSync.pieceActiveNow.Count; i++) {
+            //trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow[i]]).gameObject.SetActive(true); //activate the first piece
+            int id = dataSync.piecesList[dataSync.pieceActiveNow[i]];
+            ghosts.transform.GetChild(id).gameObject.SetActive(true); //activate the destination (static) piece.
+            childMoving.Add(trackedObjects.transform.GetChild(id));
+            childStatic.Add(ghosts.transform.GetChild(id).transform);
+            
+        }
+        dataSync.pieceCounter++;
+        for (int i = 0; i < dataSync.piecesList.Count; i++) {
+            trackedObjects.transform.GetChild(dataSync.piecesList[i]).gameObject.SetActive(dataSync.activeState[i]); // sync active state of the tracked objects, in case of reconnect...
         }
 
 
@@ -181,6 +178,9 @@ public class StackController : NetworkBehaviour {
         }
     }
 
+    bool agoraVai = false;
+    bool agoraVai2 = false;
+
     void Update() {
         if (!isLocalPlayer) return;
         // if (dataSync.pieceActiveNow == halfObjects) return;
@@ -188,7 +188,7 @@ public class StackController : NetworkBehaviour {
             checkIfUsersFinished();
             return;
         }
-        if (piecesRemaining == 0) return;
+
 
 
         //if (dataSync.pieceTraining == 1) {
@@ -238,41 +238,44 @@ public class StackController : NetworkBehaviour {
         //}
 
         for (int i = 0; i < dataSync.piecesList.Count; i++) {
-            bool activeState = ghosts.transform.GetChild(dataSync.piecesList[i]).gameObject.activeSelf;
-            if(activeState == false && dataSync.pieceActiveNow == i) {
-                ghosts.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]).gameObject.SetActive(true);
-            } else if( activeState == true && dataSync.pieceActiveNow != i) {
-                CmdChangeActiveState(i, false);
-                trackedObjects.transform.GetChild(dataSync.piecesList[i]).gameObject.SetActive(false); // disable the previous object
-                ghosts.transform.GetChild(dataSync.piecesList[i]).gameObject.SetActive(false); //and its ghost
+            int pieceID = dataSync.piecesList[i];
+            bool active = ghosts.transform.GetChild(pieceID).gameObject.activeSelf;
+            if(active && !dataSync.pieceActiveNow.Contains(i)) {
+                ghosts.transform.GetChild(pieceID).gameObject.SetActive(false);
+                trackedObjects.transform.GetChild(pieceID).gameObject.SetActive(false);
+                CmdChangeActiveState(pieceID, false);
+            } else if(!active && dataSync.pieceActiveNow.Contains(i)){
+                ghosts.transform.GetChild(pieceID).gameObject.SetActive(true);
+            }
+
+        }
+
+        for (int i = 0; i < dataSync.pieceActiveNow.Count; i++) {
+            childMoving[i] = trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow[i]]); // take the moving object 
+            childStatic[i] = ghosts.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow[i]]); // and its ghost
+
+            movingObjMatrixTrans[i] = Matrix4x4.TRS(childMoving[i].transform.position, Quaternion.identity, new Vector3(1.0f, 1.0f, 1.0f));
+            movingObjMatrixRot[i] = Matrix4x4.TRS(new Vector3(0, 0, 0), childMoving[i].transform.rotation, new Vector3(1.0f, 1.0f, 1.0f));
+
+
+            staticObjMatrixTrans[i] = Matrix4x4.TRS(childStatic[i].transform.position, Quaternion.identity, new Vector3(1.0f, 1.0f, 1.0f));
+            staticObjMatrixRot[i] = Matrix4x4.TRS(new Vector3(0, 0, 0), childStatic[i].transform.rotation, new Vector3(1.0f, 1.0f, 1.0f));
+
+            dataSync.errorTranslation[i] = Utils.distMatrices(movingObjMatrixTrans[i], staticObjMatrixTrans[i]);
+            dataSync.errorRotation[i] = Utils.distMatrices(movingObjMatrixRot[i], staticObjMatrixRot[i]);
+            dataSync.errorRotationAngle[i] = Quaternion.Angle(childMoving[i].transform.rotation, childStatic[i].transform.rotation);
+            dataSync.errorScale[i] = Mathf.Abs(childMoving[i].localScale.x - childStatic[i].localScale.x);
+
+            //if(dataSync.errorTranslation < 0.15f && dataSync.errorRotationAngle < 5.0f && dataSync.errorScale < 0.01f) {
+            if (dataSync.errorTranslation[i] < 0.65f && dataSync.errorRotationAngle[i] < 15.0f && dataSync.errorScale[i] < 0.1f) { //relaxed values
+                SetNextPiece(i);
             }
         }
-
-        childMoving = trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]); // take the moving object 
-        childStatic = ghosts.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]); // and its ghost
-
-        movingObjMatrixTrans = Matrix4x4.TRS(childMoving.transform.position, Quaternion.identity, new Vector3(1.0f, 1.0f, 1.0f));
-        movingObjMatrixRot = Matrix4x4.TRS(new Vector3(0, 0, 0), childMoving.transform.rotation, new Vector3(1.0f, 1.0f, 1.0f));
-        
-
-        staticObjMatrixTrans = Matrix4x4.TRS(childStatic.transform.position, Quaternion.identity, new Vector3(1.0f, 1.0f, 1.0f));
-        staticObjMatrixRot = Matrix4x4.TRS(new Vector3(0, 0, 0), childStatic.transform.rotation, new Vector3(1.0f, 1.0f, 1.0f));
-        
-        dataSync.errorTranslation = Utils.distMatrices(movingObjMatrixTrans, staticObjMatrixTrans);
-        dataSync.errorRotation = Utils.distMatrices(movingObjMatrixRot, staticObjMatrixRot);
-        dataSync.errorRotationAngle = Quaternion.Angle(childMoving.transform.rotation, childStatic.transform.rotation);
-        dataSync.errorScale = Mathf.Abs(childMoving.localScale.x - childStatic.localScale.x);
-
-        //if(dataSync.errorTranslation < 0.15f && dataSync.errorRotationAngle < 5.0f && dataSync.errorScale < 0.01f) {
-        if (dataSync.errorTranslation < 0.65f && dataSync.errorRotationAngle < 15.0f && dataSync.errorScale < 0.1f) { //relaxed values
-            SetNextPiece();
-        }
-
 
     }
 
 
-    public void SetNextPiece() {
+    public void SetNextPiece(int index) {
 
 
 
@@ -283,12 +286,17 @@ public class StackController : NetworkBehaviour {
         //trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]).gameObject.SetActive(false); // disable the previous object
         //ghosts.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]).gameObject.SetActive(false); //and its ghost
 
-        dataSync.pieceActiveNow++;
+        CmdIncrementPieceCounter();
 
-        if (dataSync.pieceActiveNow == dataSync.piecesList.Count)
+        //dataSync.pieceActiveNow[index] = dataSync.pieceCounter;
+
+        if (dataSync.pieceCounter == dataSync.piecesList.Count)
             CmdChangeScene();
+        Debug.Log(dataSync.piecesList[dataSync.pieceCounter]);
 
-        CmdSetEnabledObject(dataSync.pieceActiveNow);
+        CmdSetEnabledObject(index, dataSync.pieceCounter);
+
+
 
         //childMoving = trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]); // take the moving object 
         //childStatic = ghosts.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]); // and its ghost
@@ -336,13 +344,18 @@ public class StackController : NetworkBehaviour {
     }
 
     [Command]
+    void CmdIncrementPieceCounter() {
+        dataSync.pieceCounter++;
+    }
+
+    [Command]
     void CmdChangeActiveState(int index,bool state) {
         dataSync.activeState[index] = state;
     }
 
     [Command]
-    void CmdSetEnabledObject(int id) {
-        dataSync.pieceActiveNow = id;
+    void CmdSetEnabledObject(int id, int value) {
+        dataSync.pieceActiveNow[id] = value;
     }
 
     [ClientRpc]

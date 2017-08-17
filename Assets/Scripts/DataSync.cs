@@ -5,10 +5,12 @@ using System.Collections.Generic;
 //[NetworkSettings(channel = 0, sendInterval = 0.0f)]
 public class DataSync : NetworkBehaviour {
 
+
+    public SyncListInt pieceActiveNow = new SyncListInt() { 0, 1 };
+
     [SyncVar]
-    public int pieceActiveNow = 0;
-//    [SyncVar]
-//    public int pieceTraining = 0;
+    public int pieceCounter = 0;
+
     [SyncVar]
     public bool saveResumed = false;
 
@@ -27,11 +29,11 @@ public class DataSync : NetworkBehaviour {
     public int usersConnected = 0;
     public SyncListInt usersDone = new SyncListInt();
 
-
-    public float errorTranslation;
-    public float errorRotation;
-	public float errorRotationAngle;
-    public float errorScale;
+    
+    public SyncListFloat errorTranslation = new SyncListFloat() { 0, 0 };
+    public SyncListFloat errorRotation = new SyncListFloat() { 0, 0 };
+    public SyncListFloat errorRotationAngle = new SyncListFloat() { 0, 0 };
+    public SyncListFloat errorScale = new SyncListFloat() { 0, 0 };
 
     //public int[] vecTransIndex = { 0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3 };
     //public int[] vecRotAngle = { 45, 45, 45, 90, 90, 90, 45, 45, 45, 90, 90, 90 }; //Crianças, não façam isso em casa.
@@ -46,7 +48,7 @@ public class DataSync : NetworkBehaviour {
         }
 
         List<int> fullList = new List<int>() { 0, 1 }; // we add the first 2 indices to be the trainning pieces;
-        List<int> randomizedList = Utils.randomizeVector(2,3); // Randomize the blocks order. Store it in an array. 8 trials (the first 2 are the trainning)
+        List<int> randomizedList = Utils.randomizeVector(2,10); // Randomize the blocks order. Store it in an array. 8 trials (the first 2 are the trainning)
 
         fullList.AddRange(randomizedList); //concat the trainning pieces with the randomized pieces.
 

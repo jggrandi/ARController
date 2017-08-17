@@ -23,7 +23,7 @@ public class HandleLog : NetworkBehaviour {
         int task = TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIndex];
         log = new Log(TestController.tcontrol.groupID.ToString(), task);
 
-		previousPiece = dataSync.pieceActiveNow;
+//		previousPiece = dataSync.pieceActiveNow;
 	}
 
     public bool isObjSelected = false;
