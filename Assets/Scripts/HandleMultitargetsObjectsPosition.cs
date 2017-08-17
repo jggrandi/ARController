@@ -8,15 +8,11 @@ public class HandleMultitargetsObjectsPosition : MonoBehaviour
     public GameObject trackedObjects;
     public GameObject imageTargets;
 
-    private CameraSettings mCamSettings = null;
-    private TrackableSettings mTrackableSettings = null;
+
 
     void Start(){
 
-        mCamSettings = FindObjectOfType<CameraSettings>();
-        mCamSettings.SwitchAutofocus(true);
-        mTrackableSettings = FindObjectOfType<TrackableSettings>();
-        mTrackableSettings.SwitchExtendedTracking(true);
+
         //Debug.Log(imageTargets.transform.childCount);
         //for (int i = 0; i < imageTargets.transform.childCount; i++) {
         //    GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);

@@ -228,6 +228,7 @@ public class HandleNetworkFunctions : NetworkBehaviour {
 
 
     public override void OnStartLocalPlayer() {
+        if (isServer) return;
         CmdSyncAll();
         CmdSyncAllPhysics();
     }

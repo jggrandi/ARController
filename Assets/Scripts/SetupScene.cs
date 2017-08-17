@@ -6,9 +6,6 @@ using UnityEngine.Networking;
 
 public class SetupScene : NetworkBehaviour {
 
-    public GameObject playerObject;
-
-
     void Start() {
         foreach (var player in GameObject.FindGameObjectsWithTag("player")) {
             player.gameObject.SetActive(false);

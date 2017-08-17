@@ -104,6 +104,8 @@ public class StackController : NetworkBehaviour {
 
 
     void Start() {
+        if (!isLocalPlayer) return;
+
         GameObject handler = GameObject.Find("MainHandler");
         trackedObjects = GameObject.Find("TrackedObjects");
 
@@ -116,7 +118,6 @@ public class StackController : NetworkBehaviour {
         if (handler == null) return;
         dataSync = handler.GetComponent<DataSync>();
 
-        if (!isLocalPlayer) return;
 
         for (int i = 0; i < dataSync.pieceActiveNow.Count; i++) {
             //trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow[i]]).gameObject.SetActive(true); //activate the first piece
@@ -126,7 +127,8 @@ public class StackController : NetworkBehaviour {
             childStatic.Add(ghosts.transform.GetChild(id).transform);
             
         }
-        dataSync.pieceCounter++;
+        if (isServer)
+            dataSync.pieceCounter++;
         for (int i = 0; i < dataSync.piecesList.Count; i++) {
             trackedObjects.transform.GetChild(dataSync.piecesList[i]).gameObject.SetActive(dataSync.activeState[i]); // sync active state of the tracked objects, in case of reconnect...
         }
@@ -178,8 +180,6 @@ public class StackController : NetworkBehaviour {
         }
     }
 
-    bool agoraVai = false;
-    bool agoraVai2 = false;
 
     void Update() {
         if (!isLocalPlayer) return;
@@ -188,6 +188,7 @@ public class StackController : NetworkBehaviour {
             checkIfUsersFinished();
             return;
         }
+
 
 
 
@@ -243,12 +244,16 @@ public class StackController : NetworkBehaviour {
             if(active && !dataSync.pieceActiveNow.Contains(i)) {
                 ghosts.transform.GetChild(pieceID).gameObject.SetActive(false);
                 trackedObjects.transform.GetChild(pieceID).gameObject.SetActive(false);
-                CmdChangeActiveState(pieceID, false);
+                if (isServer)
+                    ChangeActiveState(pieceID, false);
+                CmdClearSelection(pieceID);
             } else if(!active && dataSync.pieceActiveNow.Contains(i)){
                 ghosts.transform.GetChild(pieceID).gameObject.SetActive(true);
             }
 
         }
+
+        if (!isServer) return;
 
         for (int i = 0; i < dataSync.pieceActiveNow.Count; i++) {
             childMoving[i] = trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow[i]]); // take the moving object 
@@ -274,10 +279,10 @@ public class StackController : NetworkBehaviour {
 
     }
 
-
+    
     public void SetNextPiece(int index) {
 
-
+        
 
 
         //childMoving = null;
@@ -348,8 +353,8 @@ public class StackController : NetworkBehaviour {
         dataSync.pieceCounter++;
     }
 
-    [Command]
-    void CmdChangeActiveState(int index,bool state) {
+    //[Command]
+    void ChangeActiveState(int index,bool state) {
         dataSync.activeState[index] = state;
     }
 
@@ -381,16 +386,30 @@ public class StackController : NetworkBehaviour {
     }
 
     [ClientRpc]
-    void RpcClearSelection() {
-        foreach (var player in GameObject.FindGameObjectsWithTag("player"))
-            player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelectedShared.Clear();
+    void RpcClearSelection(int id) {
+        foreach (var player in GameObject.FindGameObjectsWithTag("player")) {
+            if (player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelected.Contains(id)) {
+                player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelected.Clear();
+                player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelectedShared.Clear();
+            }
+        }
 
     }
 
     [Command]
-    void CmdClearSelection() {
-        RpcClearSelection();
+    void CmdClearSelection(int id) {
+        foreach (var player in GameObject.FindGameObjectsWithTag("player")) {
+            if (player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelected.Contains(id)) {
+                player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelected.Clear();
+                player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelectedShared.Clear();
+            }
+        }
+        RpcClearSelection(id);
     }
+
+    //void ClearSelection(int id) {
+    //    this.gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelected.Clear();
+    //}
 
     [Command]
     void CmdAddToRedo() {

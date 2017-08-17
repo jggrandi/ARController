@@ -9,6 +9,9 @@ public class MainController : MonoBehaviour {
 
     public GameObject trackedObjects;
 
+    private CameraSettings mCamSettings = null;
+    private TrackableSettings mTrackableSettings = null;
+
     public int targetsTrackedNow = 0;
     public bool isMultipleSelection = false;
 
@@ -23,6 +26,15 @@ public class MainController : MonoBehaviour {
     public bool isTapForTransform = false;
 
     public static bool Landscape = true;
+
+    void Start() {
+        mCamSettings = FindObjectOfType<CameraSettings>();
+        mCamSettings.SwitchAutofocus(true);
+        mTrackableSettings = FindObjectOfType<TrackableSettings>();
+        mTrackableSettings.SwitchExtendedTracking(true);
+
+    }
+
     void Awake() {
 
         control = this;
@@ -31,7 +43,7 @@ public class MainController : MonoBehaviour {
             GameObject.Find("Objects").transform.Find("WallTask2").gameObject.SetActive(true);
         else if (TestController.tcontrol.sceneIndex == 3)
             GameObject.Find("Objects").transform.Find("WallTask3").gameObject.SetActive(true);
-        
+
 
         //if (trackedObjects != null) {
         //    for (int i = 0; i < trackedObjects.transform.childCount; i++) {
@@ -44,6 +56,8 @@ public class MainController : MonoBehaviour {
 
 
         // Handle the screen orientation
+
+
 
         Screen.autorotateToLandscapeLeft = Landscape;
         Screen.autorotateToLandscapeRight = Landscape;
