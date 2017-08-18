@@ -39,6 +39,14 @@ public class MainController : MonoBehaviour {
 
         control = this;
 
+        Debug.Log("AQUI " + Landscape);
+        // Handle the screen orientation
+        Screen.autorotateToLandscapeLeft = Landscape;
+        Screen.autorotateToLandscapeRight = Landscape;
+        Screen.autorotateToPortraitUpsideDown = !Landscape;
+        Screen.autorotateToPortrait = !Landscape;
+        Screen.orientation = Landscape ? ScreenOrientation.Landscape : ScreenOrientation.Portrait;
+
         if (TestController.tcontrol.sceneIndex == 2) 
             GameObject.Find("Objects").transform.Find("WallTask2").gameObject.SetActive(true);
         else if (TestController.tcontrol.sceneIndex == 3)
@@ -55,15 +63,9 @@ public class MainController : MonoBehaviour {
         //}
 
 
-        // Handle the screen orientation
+        
 
 
-
-        Screen.autorotateToLandscapeLeft = Landscape;
-        Screen.autorotateToLandscapeRight = Landscape;
-        Screen.autorotateToPortraitUpsideDown = !Landscape;
-        Screen.autorotateToPortrait = !Landscape;
-        Screen.orientation = Landscape?ScreenOrientation.Landscape: ScreenOrientation.Portrait;
     }
 
     public float dist = 0.75f;
