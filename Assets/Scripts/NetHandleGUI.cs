@@ -91,7 +91,12 @@ public class NetHandleGUI : NetworkBehaviour {
 
         DataSyncRef = handler.GetComponent<DataSync>();
         uId = int.Parse(NetManager.GetComponent<MyNetworkManager>().userID); //get the user id
-        
+
+        if (TestController.tcontrol.sceneIndex != 0) {
+            guiOk.SetActive(false);
+            btnOk.SetActive(false);
+        }
+
     }
 
     private void Update() {
@@ -101,11 +106,6 @@ public class NetHandleGUI : NetworkBehaviour {
             guiOk.SetActive(false);
             btnOk.SetActive(false);
         }
-
-        //if (TestController.tcontrol.sceneIndex == 0) { //if it is the trainning scene
-        //    guiOk.SetActive(true);
-        //    btnOk.SetActive(true);
-        //}
 
         if (playerObject.gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelected.Count > 1) {
 
