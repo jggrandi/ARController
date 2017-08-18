@@ -25,7 +25,6 @@ namespace Vuforia {
         #region UNTIY_MONOBEHAVIOUR_METHODS
 
         void Awake() {
-            TrackedObjects.SetActive(true);
 
             mTrackableBehaviour = GetComponent<TrackableBehaviour>();
             if (mTrackableBehaviour) {

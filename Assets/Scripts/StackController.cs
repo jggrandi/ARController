@@ -13,12 +13,8 @@ public class StackController : NetworkBehaviour {
 
     GameObject ghosts;
 
-    //int[] objectsOrder;
-
-    //public int halfObjects;
-    //public int halfTrainingObjects;
-    public List<Transform> childMoving = new List<Transform>();
-    public List<Transform> childStatic = new List<Transform>();
+    List<Transform> childMoving = new List<Transform>();
+    List<Transform> childStatic = new List<Transform>();
 
     List<Matrix4x4> movingObjMatrixTrans = new List<Matrix4x4>() { Matrix4x4.identity, Matrix4x4.identity};
     List<Matrix4x4> movingObjMatrixRot = new List<Matrix4x4>() { Matrix4x4.identity, Matrix4x4.identity };
@@ -29,20 +25,8 @@ public class StackController : NetworkBehaviour {
 
 
     DataSync dataSync;
-	bool redoList = false;
 
-    bool showErrorTraining2 = false;
 
-    public IEnumerator showError() {
-
-        showErrorTraining2 = true;
-
-        
-        yield return new WaitForSeconds(10.0f);
-        CmdPieceTrainingActiveNow();
-        showErrorTraining2 = false;
-
-    }
     GUIStyle titleStyle = new GUIStyle();
     GUIStyle titleStyle2 = new GUIStyle();
 
@@ -86,23 +70,6 @@ public class StackController : NetworkBehaviour {
         //}
     }
 
-
-    //void setSpawnPos(int id){
-    //	float x = TestController.tcontrol.spawnDistances[dataSync.posList[id] * 3];
-    //	float y = TestController.tcontrol.spawnDistances[dataSync.posList[id] * 3 + 1];
-    //	float z = TestController.tcontrol.spawnDistances[dataSync.posList[id] * 3 + 2];
-    //       trackedObjects.transform.GetChild(id).transform.position = new Vector3(x, y, z);
-    //}
-
-    //void setSpawnRot(int id){
-    //	float rx = TestController.tcontrol.spawnRotations[dataSync.rotationsList[id] * 4];
-    //	float ry = TestController.tcontrol.spawnRotations[dataSync.rotationsList[id] * 4 + 1];
-    //	float rz = TestController.tcontrol.spawnRotations[dataSync.rotationsList[id] * 4 + 2];
-    //	float rw = TestController.tcontrol.spawnRotations[dataSync.rotationsList[id] * 4 + 3];
-    //	trackedObjects.transform.GetChild(id).transform.rotation = new Quaternion(rx, ry, rz, rw);
-    //}
-
-
     void Start() {
         if (!isLocalPlayer) return;
 
@@ -130,46 +97,9 @@ public class StackController : NetworkBehaviour {
         if (isServer)
             dataSync.pieceCounter++;
         for (int i = 0; i < dataSync.piecesList.Count; i++) {
-            Debug.Log("Piece: " + dataSync.piecesList[i] + " State: " + dataSync.activeState[i]);
             trackedObjects.transform.GetChild(i).gameObject.SetActive(dataSync.activeState[i]); // sync active state of the tracked objects, in case of reconnect...
         }
 
-
-        //        for (int i = trackedObjects.transform.childCount; i < trainingObjects.transform.childCount + trackedObjects.transform.childCount; i++) {
-
-        //        GameObject obj = trainingObjects.transform.GetChild(count).transform.gameObject;
-        //        obj.AddComponent<ObjectGroupId>();
-        //        //obj.GetComponent<ObjectGroupId>().material = obj.GetComponent<Renderer>().material;
-        //        obj.GetComponent<ObjectGroupId>().index = i;
-        //        count++;
-        //    }
-
-        //    halfObjects = trackedObjects.transform.childCount / 2; // The objs/2 values are the moving objects. -2 to discard the training pieces in the end
-        //    if (TestController.tcontrol.sceneIndex != 0) { // if it is not the howtouse scene
-        //        for (int i = 0; i < halfObjects; i++) {
-        //setSpawnPos (i);
-        //setSpawnRot (i);
-        //        }
-
-        //        int index = trainingObjects.transform.childCount;
-        //        for (int i = 0; i < index; i++) {
-        //            trainingObjects.transform.GetChild(0).transform.parent = trackedObjects.transform;
-        //        }
-        //    }
-
-
-        //foreach (Transform child in trackedObjects.transform) // Disable all objects.
-        //    child.gameObject.SetActive(false);
-
-        //if (TestController.tcontrol.sceneIndex == 0) // if it is the howtouse scene, activate only one piece without their ghost
-        //    trackedObjects.transform.GetChild(0).gameObject.SetActive(true);
-
-        //if (TestController.tcontrol.sceneIndex != 0 && dataSync.pieceTraining == 0) { // if is not the howtouse scene and is the first piece, activate the first tranning piece.
-        //    trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 4).gameObject.SetActive(true); // activate the moving object 
-        //    trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 3).gameObject.SetActive(true); // and its ghost, here the ghost is the next piece
-        //    childMoving = trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 4); // take the moving object 
-        //    childStatic = trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 3); // and its ghost
-        //}
     }
 
     void checkIfUsersFinished() {
@@ -190,54 +120,6 @@ public class StackController : NetworkBehaviour {
             return;
         }
 
-
-
-
-        //if (dataSync.pieceTraining == 1) {
-        //    trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 4).gameObject.SetActive(false);
-        //    trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 3).gameObject.SetActive(false);
-
-        //    trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 2).gameObject.SetActive(true);
-        //    trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 1).gameObject.SetActive(true);
-        //    childMoving = trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 2); // take the moving object 
-        //    childStatic = trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 1); // and its ghost
-        //} else if (dataSync.pieceTraining == 0) { //if user is in the training mode
-
-
-        //    trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 4).gameObject.SetActive(true);
-        //    trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 3).gameObject.SetActive(true);
-
-
-        //    childMoving = trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 4); // take the moving object 
-        //    childStatic = trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 3); // and its ghost
-
-        //} else { // if user is not in the training mode
-
-        //    trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 2).gameObject.SetActive(false);
-        //    trackedObjects.transform.GetChild(trackedObjects.transform.childCount - 1).gameObject.SetActive(false);
-
-        //        childMoving = trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]); // take the moving object 
-        //        childStatic = ghosts.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]); // and its ghost
-
-        //for (int i = 0; i < ghosts.transform.childCount; i++) {
-        //    bool activeState = ghosts.transform.GetChild(i).gameObject.activeSelf;
-        //    if (i == dataSync.pieceActiveNow && activeState == false) {
-
-        //        //trackedObjects.transform.GetChild(dataSync.piecesList[i]).gameObject.SetActive(true);
-        //        ghosts.transform.GetChild(dataSync.piecesList[i]).gameObject.SetActive(true);
-
-        //    } else if (i != dataSync.pieceActiveNow && activeState == true) {
-
-        //        trackedObjects.transform.GetChild(dataSync.piecesList[i]).gameObject.SetActive(false); // disable the previous object
-        //        ghosts.transform.GetChild(dataSync.piecesList[i]).gameObject.SetActive(false); //and its ghost
-
-        //        // NEED TO DESELECT THE PIECE FOR ALL USERS
-
-        //        //setSpawnPos(i);
-        //        //setSpawnRot(i);
-
-        //    }
-        //}
 
         for (int i = 0; i < dataSync.piecesList.Count; i++) {
             int pieceID = dataSync.piecesList[i];
@@ -283,18 +165,7 @@ public class StackController : NetworkBehaviour {
     
     public void SetNextPiece(int index) {
 
-        
-
-
-        //childMoving = null;
-        //childStatic = null;
-
-        //trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]).gameObject.SetActive(false); // disable the previous object
-        //ghosts.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]).gameObject.SetActive(false); //and its ghost
-
         CmdIncrementPieceCounter();
-
-        //dataSync.pieceActiveNow[index] = dataSync.pieceCounter;
 
         if (dataSync.pieceCounter == dataSync.piecesList.Count)
             CmdChangeScene();
@@ -302,51 +173,6 @@ public class StackController : NetworkBehaviour {
 
         CmdSetEnabledObject(index, dataSync.pieceCounter);
 
-
-
-        //childMoving = trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]); // take the moving object 
-        //childStatic = ghosts.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]); // and its ghost
-
-        //ghosts.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]).gameObject.SetActive(true); //and its ghost
-
-        //if (TestController.tcontrol.sceneIndex == 0) // if it is howtouse scene, after the first piece the setup scene is loaded.
-        //    CmdChangeScene();
-
-        //gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelected.Clear();
-        //CmdClearSelection();
-
-        //CmdSaveResumed();
-
-        //if (dataSync.pieceTraining < 2) { // if user in the training, go to next training piece.
-
-        //    if (dataSync.pieceTraining == 1) {
-        //        StartCoroutine(showError());
-        //    } else {
-        //        CmdPieceTrainingActiveNow();
-        //    }
-        //    CmdSetEnabledObject(0);
-        //} else {
-
-        //    if ((dataSync.errorTranslation > 0.15f || dataSync.errorRotationAngle > 15.0f) && !redoList) // if the piece is coarse docked.. add it to redo list.
-        //        CmdAddToRedo();
-
-        //    if (dataSync.pieceActiveNow == halfObjects - 1 && !redoList) {
-        //        redoList = true;
-        //    }
-
-        //    if(redoList && dataSync.piecesListRedo.Count <= 0) {
-        //        CmdChangeScene();
-        //        return;
-        //    }
-
-        //    if (!redoList) {
-        //        CmdSetEnabledObject(dataSync.pieceActiveNow+1);
-        //    }else {
-        //        CmdSetEnabledObject(dataSync.piecesListRedo[0]);
-        //        CmdRemoveFromRedo(0);
-
-        //    }
-        //}
     }
 
     [Command]
@@ -364,10 +190,6 @@ public class StackController : NetworkBehaviour {
         dataSync.pieceActiveNow[id] = value;
     }
 
-    [ClientRpc]
-    void RpcIncrementSceneID() {
-        TestController.tcontrol.sceneIndex++;
-    }
 
     [Command]
     void CmdChangeScene() {
@@ -376,15 +198,7 @@ public class StackController : NetworkBehaviour {
         MyNetworkManager.singleton.ServerChangeScene("SetupTest");
     }
 
-    [ClientRpc]
-    void RpcPieceTrainingActiveNow() {
-        //        dataSync.pieceTraining++;
-    }
 
-    [Command]
-    void CmdPieceTrainingActiveNow() {
-        RpcPieceTrainingActiveNow();
-    }
 
     [ClientRpc]
     void RpcClearSelection(int id) {
@@ -408,40 +222,6 @@ public class StackController : NetworkBehaviour {
         RpcClearSelection(id);
     }
 
-    //void ClearSelection(int id) {
-    //    this.gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelected.Clear();
-    //}
-
-    [Command]
-    void CmdAddToRedo() {
-        //        dataSync.piecesListRedo.Add(dataSync.pieceActiveNow);
-    }
-
-    [Command]
-    void CmdRemoveFromRedo(int id) {
-        //        dataSync.piecesListRedo.RemoveAt(id);
-    }
-
-    [ClientRpc]
-    void RpcDeactivatePiece(int id) {
-        trackedObjects.transform.GetChild(id).gameObject.SetActive(false); // disable the previous object
-    }
-
-    [Command]
-    void CmdDeactivatePiece(int id) {
-        RpcDeactivatePiece(id);
-    }
-
-    [ClientRpc]
-    void RpcSpawnPos(int id) {
-        //        setSpawnPos(id);
-        //        setSpawnRot(id);
-    }
-
-    [Command]
-    void CmdSpawnPos(int id) {
-        RpcSpawnPos(id);
-    }
 
     [Command]
     void CmdSaveResumed() {
