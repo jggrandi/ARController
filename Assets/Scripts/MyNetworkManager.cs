@@ -16,6 +16,7 @@ public class MyNetworkManager : NetworkManager {
         
     }
 
+
     //public override void OnClientConnect(NetworkConnection conn) {
     //    connID = conn.connectionId;
     //    base.OnClientConnect(conn);

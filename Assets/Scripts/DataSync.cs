@@ -27,13 +27,13 @@ public class DataSync : NetworkBehaviour {
 
     [SyncVar]
     public int usersConnected = 0;
-    public SyncListInt usersDone = new SyncListInt();
+ 
 
     
-    public SyncListFloat errorTranslation = new SyncListFloat() { 0, 0 };
-    public SyncListFloat errorRotation = new SyncListFloat() { 0, 0 };
-    public SyncListFloat errorRotationAngle = new SyncListFloat() { 0, 0 };
-    public SyncListFloat errorScale = new SyncListFloat() { 0, 0 };
+    public SyncListFloat errorTranslation = new SyncListFloat() { 0.0f, 0.0f };
+    public SyncListFloat errorRotation = new SyncListFloat() { 0.0f, 0.0f };
+    public SyncListFloat errorRotationAngle = new SyncListFloat() { 0.0f, 0.0f };
+    public SyncListFloat errorScale = new SyncListFloat() { 0.0f, 0.0f };
 
     //public int[] vecTransIndex = { 0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3 };
     //public int[] vecRotAngle = { 45, 45, 45, 90, 90, 90, 45, 45, 45, 90, 90, 90 }; //Crianças, não façam isso em casa.

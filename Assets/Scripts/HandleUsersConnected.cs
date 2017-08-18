@@ -7,10 +7,10 @@ public class HandleUsersConnected : NetworkBehaviour {
 
     DataSync DataSyncRef;
     GameObject handler;
-    //public List<int> usersDone;
+    public SyncListInt usersDone = new SyncListInt();
 
     public bool FindUser(int id) {
-        foreach (int i in DataSyncRef.usersDone)
+        foreach (int i in usersDone)
             if (i == id)
                 return true;
         return false;
@@ -18,7 +18,7 @@ public class HandleUsersConnected : NetworkBehaviour {
 
     [Command]
     void CmdAdd(int id) {
-        DataSyncRef.usersDone.Add(id);
+        usersDone.Add(id);
     }
 
     public bool AddUsersDone(int id) {

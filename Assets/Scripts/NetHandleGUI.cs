@@ -53,15 +53,14 @@ public class NetHandleGUI : NetworkBehaviour {
 
     }
 
-
     public void buttonOk() { // if user click in the ok button
+        Debug.Log("AQ");
         if (btnOk.activeInHierarchy) {
             if (TestController.tcontrol.sceneIndex == 0) { //if in trainning
 
                 playerObject.GetComponent<HandleUsersConnected>().AddUsersDone(uId); //add the user id to the done list
-                guiOk.SetActive(false); // deactivate the ok button.
-                                        //} else
-                                        //    playerObject.GetComponent<StackController>().SetNextPiece();
+                guiOk.SetActive(false);
+                
             }
         }
     }
@@ -93,29 +92,21 @@ public class NetHandleGUI : NetworkBehaviour {
         DataSyncRef = handler.GetComponent<DataSync>();
         uId = int.Parse(NetManager.GetComponent<MyNetworkManager>().userID); //get the user id
         
+    }
+
+    private void Update() {
+        if (playerObject == null) return;
+
         if (playerObject.GetComponent<HandleUsersConnected>().FindUser(uId)) { //if the user connected and he is on the list, it is possible that he was connected and already have clicked on the ok in the past
             guiOk.SetActive(false);
             btnOk.SetActive(false);
         }
-        else if (TestController.tcontrol.sceneIndex == 0) { //if it is the trainning scene
-            guiOk.SetActive(true);
-            btnOk.SetActive(true);
-        }
 
+        //if (TestController.tcontrol.sceneIndex == 0) { //if it is the trainning scene
+        //    guiOk.SetActive(true);
+        //    btnOk.SetActive(true);
+        //}
 
-
-    }
-
-    private void Update() {
-        if (TestController.tcontrol.sceneIndex != 0) { // if it is not the trainning scene
-            if (playerObject.gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelected.Count > 0) {
-                guiOk.SetActive(true);
-                btnOk.SetActive(true);
-            } else {
-                guiOk.SetActive(false);
-                btnOk.SetActive(false);
-            }
-        }
         if (playerObject.gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelected.Count > 1) {
 
             int groupSelected = -2;

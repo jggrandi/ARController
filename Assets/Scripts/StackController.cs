@@ -103,10 +103,10 @@ public class StackController : NetworkBehaviour {
     }
 
     void checkIfUsersFinished() {
-        if (dataSync.usersDone.Count == 0) return;
         if (!isServer) return;
+        if (this.gameObject.GetComponent<HandleUsersConnected>().usersDone.Count == 0) return;
         //if (dataSync.usersConnected - 1 == dataSync.usersDone.Count) { // -1 because the server counts as a connected player
-        if (dataSync.usersDone.Count == 2) { //hard coded for 2 players.. it will not work for players != 2 
+        if (this.gameObject.GetComponent<HandleUsersConnected>().usersDone.Count == 2) { //hard coded for 2 players.. it will not work for players != 2 
             CmdChangeScene();
         }
     }

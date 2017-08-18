@@ -39,7 +39,6 @@ public class MainController : MonoBehaviour {
 
         control = this;
 
-        Debug.Log("AQUI " + Landscape);
         // Handle the screen orientation
         Screen.autorotateToLandscapeLeft = Landscape;
         Screen.autorotateToLandscapeRight = Landscape;
@@ -61,10 +60,6 @@ public class MainController : MonoBehaviour {
         //        obj.GetComponent<ObjectGroupId>().index = i;
         //    }
         //}
-
-
-        
-
 
     }
 
