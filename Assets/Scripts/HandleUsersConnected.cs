@@ -35,11 +35,21 @@ public class HandleUsersConnected : NetworkBehaviour {
         DataSyncRef = handler.GetComponent<DataSync>();
     }
 
+
+
     void FixedUpdate() {
         if (!isServer) return;
 
         var gameobjects = GameObject.FindGameObjectsWithTag("player");
         if(gameobjects.Length != 0)
             DataSyncRef.usersConnected = gameobjects.Length;
+
+        if (TestController.tcontrol.sceneIndex == 0 && isServer) { // if it is the how to use scene
+            if (usersDone.Count == 0) return;
+            if (usersDone.Count == 2) { //hard coded for 2 players.. it will not work for players != 2 
+                DataSyncRef.changeScene = true;
+            }
+        }
+
     }
 }

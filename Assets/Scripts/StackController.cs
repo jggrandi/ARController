@@ -102,24 +102,15 @@ public class StackController : NetworkBehaviour {
 
     }
 
-    void checkIfUsersFinished() {
-        if (!isServer) return;
-        if (this.gameObject.GetComponent<HandleUsersConnected>().usersDone.Count == 0) return;
-        //if (dataSync.usersConnected - 1 == dataSync.usersDone.Count) { // -1 because the server counts as a connected player
-        if (this.gameObject.GetComponent<HandleUsersConnected>().usersDone.Count == 2) { //hard coded for 2 players.. it will not work for players != 2 
-            CmdChangeScene();
-        }
-    }
+
 
 
     void Update() {
         if (!isLocalPlayer) return;
         // if (dataSync.pieceActiveNow == halfObjects) return;
-        if (TestController.tcontrol.sceneIndex == 0) { // if it is the how to use scene
-            checkIfUsersFinished();
-            return;
-        }
-
+        Debug.Log(dataSync.changeScene);
+        if (isServer && dataSync.changeScene)
+            ChangeScene();
 
         for (int i = 0; i < dataSync.piecesList.Count; i++) {
             int pieceID = dataSync.piecesList[i];
@@ -168,7 +159,7 @@ public class StackController : NetworkBehaviour {
         CmdIncrementPieceCounter();
 
         if (dataSync.pieceCounter == dataSync.piecesList.Count)
-            CmdChangeScene();
+            ChangeScene();
         Debug.Log(dataSync.piecesList[dataSync.pieceCounter]);
 
         CmdSetEnabledObject(index, dataSync.pieceCounter);
@@ -191,8 +182,8 @@ public class StackController : NetworkBehaviour {
     }
 
 
-    [Command]
-    void CmdChangeScene() {
+    
+    void ChangeScene() {
         //RpcIncrementSceneID();
         TestController.tcontrol.sceneIndex++;
         MyNetworkManager.singleton.ServerChangeScene("SetupTest");

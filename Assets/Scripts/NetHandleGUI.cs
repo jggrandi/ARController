@@ -54,11 +54,10 @@ public class NetHandleGUI : NetworkBehaviour {
     }
 
     public void buttonOk() { // if user click in the ok button
-        Debug.Log("AQ");
         if (btnOk.activeInHierarchy) {
             if (TestController.tcontrol.sceneIndex == 0) { //if in trainning
 
-                playerObject.GetComponent<HandleUsersConnected>().AddUsersDone(uId); //add the user id to the done list
+                gameObject.GetComponent<HandleUsersConnected>().AddUsersDone(uId); //add the user id to the done list
                 guiOk.SetActive(false);
                 
             }
@@ -102,7 +101,7 @@ public class NetHandleGUI : NetworkBehaviour {
     private void Update() {
         if (playerObject == null) return;
 
-        if (playerObject.GetComponent<HandleUsersConnected>().FindUser(uId)) { //if the user connected and he is on the list, it is possible that he was connected and already have clicked on the ok in the past
+        if (gameObject.GetComponent<HandleUsersConnected>().FindUser(uId)) { //if the user connected and he is on the list, it is possible that he was connected and already have clicked on the ok in the past
             guiOk.SetActive(false);
             btnOk.SetActive(false);
         }
