@@ -130,7 +130,8 @@ public class StackController : NetworkBehaviour {
         if (isServer)
             dataSync.pieceCounter++;
         for (int i = 0; i < dataSync.piecesList.Count; i++) {
-            trackedObjects.transform.GetChild(dataSync.piecesList[i]).gameObject.SetActive(dataSync.activeState[i]); // sync active state of the tracked objects, in case of reconnect...
+            Debug.Log("Piece: " + dataSync.piecesList[i] + " State: " + dataSync.activeState[i]);
+            trackedObjects.transform.GetChild(i).gameObject.SetActive(dataSync.activeState[i]); // sync active state of the tracked objects, in case of reconnect...
         }
 
 
@@ -241,7 +242,7 @@ public class StackController : NetworkBehaviour {
         for (int i = 0; i < dataSync.piecesList.Count; i++) {
             int pieceID = dataSync.piecesList[i];
             bool active = ghosts.transform.GetChild(pieceID).gameObject.activeSelf;
-            if(active && !dataSync.pieceActiveNow.Contains(i)) {
+            if (active && !dataSync.pieceActiveNow.Contains(i)) {
                 ghosts.transform.GetChild(pieceID).gameObject.SetActive(false);
                 trackedObjects.transform.GetChild(pieceID).gameObject.SetActive(false);
                 if (isServer)
