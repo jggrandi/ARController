@@ -11,6 +11,7 @@ public class DataSync : NetworkBehaviour {
     [SyncVar]
     public int pieceCounter = 0;
 
+    [SyncVar]
     public bool changeScene = false;
 
     [SyncVar]

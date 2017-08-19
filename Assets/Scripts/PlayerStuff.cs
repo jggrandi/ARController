@@ -8,11 +8,9 @@ public class PlayerStuff : NetworkBehaviour {
         if (!isLocalPlayer) return;
 
         GameObject go = GameObject.Find("MainHandler");
-        if (go != null) {
+        if (go != null) 
             go.GetComponent<NetHandleGUI>().playerObject = this.gameObject;
-            go.GetComponent<DataSync>().playerObject = this.gameObject;
-        }
-
+        
     }
 
 }

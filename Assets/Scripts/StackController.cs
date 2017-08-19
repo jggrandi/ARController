@@ -74,17 +74,18 @@ public class StackController : NetworkBehaviour {
         if (!isLocalPlayer) return;
 
         GameObject handler = GameObject.Find("MainHandler");
-        trackedObjects = GameObject.Find("TrackedObjects");
-
-        if (TestController.tcontrol.sceneIndex == 0) return;
-
-        ghosts = GameObject.Find("Ghosts");
-        
-        if (ghosts == null) return;
-
         if (handler == null) return;
         dataSync = handler.GetComponent<DataSync>();
 
+        trackedObjects = GameObject.Find("TrackedObjects");
+        if (TestController.tcontrol.sceneIndex == 0) return;
+
+        ghosts = GameObject.Find("Ghosts");
+        if (ghosts == null) return;
+        
+        
+
+        
 
         for (int i = 0; i < dataSync.pieceActiveNow.Count; i++) {
             //trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow[i]]).gameObject.SetActive(true); //activate the first piece
@@ -108,9 +109,11 @@ public class StackController : NetworkBehaviour {
     void Update() {
         if (!isLocalPlayer) return;
         // if (dataSync.pieceActiveNow == halfObjects) return;
-        Debug.Log(dataSync.changeScene);
+        
         if (isServer && dataSync.changeScene)
             ChangeScene();
+
+        if (TestController.tcontrol.sceneIndex == 0) return;
 
         for (int i = 0; i < dataSync.piecesList.Count; i++) {
             int pieceID = dataSync.piecesList[i];
@@ -146,7 +149,7 @@ public class StackController : NetworkBehaviour {
             dataSync.errorScale[i] = Mathf.Abs(childMoving[i].localScale.x - childStatic[i].localScale.x);
 
             //if(dataSync.errorTranslation < 0.15f && dataSync.errorRotationAngle < 5.0f && dataSync.errorScale < 0.01f) {
-            if (dataSync.errorTranslation[i] < 0.65f && dataSync.errorRotationAngle[i] < 15.0f && dataSync.errorScale[i] < 0.1f) { //relaxed values
+            if (dataSync.errorTranslation[i] < 1.65f && dataSync.errorRotationAngle[i] < 150.0f && dataSync.errorScale[i] < 1.1f) { //relaxed values
                 SetNextPiece(i);
             }
         }

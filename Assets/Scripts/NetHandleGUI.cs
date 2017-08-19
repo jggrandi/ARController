@@ -54,14 +54,14 @@ public class NetHandleGUI : NetworkBehaviour {
     }
 
     public void buttonOk() { // if user click in the ok button
-        if (btnOk.activeInHierarchy) {
-            if (TestController.tcontrol.sceneIndex == 0) { //if in trainning
+        //if (btnOk.activeInHierarchy) {
+        //    if (TestController.tcontrol.sceneIndex == 0) { //if in trainning
 
-                gameObject.GetComponent<HandleUsersConnected>().AddUsersDone(uId); //add the user id to the done list
-                guiOk.SetActive(false);
+        //        gameObject.GetComponent<HandleUsersDone>().AddUsersDone(uId); //add the user id to the done list
+        //        guiOk.SetActive(false);
                 
-            }
-        }
+        //    }
+        //}
     }
 
     public void toggleGroup() {
@@ -89,22 +89,22 @@ public class NetHandleGUI : NetworkBehaviour {
         //if (NetManager == null) return;
 
         DataSyncRef = handler.GetComponent<DataSync>();
-        uId = int.Parse(NetManager.GetComponent<MyNetworkManager>().userID); //get the user id
+        //uId = int.Parse(NetManager.GetComponent<MyNetworkManager>().userID); //get the user id
 
-        if (TestController.tcontrol.sceneIndex != 0) {
+        //if (TestController.tcontrol.sceneIndex != 0) {
             guiOk.SetActive(false);
             btnOk.SetActive(false);
-        }
+        //}
 
     }
 
     private void Update() {
         if (playerObject == null) return;
 
-        if (gameObject.GetComponent<HandleUsersConnected>().FindUser(uId)) { //if the user connected and he is on the list, it is possible that he was connected and already have clicked on the ok in the past
-            guiOk.SetActive(false);
-            btnOk.SetActive(false);
-        }
+        //if (gameObject.GetComponent<HandleUsersDone>().FindUser(uId)) { //if the user connected and he is on the list, it is possible that he was connected and already have clicked on the ok in the past
+        //    guiOk.SetActive(false);
+        //    btnOk.SetActive(false);
+        //}
 
         if (playerObject.gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelected.Count > 1) {
 

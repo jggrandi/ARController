@@ -3,16 +3,15 @@ using System.Collections;
 using UnityEngine.Networking;
 using System.Collections.Generic;
 
-public class HandleUsersConnected : NetworkBehaviour {
+public class HandleUsersDone : NetworkBehaviour {
 
     DataSync DataSyncRef;
     GameObject handler;
     public SyncListInt usersDone = new SyncListInt();
 
     public bool FindUser(int id) {
-        foreach (int i in usersDone)
-            if (i == id)
-                return true;
+        if (usersDone.Contains(id))
+            return true;
         return false;
     }
 
