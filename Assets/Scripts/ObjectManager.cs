@@ -26,7 +26,13 @@ public class ObjectManager : MonoBehaviour {
             parent = pai.transform.Find("HowToUseObjects").transform;
         else
             parent = pai.transform.Find("TaskObjects").transform;
-                    
+
+        if (TestController.tcontrol.sceneIndex == 2)
+            GameObject.Find("Objects").transform.Find("WallTask2").gameObject.SetActive(true);
+        else if (TestController.tcontrol.sceneIndex == 3)
+            GameObject.Find("Objects").transform.Find("WallTask3").gameObject.SetActive(true);
+
+
         int count = parent.childCount;
         for (int i = 0; i < count; i++) {
             GameObject obj = parent.GetChild(0).transform.gameObject;

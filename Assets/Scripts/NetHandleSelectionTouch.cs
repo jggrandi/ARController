@@ -58,8 +58,8 @@ namespace Lean.Touch {
             }
         }*/
 
-        public List<int> objSelected = new List<int>();
-        public SyncListInt objSelectedShared = new SyncListInt();
+        public List<int> objSelected = new List<int>(); //the user selections
+        public SyncListInt objSelectedShared = new SyncListInt(); // the user selections visible by other players
         [SyncVar]
         public int currentOperation = 0;
         [Command]

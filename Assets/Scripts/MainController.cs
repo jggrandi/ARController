@@ -46,10 +46,7 @@ public class MainController : MonoBehaviour {
         Screen.autorotateToPortrait = !Landscape;
         Screen.orientation = Landscape ? ScreenOrientation.Landscape : ScreenOrientation.Portrait;
 
-        if (TestController.tcontrol.sceneIndex == 2) 
-            GameObject.Find("Objects").transform.Find("WallTask2").gameObject.SetActive(true);
-        else if (TestController.tcontrol.sceneIndex == 3)
-            GameObject.Find("Objects").transform.Find("WallTask3").gameObject.SetActive(true);
+
 
 
         //if (trackedObjects != null) {

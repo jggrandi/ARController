@@ -22,8 +22,6 @@ public class StackController : NetworkBehaviour {
     List<Matrix4x4> staticObjMatrixTrans = new List<Matrix4x4>() { Matrix4x4.identity, Matrix4x4.identity };
     List<Matrix4x4> staticObjMatrixRot = new List<Matrix4x4>() { Matrix4x4.identity, Matrix4x4.identity };
 
-
-
     DataSync dataSync;
 
 
@@ -82,10 +80,6 @@ public class StackController : NetworkBehaviour {
 
         ghosts = GameObject.Find("Ghosts");
         if (ghosts == null) return;
-        
-        
-
-        
 
         for (int i = 0; i < dataSync.pieceActiveNow.Count; i++) {
             //trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow[i]]).gameObject.SetActive(true); //activate the first piece
@@ -104,8 +98,6 @@ public class StackController : NetworkBehaviour {
     }
 
 
-
-
     void Update() {
         if (!isLocalPlayer) return;
         // if (dataSync.pieceActiveNow == halfObjects) return;
@@ -115,22 +107,42 @@ public class StackController : NetworkBehaviour {
 
         if (TestController.tcontrol.sceneIndex == 0) return;
 
-        for (int i = 0; i < dataSync.piecesList.Count; i++) {
-            int pieceID = dataSync.piecesList[i];
-            bool active = ghosts.transform.GetChild(pieceID).gameObject.activeSelf;
-            if (active && !dataSync.pieceActiveNow.Contains(i)) {
-                ghosts.transform.GetChild(pieceID).gameObject.SetActive(false);
-                trackedObjects.transform.GetChild(pieceID).gameObject.SetActive(false);
+        for (int i = 0; i < dataSync.piecesList.Count; i++) { //this toggle on or off the visibility of the pieces based on their state.
+            int pieceID = dataSync.piecesList[i]; // get the pieceif
+            bool active = ghosts.transform.GetChild(pieceID).gameObject.activeSelf; //get the ghost of the piece state
+            if (active && !dataSync.pieceActiveNow.Contains(i)) { // if the ghost is active and their moving piece is not in the list of pieces to dock now
+                ghosts.transform.GetChild(pieceID).gameObject.SetActive(false); //deactivate their ghost
+                trackedObjects.transform.GetChild(pieceID).gameObject.SetActive(false); //and the moving piece
                 if (isServer)
-                    ChangeActiveState(pieceID, false);
-                CmdClearSelection(pieceID);
-            } else if(!active && dataSync.pieceActiveNow.Contains(i)){
-                ghosts.transform.GetChild(pieceID).gameObject.SetActive(true);
+                    ChangeActiveState(pieceID, false); //the server keeps the active state of the pieces in case of clients reconnect.
+                CmdClearSelection(pieceID); // clear the selection to that piece
+            } else if(!active && dataSync.pieceActiveNow.Contains(i)){ // if the ghost is not active and its moving piece is in the list to dock 
+                ghosts.transform.GetChild(pieceID).gameObject.SetActive(true); //activate the ghost.
             }
-
         }
 
-        if (!isServer) return;
+
+
+        
+        if (!isServer) return; // the server calculate the docking stuff.
+
+        UpdatePiecesTime();
+
+        //    if (gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelected.Count > 0) { //if user is selecting an object
+        //    List<int> tempSelectedBoth = new List<int>(); // pieces selected by all players;
+        //                                                  //if (gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelectedShared.Count > 0) { //if other players are selecting pieces
+        //                                                  //    Debug.Log("BOD");
+        //                                                  //} else { //if only this player is selecting the pieces
+        //                                                  //foreach (int i in gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelected) {
+        //                                                  //    Debug.Log("quem: " + i);
+        //    if (!isServer)
+        //        CmdUpdatePieceTime(0);
+
+        //    //}
+        //    //        }
+        //}
+
+
 
         for (int i = 0; i < dataSync.pieceActiveNow.Count; i++) {
             childMoving[i] = trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow[i]]); // take the moving object 
@@ -166,6 +178,26 @@ public class StackController : NetworkBehaviour {
         Debug.Log(dataSync.piecesList[dataSync.pieceCounter]);
 
         CmdSetEnabledObject(index, dataSync.pieceCounter);
+
+    }
+
+
+
+
+    void UpdatePiecesTime() {
+        List<int> tempPiecesToUpdate = new List<int>();
+        foreach (var player in GameObject.FindGameObjectsWithTag("player")) {
+            foreach(int pieceSelected in player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelectedShared) {
+                if (!tempPiecesToUpdate.Contains(pieceSelected))
+                    tempPiecesToUpdate.Add(pieceSelected);
+            }
+        }
+        //foreach (var piece in tempPiecesToUpdate)
+        //    Debug.Log(piece);
+        for (int i = 0; i < tempPiecesToUpdate.Count; i++)
+            dataSync.piecesTimer[tempPiecesToUpdate[i]] += Time.deltaTime;
+        //    tempPiecesToUpdate[i] += Time.deltaTime;
+        //}
 
     }
 
