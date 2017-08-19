@@ -6,6 +6,15 @@ public class HandleNetworkFunctions : NetworkBehaviour {
 
     public GameObject TrackedObjects = null;
 
+    [SyncVar]
+    public Vector3 objTranslateStep = Vector3.zero;
+
+    [SyncVar]
+    public Quaternion objRotStep = Quaternion.identity;
+
+    [SyncVar]
+    public float objScaleStep = 1.0f;
+
     public Transform GetLocalTransform() {
         return TrackedObjects.transform.parent;
     }
@@ -86,6 +95,7 @@ public class HandleNetworkFunctions : NetworkBehaviour {
     }
 
     public void Start() {
+        if (!isLocalPlayer) return;
         TrackedObjects = GameObject.Find("TrackedObjects");
     }
 
@@ -119,9 +129,11 @@ public class HandleNetworkFunctions : NetworkBehaviour {
 
     }
 
+
     [Command]
     public void CmdTranslate(int index, Vector3 vec) {
         var g = ObjectManager.Get(index);
+        objTranslateStep = vec;
         g.transform.localPosition += vec;
         SyncObj(index);
         //Debug.Log(vec.x);
@@ -140,6 +152,7 @@ public class HandleNetworkFunctions : NetworkBehaviour {
         avg = GetLocalTransform().TransformPoint(avg);
         axis = GetLocalTransform().TransformVector(axis);
         g.transform.RotateAround(avg, axis, mag);
+        objRotStep = Quaternion.AngleAxis(mag, axis);
         SyncObj(index);
     }
     public void Rotate(int index, Vector3 avg, Vector3 axis, float mag) {
@@ -164,6 +177,7 @@ public class HandleNetworkFunctions : NetworkBehaviour {
 
     [Command]
     public void CmdScale(int index, float scale, Vector3 dir) {
+        objScaleStep = scale;
         RpcScale(index, scale, dir);
     }
 
