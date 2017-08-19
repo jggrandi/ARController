@@ -40,7 +40,23 @@ public class Log{
 //        fResume.Flush();
     }
 
-//    public void saveUserActions()
+    public void saveUserActions(GameObject[] gs) {
+        String line = "";
+        line += Time.realtimeSinceStartup + "";
+        
+        foreach(GameObject player in gs) {
+            line += ";" + 999;
+            line += ";" + player.GetComponent<Lean.Touch.NetHandleTransformations>().modality;
+            line += ";" + player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().targetsTracked;
+            line += ";" + player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().CameraPosition;
+            //line += ";" + player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelectedShared[0];
+            line += ";" + player.GetComponent<HandleNetworkFunctions>().objTranslateStep;
+            line += ";" + player.GetComponent<HandleNetworkFunctions>().objRotStep;
+            line += ";" + player.GetComponent<HandleNetworkFunctions>().objScaleStep;
+        }
+        fUsersActions.WriteLine(line);
+        fUsersActions.Flush();
+    }
 
 	//public void saveVerbose(bool isTraining, int pieceID, bool isSelected, int distanceID, int rotationID, int rotAngle, int modality, GameObject piece, Vector3 cameraPosition, float errorTrans, float errorRot, float errorRotAngle, int trackedTargets)
 	//{

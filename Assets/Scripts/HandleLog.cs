@@ -13,11 +13,15 @@ public class HandleLog : NetworkBehaviour {
 	public int previousPiece = -1;
     public float time = 0;
 
+//    GameObject netMan;
+
     // Use this for initialization
     void Start () {
         if (!isServer ) return;
         if (TestController.tcontrol.sceneIndex == 0) return;
-
+        //netMan = GameObject.Find("MyNetworkManager");
+        //if (netMan == null) return;
+        
         dataSync = gameObject.GetComponent<DataSync>();
         trackedObjects = GameObject.Find("TrackedObjects").gameObject;
         int task = TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIndex];
@@ -51,6 +55,10 @@ public class HandleLog : NetworkBehaviour {
   //          }
   //      }
         
+        if(countFrames%5 == 0) {
+            log.saveUserActions(GameObject.FindGameObjectsWithTag("player"));
+        }
+
 		//if (countFrames % 5 == 0 ) { //&& dataSync.pieceActiveNow < dataSync.piecesList.Count
   //          if(dataSync.pieceTraining < 2)
 		//	    log.saveVerbose(true, dataSync.pieceTraining, isObjSelected, -1, -1, -1, modality, trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow]).gameObject, camPos, dataSync.errorTranslation, dataSync.errorRotation, dataSync.errorRotationAngle, targetsTracked);
