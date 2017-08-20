@@ -21,7 +21,7 @@ namespace Vuforia {
         #endregion // PRIVATE_MEMBER_VARIABLES
 
         public GameObject TrackedObjects;
-        public List<int> trackedTargets;
+        
         #region UNTIY_MONOBEHAVIOUR_METHODS
 
         void Awake() {
@@ -61,7 +61,7 @@ namespace Vuforia {
 
 
         private bool findTrackable(int i) {
-            foreach (int value in trackedTargets)
+            foreach (int value in MainController.control.trackedTargets)
                 if (value == i)
                     return true;
             return false;
@@ -85,7 +85,7 @@ namespace Vuforia {
 
             
             if(!findTrackable(mTrackableBehaviour.Trackable.ID))
-                trackedTargets.Add(mTrackableBehaviour.Trackable.ID);
+                MainController.control.trackedTargets.Add(mTrackableBehaviour.Trackable.ID);
 
             //Debug.Log("Qnt Targets " + trackedTargets.Count );
             //Debug.Log("ID " + mTrackableBehaviour.Trackable.ID);
@@ -97,10 +97,10 @@ namespace Vuforia {
             Collider[] colliderComponents = TrackedObjects.GetComponentsInChildren<Collider>(true);
             Rigidbody[] rigidbodyComponents = TrackedObjects.GetComponentsInChildren<Rigidbody>(true);
 
-            if (findTrackable(mTrackableBehaviour.Trackable.ID)) 
-                trackedTargets.Remove(mTrackableBehaviour.Trackable.ID);
+            if (findTrackable(mTrackableBehaviour.Trackable.ID))
+                MainController.control.trackedTargets.Remove(mTrackableBehaviour.Trackable.ID);
             //Debug.Log("Qnt Targets " + trackedTargets.Count);
-            if (trackedTargets.Count <= 0) { 
+            if (MainController.control.trackedTargets.Count <= 0) { 
 
             //if (MainController.control.targetsTrackedNow <= 0) {
             //    MainController.control.targetsTrackedNow = 0;

@@ -196,8 +196,7 @@ namespace Lean.Touch {
 
             if (!isLocalPlayer) return;
             
-            CmdSetCameraPosition(trackedObjects.transform.InverseTransformPoint(Camera.main.transform.position));
-            CmdTargetsTracked(MainController.control.targetsTrackedNow);
+
 
             if(unselectAllCount > 0 && --unselectAllCount == 0) {
                 UnselectAll();

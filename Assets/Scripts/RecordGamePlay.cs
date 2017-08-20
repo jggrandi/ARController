@@ -3,8 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-
-
+using UnityEngine.Networking;
 
 public class Log{
 
@@ -18,7 +17,7 @@ public class Log{
 		fUsersActions = File.CreateText(Application.persistentDataPath + "/Group-" + group + "-Task-" + task + "---" + System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + "-UserActions.csv");
         string header = "Time";
         for (int i = 0; i < 2; i++) // hard coded for two clients (temporary)
-            header += ";UserID;Modality;PieceID;Translation X;Translation Y;Translation Z;Rotation X;Rotation Y;Rotation Z;Rotation W;Camera X;Camera Y;Camera Z";
+            header += ";UserID;Camera X;Camera Y;Camera Z;PieceID;Modality;TargetsTracked;Translation X;Translation Y;Translation Z;Rotation X;Rotation Y;Rotation Z;Rotation W;Scale";
         fUsersActions.WriteLine(header);
 
         //		fResume = File.CreateText(Application.persistentDataPath + "/User-" + user + "-Task-" + task + "---" + System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + "-Resume.csv");
@@ -45,14 +44,21 @@ public class Log{
         line += Time.realtimeSinceStartup + "";
         
         foreach(GameObject player in gs) {
-            line += ";" + 999;
-            line += ";" + player.GetComponent<Lean.Touch.NetHandleTransformations>().modality;
-            line += ";" + player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().targetsTracked;
-            line += ";" + player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().CameraPosition;
-            //line += ";" + player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelectedShared[0];
-            line += ";" + player.GetComponent<HandleNetworkFunctions>().objTranslateStep;
-            line += ";" + player.GetComponent<HandleNetworkFunctions>().objRotStep;
-            line += ";" + player.GetComponent<HandleNetworkFunctions>().objScaleStep;
+            if (player.GetComponent<NetworkIdentity>().isLocalPlayer) continue;
+            line += ";" + player.GetComponent<PlayerStuff>().userID;
+            Vector3 cam = player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().CameraPosition;
+            line += ";" + cam.x + ";" + cam.y + ";" + cam.z;
+            if (player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelectedShared.Count <= 0) line += ";;;;;;;;;;;";
+            else {
+                line += ";" + player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelectedShared[0];
+                line += ";" + player.GetComponent<Lean.Touch.NetHandleTransformations>().modality;
+                line += ";" + player.GetComponent<PlayerStuff>().targetsTracked;
+                Vector3 trans = player.GetComponent<HandleNetworkFunctions>().objTranslateStep;
+                Quaternion rot = player.GetComponent<HandleNetworkFunctions>().objRotStep;
+                line += ";" + trans.x + ";" + trans.y + ";" + trans.z;
+                line += ";" + rot.x + ";" + rot.y + ";" + rot.z + ";" + rot.w;
+                line += ";" + player.GetComponent<HandleNetworkFunctions>().objScaleStep;
+            }
         }
         fUsersActions.WriteLine(line);
         fUsersActions.Flush();

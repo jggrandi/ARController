@@ -12,6 +12,8 @@ public class MainController : MonoBehaviour {
     private CameraSettings mCamSettings = null;
     private TrackableSettings mTrackableSettings = null;
 
+    public List<int> trackedTargets;
+
     public int targetsTrackedNow = 0;
     public bool isMultipleSelection = false;
 
@@ -27,11 +29,19 @@ public class MainController : MonoBehaviour {
 
     public static bool Landscape = true;
 
+    GameObject netMan;
+    public int userID = -1;
+
     void Start() {
         mCamSettings = FindObjectOfType<CameraSettings>();
         mCamSettings.SwitchAutofocus(true);
         mTrackableSettings = FindObjectOfType<TrackableSettings>();
         mTrackableSettings.SwitchExtendedTracking(true);
+
+        netMan = GameObject.Find("NetworkManager");
+        if (netMan == null) return;
+        userID = int.Parse(netMan.GetComponent<MyNetworkManager>().userID);
+
 
     }
 
