@@ -20,10 +20,15 @@ public class DataSync : NetworkBehaviour {
     public SyncListInt Groups = new SyncListInt();
     public SyncListInt piecesList = new SyncListInt();
     public SyncListBool activeState = new SyncListBool(); // sync the active state of the moving pieces (trackedObjects). it is necessary in case of client reconnections 
-    public SyncListFloat piecesTimer = new SyncListFloat(); 
-//	public SyncListInt posList = new SyncListInt();
-//    public SyncListInt rotationsList = new SyncListInt();
-//    public SyncListInt piecesListRedo = new SyncListInt();
+    public SyncListFloat piecesTimer = new SyncListFloat();
+
+    public List<float> piecesErrorTrans = new List<float>();
+    public List<float> piecesErrorRot = new List<float>();
+    public List<float> piecesErrorScale = new List<float>();
+
+    //	public SyncListInt posList = new SyncListInt();
+    //    public SyncListInt rotationsList = new SyncListInt();
+    //    public SyncListInt piecesListRedo = new SyncListInt();
 
     public int GroupCount = 0;
     public GameObject playerObject;
@@ -48,6 +53,9 @@ public class DataSync : NetworkBehaviour {
             Groups.Add(-1);
             activeState.Add(true); // true because all trackedObjects start active;
             piecesTimer.Add(0.0f); // add seconds for each piece.
+            piecesErrorTrans.Add(0.0f);
+            piecesErrorRot.Add(0.0f);
+            piecesErrorScale.Add(0.0f);
         }
 
         List<int> fullList = new List<int>() { 0, 1 }; // we add the first 2 indices to be the trainning pieces;

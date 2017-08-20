@@ -89,8 +89,9 @@ public class StackController : NetworkBehaviour {
             childStatic.Add(ghosts.transform.GetChild(id).transform);
             
         }
-        if (isServer)
+        if (isServer) {
             dataSync.pieceCounter++;
+        }
         for (int i = 0; i < dataSync.piecesList.Count; i++) {
             trackedObjects.transform.GetChild(i).gameObject.SetActive(dataSync.activeState[i]); // sync active state of the tracked objects, in case of reconnect...
         }
@@ -121,27 +122,10 @@ public class StackController : NetworkBehaviour {
             }
         }
 
-
-
         
         if (!isServer) return; // the server calculate the docking stuff.
 
         UpdatePiecesTime();
-
-        //    if (gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelected.Count > 0) { //if user is selecting an object
-        //    List<int> tempSelectedBoth = new List<int>(); // pieces selected by all players;
-        //                                                  //if (gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelectedShared.Count > 0) { //if other players are selecting pieces
-        //                                                  //    Debug.Log("BOD");
-        //                                                  //} else { //if only this player is selecting the pieces
-        //                                                  //foreach (int i in gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelected) {
-        //                                                  //    Debug.Log("quem: " + i);
-        //    if (!isServer)
-        //        CmdUpdatePieceTime(0);
-
-        //    //}
-        //    //        }
-        //}
-
 
 
         for (int i = 0; i < dataSync.pieceActiveNow.Count; i++) {
@@ -159,6 +143,10 @@ public class StackController : NetworkBehaviour {
             dataSync.errorRotation[i] = Utils.distMatrices(movingObjMatrixRot[i], staticObjMatrixRot[i]);
             dataSync.errorRotationAngle[i] = Quaternion.Angle(childMoving[i].transform.rotation, childStatic[i].transform.rotation);
             dataSync.errorScale[i] = Mathf.Abs(childMoving[i].localScale.x - childStatic[i].localScale.x);
+
+            dataSync.piecesErrorTrans[dataSync.piecesList[dataSync.pieceActiveNow[i]]] = dataSync.errorTranslation[i];
+            dataSync.piecesErrorRot[dataSync.piecesList[dataSync.pieceActiveNow[i]]] = dataSync.errorRotationAngle[i];
+            dataSync.piecesErrorScale[dataSync.piecesList[dataSync.pieceActiveNow[i]]] = dataSync.errorScale[i];
 
             //if(dataSync.errorTranslation < 0.15f && dataSync.errorRotationAngle < 5.0f && dataSync.errorScale < 0.01f) {
             if (dataSync.errorTranslation[i] < 1.65f && dataSync.errorRotationAngle[i] < 150.0f && dataSync.errorScale[i] < 1.1f) { //relaxed values

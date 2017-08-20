@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.Networking;
 
 public class HandleLog : NetworkBehaviour {
@@ -25,7 +26,7 @@ public class HandleLog : NetworkBehaviour {
         dataSync = gameObject.GetComponent<DataSync>();
         trackedObjects = GameObject.Find("TrackedObjects").gameObject;
         int task = TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIndex];
-        log = new Log(TestController.tcontrol.groupID.ToString(), task);
+        log = new Log(TestController.tcontrol.groupID.ToString(), task,new List<int>(dataSync.piecesList));
 
 //		previousPiece = dataSync.pieceActiveNow;
 	}
@@ -57,6 +58,7 @@ public class HandleLog : NetworkBehaviour {
         
         if(countFrames%5 == 0) {
             log.saveUserActions(GameObject.FindGameObjectsWithTag("player"));
+            log.savePiecesState(new List<int>(dataSync.piecesList),new List<float>(dataSync.piecesTimer), dataSync.piecesErrorTrans,dataSync.piecesErrorRot,dataSync.piecesErrorScale);
         }
 
 		//if (countFrames % 5 == 0 ) { //&& dataSync.pieceActiveNow < dataSync.piecesList.Count
@@ -80,6 +82,7 @@ public class HandleLog : NetworkBehaviour {
 
 
 	void OnApplicationQuit(){
+        //log.
         log.close ();
 	}
 
