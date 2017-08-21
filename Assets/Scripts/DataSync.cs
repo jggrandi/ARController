@@ -58,18 +58,20 @@ public class DataSync : NetworkBehaviour {
             piecesErrorScale.Add(0.0f);
         }
 
-        List<int> fullList = new List<int>() { 0, 1 }; // we add the first 2 indices to be the trainning pieces;
-        List<int> randomizedList = Utils.randomizeVector(2,7); // Randomize the blocks order. Store it in an array. 8 trials (the first 2 are the trainning)
+        //List<int> fullList = new List<int>() { 0, 1 }; // we add the first 2 indices to be the trainning pieces;
+        //List<int> randomizedList = Utils.randomizeVector(2,4); // Randomize the blocks order. Store it in an array. 8 trials (the first 2 are the trainning)
+        //fullList.AddRange(randomizedList); //concat the trainning pieces with the randomized pieces.
+        //listToSyncList(ref fullList, ref piecesList); //send to sync list
 
-        fullList.AddRange(randomizedList); //concat the trainning pieces with the randomized pieces.
-
+        List<int> randomizedList = Utils.randomizeVector(taskObjects.transform.childCount); // Randomize the blocks order. Store it in an array. 
+        listToSyncList(ref randomizedList, ref piecesList); //send to sync list
         //List<int> randomizeSecondPart = Utils.randomizeVector(trackedObjects.transform.childCount / 4); // This second sort is for the second half of pieces
 
         //for (int i = 0; i < randomizeSecondPart.Count; i++)
         //    randomizeSecondPart[i] = randomizeSecondPart[i] + (trackedObjects.transform.childCount / 4); // to assing correct values of the second half of pieces.
 
         //randomizedList.AddRange(randomizeSecondPart); // concat the first 6 trials with the last 6 trials
-        listToSyncList(ref fullList, ref piecesList); //send to sync list
+
 
         randomizedList.Clear ();
         //randomizeSecondPart.Clear();
