@@ -59,7 +59,7 @@ public class DataSync : NetworkBehaviour {
         }
 
         List<int> fullList = new List<int>() { 0, 1 }; // we add the first 2 indices to be the trainning pieces;
-        List<int> randomizedList = Utils.randomizeVector(2,10); // Randomize the blocks order. Store it in an array. 8 trials (the first 2 are the trainning)
+        List<int> randomizedList = Utils.randomizeVector(2,7); // Randomize the blocks order. Store it in an array. 8 trials (the first 2 are the trainning)
 
         fullList.AddRange(randomizedList); //concat the trainning pieces with the randomized pieces.
 

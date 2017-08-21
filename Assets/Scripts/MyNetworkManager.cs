@@ -12,7 +12,6 @@ public class MyNetworkManager : NetworkManager {
 
     public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId) {
         if (TestController.tcontrol.sceneIndex == TestController.tcontrol.tasksToPermute + 1) return; //The +1 is because of the howtouse initial task
-        Debug.Log("AAA");
         base.OnServerAddPlayer(conn, playerControllerId);
         
     }

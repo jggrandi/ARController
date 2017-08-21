@@ -25,11 +25,6 @@ public class Log{
         foreach (int piece in piecesList)
             header += ";P" + piece + "Time" + ";P" + piece + "ErrorTrans" + ";P" + piece + "ErrorRot" + ";P" + piece + "ErrorScale";
         fPiecesState.WriteLine(header);
-        //		fResume = File.CreateText(Application.persistentDataPath + "/User-" + user + "-Task-" + task + "---" + System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + "-Resume.csv");
-        //string header = "Time;PieceID;IsSelected;DistanceID;RotationID;RotAngle;Modality;Translation X;Translation Y;Translation Z;Rotation X;Rotation Y;Rotation Z;Rotation W;Camera X;Camera Y;Camera Z;Error Trans Mat; Error Rot Mat;Error Rot Angle;Tracked Targets";
-        //fUsersActions.WriteLine(header);
-        //		header = "PieceID;DistanceID;RotationID;RotAngle;Time;Error Trans;Error Rot;Error Rot Angle";
-        //		fResume.WriteLine(header);
 
     }
 
@@ -79,56 +74,9 @@ public class Log{
         }
         fPiecesState.WriteLine(line);
         fPiecesState.Flush();
-        //foreach (GameObject player in gs) {
-        //    if (player.GetComponent<NetworkIdentity>().isLocalPlayer) continue;
-        //    line += ";" + player.GetComponent<PlayerStuff>().userID;
-        //    Vector3 cam = player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().CameraPosition;
-        //    line += ";" + cam.x + ";" + cam.y + ";" + cam.z;
-        //    if (player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelectedShared.Count <= 0) line += ";;;;;;;;;;;";
-        //    else {
-        //        line += ";" + player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelectedShared[0];
-        //        line += ";" + player.GetComponent<Lean.Touch.NetHandleTransformations>().modality;
-        //        line += ";" + player.GetComponent<PlayerStuff>().targetsTracked;
-        //        Vector3 trans = player.GetComponent<HandleNetworkFunctions>().objTranslateStep;
-        //        Quaternion rot = player.GetComponent<HandleNetworkFunctions>().objRotStep;
-        //        line += ";" + trans.x + ";" + trans.y + ";" + trans.z;
-        //        line += ";" + rot.x + ";" + rot.y + ";" + rot.z + ";" + rot.w;
-        //        line += ";" + player.GetComponent<HandleNetworkFunctions>().objScaleStep;
-        //    }
-        //}
-        //fUsersActions.WriteLine(line);
-        //fUsersActions.Flush();
+
     }
 
-    //public void saveVerbose(bool isTraining, int pieceID, bool isSelected, int distanceID, int rotationID, int rotAngle, int modality, GameObject piece, Vector3 cameraPosition, float errorTrans, float errorRot, float errorRotAngle, int trackedTargets)
-    //{
-
-    //    String line = "";
-
-    //   	line += Time.realtimeSinceStartup + "";
-    //       line += ";";
-    //       if (isTraining) line += "T";
-    //       line += pieceID + ";" + isSelected + ";" + distanceID + ";" + rotationID + ";" + rotAngle + ";" + modality;
-    //       line += ";" + piece.transform.localPosition.x + ";" + piece.transform.localPosition.y + ";" + piece.transform.localPosition.z;
-    //       line += ";" + piece.transform.localRotation.x + ";" + piece.transform.localRotation.y + ";" + piece.transform.localRotation.z + ";" + piece.transform.localRotation.w;
-    //       line += ";" + cameraPosition.x + ";" + cameraPosition.y + ";" + cameraPosition.z;
-    //	line += ";" + errorTrans + ";" + errorRot + ";" + errorRotAngle;
-    //	line += ";" + trackedTargets;
-    //       fVerbose.WriteLine(line);
-    //       fVerbose.Flush();
-    //}
-
-
-    //public void saveResume(bool isTraining, int pieceID, int distanceID, int rotationID, int rotAngle,  float time, float errorTrans, float errorRot, float errorRotAngle)
-    //{
-    //	String line = "";
-    //       if (isTraining) line += "T";
-    //	line += pieceID + ";" + distanceID + ";" + rotationID + ";" + rotAngle;
-    //	line += ";" + time;
-    //	line += ";" + errorTrans + ";" + errorRot + ";" + errorRotAngle;
-    //	fResume.WriteLine(line);
-    //	fResume.Flush();
-    //}
 
 }
 

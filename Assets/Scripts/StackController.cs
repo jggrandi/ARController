@@ -148,8 +148,8 @@ public class StackController : NetworkBehaviour {
             dataSync.piecesErrorRot[dataSync.piecesList[dataSync.pieceActiveNow[i]]] = dataSync.errorRotationAngle[i];
             dataSync.piecesErrorScale[dataSync.piecesList[dataSync.pieceActiveNow[i]]] = dataSync.errorScale[i];
 
-            //if(dataSync.errorTranslation < 0.15f && dataSync.errorRotationAngle < 5.0f && dataSync.errorScale < 0.01f) {
-            if (dataSync.errorTranslation[i] < 1.65f && dataSync.errorRotationAngle[i] < 150.0f && dataSync.errorScale[i] < 1.1f) { //relaxed values
+            if(dataSync.errorTranslation[i] < 0.15f && dataSync.errorRotationAngle[i] < 5.0f && dataSync.errorScale[i] < 0.01f) {
+            //if (dataSync.errorTranslation[i] < 1.65f && dataSync.errorRotationAngle[i] < 150.0f && dataSync.errorScale[i] < 1.1f) { //relaxed values
                 SetNextPiece(i);
             }
         }
@@ -163,7 +163,7 @@ public class StackController : NetworkBehaviour {
 
         if (dataSync.pieceCounter == dataSync.piecesList.Count)
             ChangeScene();
-        Debug.Log(dataSync.piecesList[dataSync.pieceCounter]);
+        // Debug.Log(dataSync.piecesList[dataSync.pieceCounter]);
 
         CmdSetEnabledObject(index, dataSync.pieceCounter);
 
