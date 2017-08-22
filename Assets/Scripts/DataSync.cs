@@ -47,54 +47,63 @@ public class DataSync : NetworkBehaviour {
     //public int[] vecRotAngle = { 45, 45, 45, 90, 90, 90, 45, 45, 45, 90, 90, 90 }; //Crianças, não façam isso em casa.
 
     public override void OnStartServer() {
-        GameObject taskObjects = GameObject.Find("Objects").transform.FindChild("TaskObjects").gameObject;
-        if (taskObjects == null) return;
-        GameObject ghosts = GameObject.Find("Ghosts").gameObject;
 
+        if(TestController.tcontrol.sceneIndex == 0) {
+            GameObject trainningObjects = GameObject.Find("Objects").transform.FindChild("TrainningObjects").gameObject;
+            Debug.Log(trainningObjects.transform.childCount);
+            if (trainningObjects == null) return;
+            GameObject trainningGhosts = GameObject.Find("Objects").transform.FindChild("TrainningObjectsGhost").gameObject;
+            for (int i = 0; i < trainningObjects.transform.childCount; i++) {
+                Groups.Add(-1);
+                activeState.Add(true); // true because all trackedObjects start active;
+                piecesTimer.Add(0.0f); // add seconds for each piece.
+                piecesErrorTrans.Add(0.0f);
+                piecesErrorRot.Add(0.0f);
+                piecesErrorScale.Add(0.0f);
+            }
+            List<int> randomizedList = Utils.randomizeVector(trainningGhosts.transform.childCount); // Randomize the blocks order. Store it in an array. 
+            listToSyncList(ref randomizedList, ref piecesList); //send to sync list
 
-        for (int i = 0; i< taskObjects.transform.childCount; i++) {
-            Groups.Add(-1);
-            activeState.Add(true); // true because all trackedObjects start active;
-            piecesTimer.Add(0.0f); // add seconds for each piece.
-            piecesErrorTrans.Add(0.0f);
-            piecesErrorRot.Add(0.0f);
-            piecesErrorScale.Add(0.0f);
+            randomizedList.Clear();
+            randomizedList = Utils.randomizeVector(trainningGhosts.transform.childCount); // Randomize rotations. First half
+            listToSyncList(ref randomizedList, ref rotationsList);
+
+            randomizedList.Clear();
+            randomizedList = Utils.randomizeVector(trainningGhosts.transform.childCount); // Randomize rotations. First half
+            listToSyncList(ref randomizedList, ref scaleList);
+
         }
 
-        //List<int> fullList = new List<int>() { 0, 1 }; // we add the first 2 indices to be the trainning pieces;
-        //List<int> randomizedList = Utils.randomizeVector(2,4); // Randomize the blocks order. Store it in an array. 8 trials (the first 2 are the trainning)
-        //fullList.AddRange(randomizedList); //concat the trainning pieces with the randomized pieces.
-        //listToSyncList(ref fullList, ref piecesList); //send to sync list
+        if (TestController.tcontrol.sceneIndex != 0) {
 
-        List<int> randomizedList = Utils.randomizeVector(8); // Randomize the blocks order. Store it in an array. 
-        listToSyncList(ref randomizedList, ref piecesList); //send to sync list
-        //List<int> randomizeSecondPart = Utils.randomizeVector(trackedObjects.transform.childCount / 4); // This second sort is for the second half of pieces
+            GameObject taskObjects = GameObject.Find("Objects").transform.FindChild("TaskObjects").gameObject;
+            Debug.Log(taskObjects.transform.childCount);
+            if (taskObjects == null) return;
+            GameObject ghosts = GameObject.Find("Objects").transform.FindChild("TaskObjectsGhost").gameObject;
+            Debug.Log(ghosts.transform.childCount);
 
-        //for (int i = 0; i < randomizeSecondPart.Count; i++)
-        //    randomizeSecondPart[i] = randomizeSecondPart[i] + (trackedObjects.transform.childCount / 4); // to assing correct values of the second half of pieces.
+            for (int i = 0; i < taskObjects.transform.childCount; i++) {
+                Groups.Add(-1);
+                activeState.Add(true); // true because all trackedObjects start active;
+                piecesTimer.Add(0.0f); // add seconds for each piece.
+                piecesErrorTrans.Add(0.0f);
+                piecesErrorRot.Add(0.0f);
+                piecesErrorScale.Add(0.0f);
+            }
+            List<int> randomizedList = Utils.randomizeVector(ghosts.transform.childCount); // Randomize the blocks order. Store it in an array. 
+            listToSyncList(ref randomizedList, ref piecesList); //send to sync list
 
-        //randomizedList.AddRange(randomizeSecondPart); // concat the first 6 trials with the last 6 trials
+            randomizedList.Clear();
+            randomizedList = Utils.randomizeVector(ghosts.transform.childCount); // Randomize rotations. First half
+            listToSyncList(ref randomizedList, ref rotationsList);
+
+            randomizedList.Clear();
+            randomizedList = Utils.randomizeVector(ghosts.transform.childCount); // Randomize rotations. First half
+            listToSyncList(ref randomizedList, ref scaleList);
+
+        }
 
 
-        randomizedList.Clear ();
-      
-		randomizedList = Utils.randomizeVector(ghosts.transform.childCount); // Randomize rotations. First half
-        listToSyncList(ref randomizedList, ref rotationsList);
-
-        randomizedList.Clear();
-        randomizedList = Utils.randomizeVector(ghosts.transform.childCount); // Randomize rotations. First half
-        listToSyncList(ref randomizedList, ref scaleList);
-
-        //randomizeSecondPart = Utils.randomizeVector(trackedObjects.transform.childCount / 4); // This second sort is for the second half of pieces
-
-        //for (int i = 0; i < randomizeSecondPart.Count; i++)
-        //    randomizeSecondPart[i] = randomizeSecondPart[i] + (trackedObjects.transform.childCount / 4); // to assing correct values of the second half of pieces.
-        //randomizedList.AddRange(randomizeSecondPart); // concat the first 6 rotations index with the last 6 rotations index
-        //listToSyncList(ref randomizedList, ref rotationsList);
-
-        //randomizedList.Clear();
-        //randomizedList = Utils.randomizeVector(vecTransIndex); // Randomize rotations. Store it in an array.
-        //listToSyncList(ref randomizedList, ref posList);
 
     }
 

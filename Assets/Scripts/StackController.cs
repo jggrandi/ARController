@@ -36,10 +36,8 @@ public class StackController : NetworkBehaviour {
         ghosts.transform.GetChild(id).transform.rotation = new Quaternion(rx, ry, rz, rw);
     }
 
-    void setSpawnScale(int id) {
-        
+    void setSpawnScale(int id) {        
         float scale = TestController.tcontrol.spawnScales[dataSync.scaleList[id]];
-        Debug.Log(id + " - " + scale);
         ghosts.transform.GetChild(id).transform.localScale = new Vector3(scale, scale, scale);
     }
 
@@ -92,7 +90,7 @@ public class StackController : NetworkBehaviour {
         dataSync = handler.GetComponent<DataSync>();
 
         trackedObjects = GameObject.Find("TrackedObjects");
-        if (TestController.tcontrol.sceneIndex == 0) return;
+        //if (TestController.tcontrol.sceneIndex == 0) return;
 
         ghosts = GameObject.Find("Ghosts");
         if (ghosts == null) return;
@@ -122,8 +120,10 @@ public class StackController : NetworkBehaviour {
 
         for (int i = 0; i < dataSync.piecesList.Count; i++) {
             trackedObjects.transform.GetChild(i).gameObject.SetActive(dataSync.activeState[i]); // sync active state of the tracked objects, in case of reconnect...
-            setSpawnRot(i);
-            setSpawnScale(i);
+            if (TestController.tcontrol.sceneIndex != 0) {
+                setSpawnRot(i);
+                setSpawnScale(i);
+            }
         }
 
     }
@@ -136,7 +136,7 @@ public class StackController : NetworkBehaviour {
         if (isServer && dataSync.changeScene)
             ChangeScene();
 
-        if (TestController.tcontrol.sceneIndex == 0) return;
+        //if (TestController.tcontrol.sceneIndex == 0) return;
 
         for (int i = 0; i < dataSync.piecesList.Count; i++) { //this toggle on or off the visibility of the pieces based on their state.
             int pieceID = dataSync.piecesList[i]; // get the pieceid

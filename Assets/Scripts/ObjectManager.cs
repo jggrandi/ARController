@@ -9,6 +9,7 @@ public class ObjectManager : MonoBehaviour {
 
     public GameObject trackedObjects;
     Transform parent;
+    Transform parentGhost;
 
     public static GameObject Get(int i) {
         return manager.list[i];
@@ -21,17 +22,20 @@ public class ObjectManager : MonoBehaviour {
     void Start () {
 
         trackedObjects = GameObject.Find("TrackedObjects");
+        GameObject trackedObjectsGhost = GameObject.Find("Ghosts");
         GameObject pai = GameObject.Find("Objects");
-        if (TestController.tcontrol.sceneIndex == 0)
-            parent = pai.transform.Find("HowToUseObjects").transform;
-        else
+        if (TestController.tcontrol.sceneIndex == 0) {
+            parent = pai.transform.Find("TrainningObjects").transform;
+            parentGhost = pai.transform.Find("TrainningObjectsGhost").transform;
+        } else {
             parent = pai.transform.Find("TaskObjects").transform;
+            parentGhost = pai.transform.Find("TaskObjectsGhost").transform;
+        }
 
         if (TestController.tcontrol.sceneIndex == 2)
             GameObject.Find("Objects").transform.Find("WallTask2").gameObject.SetActive(true);
         else if (TestController.tcontrol.sceneIndex == 3)
             GameObject.Find("Objects").transform.Find("WallTask3").gameObject.SetActive(true);
-
 
         int count = parent.childCount;
         for (int i = 0; i < count; i++) {
@@ -40,8 +44,12 @@ public class ObjectManager : MonoBehaviour {
             obj.GetComponent<ObjectGroupId>().index = i;
             list.Add(parent.GetChild(0).gameObject);
             parent.GetChild(0).transform.parent = trackedObjects.transform;
-
         }
+        count = parentGhost.childCount;
+        for (int i = 0; i < count; i++) {
+            parentGhost.GetChild(0).transform.parent = trackedObjectsGhost.transform;
+        }
+
 
         //GameObject aleatoryObjects = pai.transform.Find("AleatoryObjects").gameObject;
 
