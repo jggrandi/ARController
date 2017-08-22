@@ -81,14 +81,26 @@ public class StackController : NetworkBehaviour {
         ghosts = GameObject.Find("Ghosts");
         if (ghosts == null) return;
 
-        for (int i = 0; i < dataSync.pieceActiveNow.Count; i++) {
-            //trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow[i]]).gameObject.SetActive(true); //activate the first piece
-            int id = dataSync.piecesList[dataSync.pieceActiveNow[i]];
-            ghosts.transform.GetChild(id).gameObject.SetActive(true); //activate the destination (static) piece.
-            childMoving.Add(trackedObjects.transform.GetChild(id));
-            childStatic.Add(ghosts.transform.GetChild(id).transform);
-            
+        dataSync.pieceActiveNow.Add(dataSync.piecesList[0]);
+        dataSync.pieceActiveNow.Add(dataSync.piecesList[1]);
+
+        foreach(int piece in dataSync.pieceActiveNow) { 
+            ghosts.transform.GetChild(piece).gameObject.SetActive(true); //activate the destination (static) piece.
+            childMoving.Add(trackedObjects.transform.GetChild(piece).transform);
+            childStatic.Add(ghosts.transform.GetChild(piece).transform);
         }
+
+        //ghosts.transform.GetChild(id).gameObject.SetActive(true); //activate the destination (static) piece.
+        //dataSync.pieceActiveNow.Add(1);
+
+        //for (int i = 0; i < dataSync.pieceActiveNow.Count; i++) {
+        //    //trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow[i]]).gameObject.SetActive(true); //activate the first piece
+        //    int id = dataSync.piecesList[dataSync.pieceActiveNow[i]];
+        //    ghosts.transform.GetChild(id).gameObject.SetActive(true); //activate the destination (static) piece.
+        //    childMoving.Add(trackedObjects.transform.GetChild(id));
+        //    childStatic.Add(ghosts.transform.GetChild(id).transform);
+
+        //}
         if (isServer) {
             dataSync.pieceCounter++;
         }
@@ -109,28 +121,32 @@ public class StackController : NetworkBehaviour {
         if (TestController.tcontrol.sceneIndex == 0) return;
 
         for (int i = 0; i < dataSync.piecesList.Count; i++) { //this toggle on or off the visibility of the pieces based on their state.
-            int pieceID = dataSync.piecesList[i]; // get the pieceif
+            int pieceID = dataSync.piecesList[i]; // get the pieceid
             bool active = ghosts.transform.GetChild(pieceID).gameObject.activeSelf; //get the ghost of the piece state
-            if (active && !dataSync.pieceActiveNow.Contains(i)) { // if the ghost is active and their moving piece is not in the list of pieces to dock now
+            if (active && !dataSync.pieceActiveNow.Contains(pieceID)) { // if the ghost is active and their moving piece is not in the list of pieces to dock now
                 ghosts.transform.GetChild(pieceID).gameObject.SetActive(false); //deactivate their ghost
-                trackedObjects.transform.GetChild(pieceID).gameObject.SetActive(false); //and the moving piece
-                if (isServer)
-                    ChangeActiveState(pieceID, false); //the server keeps the active state of the pieces in case of clients reconnect.
+                //trackedObjects.transform.GetChild(pieceID).gameObject.SetActive(false); //and the moving piece
+                //if (isServer)
+                //    ChangeActiveState(pieceID, false); //the server keeps the active state of the pieces in case of clients reconnect.
                 CmdClearSelection(pieceID); // clear the selection to that piece
-            } else if(!active && dataSync.pieceActiveNow.Contains(i)){ // if the ghost is not active and its moving piece is in the list to dock 
+            } else if(!active && dataSync.pieceActiveNow.Contains(pieceID)){ // if the ghost is not active and its moving piece is in the list to dock 
                 ghosts.transform.GetChild(pieceID).gameObject.SetActive(true); //activate the ghost.
             }
         }
 
-        
+        for (int i = 0; i < dataSync.piecesList.Count; i++) {
+            trackedObjects.transform.GetChild(i).gameObject.SetActive(dataSync.activeState[i]); // sync active state of the tracked objects, in case of reconnect...
+        }
+
+
         if (!isServer) return; // the server calculate the docking stuff.
 
         UpdatePiecesTime();
 
 
         for (int i = 0; i < dataSync.pieceActiveNow.Count; i++) {
-            childMoving[i] = trackedObjects.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow[i]]); // take the moving object 
-            childStatic[i] = ghosts.transform.GetChild(dataSync.piecesList[dataSync.pieceActiveNow[i]]); // and its ghost
+            childMoving[i] = trackedObjects.transform.GetChild(dataSync.pieceActiveNow[i]); // take the moving object 
+            childStatic[i] = ghosts.transform.GetChild(dataSync.pieceActiveNow[i]); // and its ghost
 
             movingObjMatrixTrans[i] = Matrix4x4.TRS(childMoving[i].transform.position, Quaternion.identity, new Vector3(1.0f, 1.0f, 1.0f));
             movingObjMatrixRot[i] = Matrix4x4.TRS(new Vector3(0, 0, 0), childMoving[i].transform.rotation, new Vector3(1.0f, 1.0f, 1.0f));
@@ -149,7 +165,10 @@ public class StackController : NetworkBehaviour {
             dataSync.piecesErrorScale[dataSync.piecesList[dataSync.pieceActiveNow[i]]] = dataSync.errorScale[i];
 
             if(dataSync.errorTranslation[i] < 0.15f && dataSync.errorRotationAngle[i] < 5.0f && dataSync.errorScale[i] < 0.01f) {
-            //if (dataSync.errorTranslation[i] < 1.65f && dataSync.errorRotationAngle[i] < 150.0f && dataSync.errorScale[i] < 1.1f) { //relaxed values
+                //if (dataSync.errorTranslation[i] < 1.65f && dataSync.errorRotationAngle[i] < 150.0f && dataSync.errorScale[i] < 1.1f) { //relaxed values
+                Debug.Log(dataSync.pieceActiveNow[i]);
+                ChangeActiveState(dataSync.pieceActiveNow[i], false); //the server keeps the active state of the pieces in case of clients reconnect.
+
                 SetNextPiece(i);
             }
         }
@@ -201,7 +220,7 @@ public class StackController : NetworkBehaviour {
 
     [Command]
     void CmdSetEnabledObject(int id, int value) {
-        dataSync.pieceActiveNow[id] = value;
+        dataSync.pieceActiveNow[id] = dataSync.piecesList[value];
     }
 
 

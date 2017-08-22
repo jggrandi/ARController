@@ -36,7 +36,7 @@ public class DataSync : NetworkBehaviour {
     [SyncVar]
     public int usersConnected = 0;
 
-    public SyncListInt pieceActiveNow = new SyncListInt() { 0, 1 };
+    public SyncListInt pieceActiveNow = new SyncListInt();
     public SyncListFloat errorTranslation = new SyncListFloat() { 0.0f, 0.0f };
     public SyncListFloat errorRotation = new SyncListFloat() { 0.0f, 0.0f };
     public SyncListFloat errorRotationAngle = new SyncListFloat() { 0.0f, 0.0f };
