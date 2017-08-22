@@ -159,6 +159,20 @@ public class StackController : NetworkBehaviour {
 
         if (!isServer) return; // the server calculate the docking stuff.
 
+
+        if (Input.GetKeyUp("6"))
+            SetNextPiece(0);
+        if (Input.GetKeyUp("4"))
+            SetPreviousPiece(0);
+
+
+        if (Input.GetKeyUp("3")) 
+            SetNextPiece(1);
+        if (Input.GetKeyUp("1"))
+            SetPreviousPiece(1);
+
+
+
         UpdatePiecesTime();
 
 
@@ -194,6 +208,8 @@ public class StackController : NetworkBehaviour {
     }
 
     
+
+    
     public void SetNextPiece(int index) {
 
         CmdIncrementPieceCounter();
@@ -203,6 +219,16 @@ public class StackController : NetworkBehaviour {
         if (dataSync.pieceCounter-1 == dataSync.piecesList.Count)
             ChangeScene();
         // Debug.Log(dataSync.piecesList[dataSync.pieceCounter]);
+
+        CmdSetEnabledObject(index, dataSync.pieceCounter);
+
+    }
+
+    public void SetPreviousPiece(int index) {
+
+        if (dataSync.pieceCounter <= 0) return;
+
+        CmdDecrementPieceCounter();
 
         CmdSetEnabledObject(index, dataSync.pieceCounter);
 
@@ -231,6 +257,11 @@ public class StackController : NetworkBehaviour {
     [Command]
     void CmdIncrementPieceCounter() {
         dataSync.pieceCounter++;
+    }
+
+    [Command]
+    void CmdDecrementPieceCounter() {
+        dataSync.pieceCounter--;
     }
 
     //[Command]
