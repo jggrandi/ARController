@@ -34,7 +34,7 @@ public class MainController : MonoBehaviour {
 
     void Start() {
         mCamSettings = FindObjectOfType<CameraSettings>();
-        mCamSettings.SwitchAutofocus(true);
+        mCamSettings.SwitchAutofocus(false);
         mTrackableSettings = FindObjectOfType<TrackableSettings>();
         mTrackableSettings.SwitchExtendedTracking(true);
 

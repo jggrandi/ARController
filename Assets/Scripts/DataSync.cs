@@ -66,7 +66,7 @@ public class DataSync : NetworkBehaviour {
         //fullList.AddRange(randomizedList); //concat the trainning pieces with the randomized pieces.
         //listToSyncList(ref fullList, ref piecesList); //send to sync list
 
-        List<int> randomizedList = Utils.randomizeVector(taskObjects.transform.childCount); // Randomize the blocks order. Store it in an array. 
+        List<int> randomizedList = Utils.randomizeVector(8); // Randomize the blocks order. Store it in an array. 
         listToSyncList(ref randomizedList, ref piecesList); //send to sync list
         //List<int> randomizeSecondPart = Utils.randomizeVector(trackedObjects.transform.childCount / 4); // This second sort is for the second half of pieces
 
