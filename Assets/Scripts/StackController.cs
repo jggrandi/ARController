@@ -28,6 +28,22 @@ public class StackController : NetworkBehaviour {
     GUIStyle titleStyle = new GUIStyle();
     GUIStyle titleStyle2 = new GUIStyle();
 
+    void setSpawnRot(int id) {
+        float rx = TestController.tcontrol.spawnRotations[dataSync.rotationsList[id] * 4];
+        float ry = TestController.tcontrol.spawnRotations[dataSync.rotationsList[id] * 4 + 1];
+        float rz = TestController.tcontrol.spawnRotations[dataSync.rotationsList[id] * 4 + 2];
+        float rw = TestController.tcontrol.spawnRotations[dataSync.rotationsList[id] * 4 + 3];
+        ghosts.transform.GetChild(id).transform.rotation = new Quaternion(rx, ry, rz, rw);
+    }
+
+    void setSpawnScale(int id) {
+        
+        float scale = TestController.tcontrol.spawnScales[dataSync.scaleList[id]];
+        Debug.Log(id + " - " + scale);
+        ghosts.transform.GetChild(id).transform.localScale = new Vector3(scale, scale, scale);
+    }
+
+
     void OnGUI() {
 
         //GameObject handler = GameObject.Find("MainHandler");
@@ -80,9 +96,11 @@ public class StackController : NetworkBehaviour {
 
         ghosts = GameObject.Find("Ghosts");
         if (ghosts == null) return;
-
-        dataSync.pieceActiveNow.Add(dataSync.piecesList[0]);
-        dataSync.pieceActiveNow.Add(dataSync.piecesList[1]);
+        if (isServer) {
+            dataSync.pieceActiveNow.Add(dataSync.piecesList[0]);
+            dataSync.pieceActiveNow.Add(dataSync.piecesList[1]);
+            dataSync.pieceCounter++;
+        }
 
         foreach(int piece in dataSync.pieceActiveNow) { 
             ghosts.transform.GetChild(piece).gameObject.SetActive(true); //activate the destination (static) piece.
@@ -101,11 +119,11 @@ public class StackController : NetworkBehaviour {
         //    childStatic.Add(ghosts.transform.GetChild(id).transform);
 
         //}
-        if (isServer) {
-            dataSync.pieceCounter++;
-        }
+
         for (int i = 0; i < dataSync.piecesList.Count; i++) {
             trackedObjects.transform.GetChild(i).gameObject.SetActive(dataSync.activeState[i]); // sync active state of the tracked objects, in case of reconnect...
+            setSpawnRot(i);
+            setSpawnScale(i);
         }
 
     }
@@ -160,15 +178,14 @@ public class StackController : NetworkBehaviour {
             dataSync.errorRotationAngle[i] = Quaternion.Angle(childMoving[i].transform.rotation, childStatic[i].transform.rotation);
             dataSync.errorScale[i] = Mathf.Abs(childMoving[i].localScale.x - childStatic[i].localScale.x);
 
-            dataSync.piecesErrorTrans[dataSync.piecesList[dataSync.pieceActiveNow[i]]] = dataSync.errorTranslation[i];
-            dataSync.piecesErrorRot[dataSync.piecesList[dataSync.pieceActiveNow[i]]] = dataSync.errorRotationAngle[i];
-            dataSync.piecesErrorScale[dataSync.piecesList[dataSync.pieceActiveNow[i]]] = dataSync.errorScale[i];
+            dataSync.piecesErrorTrans[dataSync.pieceActiveNow[i]] = dataSync.errorTranslation[i];
+            dataSync.piecesErrorRot[dataSync.pieceActiveNow[i]] = dataSync.errorRotationAngle[i];
+            dataSync.piecesErrorScale[dataSync.pieceActiveNow[i]] = dataSync.errorScale[i];
 
             if(dataSync.errorTranslation[i] < 0.15f && dataSync.errorRotationAngle[i] < 5.0f && dataSync.errorScale[i] < 0.01f) {
                 //if (dataSync.errorTranslation[i] < 1.65f && dataSync.errorRotationAngle[i] < 150.0f && dataSync.errorScale[i] < 1.1f) { //relaxed values
-                Debug.Log(dataSync.pieceActiveNow[i]);
+                //Debug.Log(dataSync.pieceActiveNow[i]);
                 ChangeActiveState(dataSync.pieceActiveNow[i], false); //the server keeps the active state of the pieces in case of clients reconnect.
-
                 SetNextPiece(i);
             }
         }
@@ -180,7 +197,9 @@ public class StackController : NetworkBehaviour {
 
         CmdIncrementPieceCounter();
 
-        if (dataSync.pieceCounter == dataSync.piecesList.Count)
+        //Debug.Log(dataSync.pieceCounter-1 + " - " + dataSync.piecesList.Count);
+
+        if (dataSync.pieceCounter-1 == dataSync.piecesList.Count)
             ChangeScene();
         // Debug.Log(dataSync.piecesList[dataSync.pieceCounter]);
 

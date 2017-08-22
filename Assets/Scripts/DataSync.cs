@@ -27,7 +27,8 @@ public class DataSync : NetworkBehaviour {
     public List<float> piecesErrorScale = new List<float>();
 
     //	public SyncListInt posList = new SyncListInt();
-    //    public SyncListInt rotationsList = new SyncListInt();
+    public SyncListInt rotationsList = new SyncListInt();
+    public SyncListInt scaleList = new SyncListInt();
     //    public SyncListInt piecesListRedo = new SyncListInt();
 
     public int GroupCount = 0;
@@ -48,6 +49,8 @@ public class DataSync : NetworkBehaviour {
     public override void OnStartServer() {
         GameObject taskObjects = GameObject.Find("Objects").transform.FindChild("TaskObjects").gameObject;
         if (taskObjects == null) return;
+        GameObject ghosts = GameObject.Find("Ghosts").gameObject;
+
 
         for (int i = 0; i< taskObjects.transform.childCount; i++) {
             Groups.Add(-1);
@@ -74,9 +77,14 @@ public class DataSync : NetworkBehaviour {
 
 
         randomizedList.Clear ();
-        //randomizeSecondPart.Clear();
+      
+		randomizedList = Utils.randomizeVector(ghosts.transform.childCount); // Randomize rotations. First half
+        listToSyncList(ref randomizedList, ref rotationsList);
 
-		//randomizedList = Utils.randomizeVector(trackedObjects.transform.childCount/4); // Randomize rotations. First half
+        randomizedList.Clear();
+        randomizedList = Utils.randomizeVector(ghosts.transform.childCount); // Randomize rotations. First half
+        listToSyncList(ref randomizedList, ref scaleList);
+
         //randomizeSecondPart = Utils.randomizeVector(trackedObjects.transform.childCount / 4); // This second sort is for the second half of pieces
 
         //for (int i = 0; i < randomizeSecondPart.Count; i++)

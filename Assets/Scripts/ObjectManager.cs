@@ -43,6 +43,14 @@ public class ObjectManager : MonoBehaviour {
 
         }
 
+        //GameObject aleatoryObjects = pai.transform.Find("AleatoryObjects").gameObject;
+
+        //for(int i = 0; i< aleatoryObjects.transform.childCount; i++) {
+        //    list.Add(aleatoryObjects.transform.GetChild(0).gameObject);
+        //    aleatoryObjects.transform.GetChild(0).transform.parent = trackedObjects.transform;
+        //}
+
+
         manager = this;
     }
 

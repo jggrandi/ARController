@@ -69,9 +69,9 @@ public class Log{
         String line = "";
         line += Time.realtimeSinceStartup + "";
 
-        for(int i = 0; i < pieces.Count; i++) {
-            line += ";" + timers[pieces[i]] + ";" + errorTrans[pieces[i]] + ";" + errorRot[pieces[i]] + ";" + errorScale[pieces[i]];
-        }
+        foreach (int piece in pieces)
+            line += ";" + timers[piece] + ";" + errorTrans[piece] + ";" + errorRot[piece] + ";" + errorScale[piece];
+        
         fPiecesState.WriteLine(line);
         fPiecesState.Flush();
 

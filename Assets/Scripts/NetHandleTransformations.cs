@@ -225,8 +225,12 @@ namespace Lean.Touch {
                 else if (gestureOperation == 2) setCurrentOperation(OPERATION_RESIZE);
 
                 if (gestureOperation != 2) {
-//                    this.gameObject.GetComponent<HandleNetworkFunctions>().Rotate(index, avg, axisTwist, angleTwist);
-                    this.gameObject.GetComponent<HandleNetworkFunctions>().Rotate(index, avg, axis + axisTwist, pos+ angleTwist);
+                    Quaternion q = Quaternion.AngleAxis(angleTwist, axisTwist);
+                    q *= Quaternion.AngleAxis(pos, axis);
+                    this.gameObject.GetComponent<HandleNetworkFunctions>().CmdRotStep(q);
+                    this.gameObject.GetComponent<HandleNetworkFunctions>().Rotate(index, avg, axisTwist, angleTwist);
+                    this.gameObject.GetComponent<HandleNetworkFunctions>().Rotate(index, avg, axis, pos);
+                    //this.gameObject.GetComponent<HandleNetworkFunctions>().Rotate(index, avg, Vector3.Scale (axis, axisTwist), pos * angleTwist);
                 }
                 if (gestureOperation != 1) {
                     Vector3 dir = g.transform.position - avg;

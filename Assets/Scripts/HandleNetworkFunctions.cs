@@ -152,7 +152,7 @@ public class HandleNetworkFunctions : NetworkBehaviour {
         avg = GetLocalTransform().TransformPoint(avg);
         axis = GetLocalTransform().TransformVector(axis);
         g.transform.RotateAround(avg, axis, mag);
-        objRotStep = Quaternion.AngleAxis(mag, axis);
+        //objRotStep = Quaternion.AngleAxis(mag, axis);
         SyncObj(index);
     }
     public void Rotate(int index, Vector3 avg, Vector3 axis, float mag) {
@@ -161,6 +161,10 @@ public class HandleNetworkFunctions : NetworkBehaviour {
         CmdRotate(index, avg, axis, mag);
     }
 
+    [Command]
+    public void CmdRotStep(Quaternion q) {
+        objRotStep = q;
+    }
 
     [ClientRpc]
     public void RpcScale(int index, float scale, Vector3 dir) {
