@@ -177,7 +177,7 @@ public class StackController : NetworkBehaviour {
 
 
         for (int i = 0; i < dataSync.pieceActiveNow.Count; i++) {
-            if (TestController.tcontrol.sceneIndex == 0 && dataSync.pieceActiveNow[i] == -1) continue;
+            if (dataSync.pieceActiveNow[i] == -1) continue;
             childMoving[i] = trackedObjects.transform.GetChild(dataSync.pieceActiveNow[i]); // take the moving object 
             childStatic[i] = ghosts.transform.GetChild(dataSync.pieceActiveNow[i]); // and its ghost
 
@@ -220,19 +220,22 @@ public class StackController : NetworkBehaviour {
             if (count == dataSync.piecesList.Count)
                 ChangeScene();
         } else {
-            CmdIncrementPieceCounter();
+            
 
             //Debug.Log(dataSync.pieceCounter-1 + " - " + dataSync.piecesList.Count);
 
             CmdSaveResumed(dataSync.pieceActiveNow[index]);
             ClearSelection(dataSync.pieceActiveNow[index]); // clear the selection to that piece
 
-
-            if (dataSync.pieceCounter - 1 == dataSync.piecesList.Count)
+            if (dataSync.pieceCounter == dataSync.piecesList.Count) // end of docking
                 ChangeScene();
-            // Debug.Log(dataSync.piecesList[dataSync.pieceCounter]);
-
-            CmdSetEnabledObject(index, dataSync.pieceCounter);
+            else {
+                CmdIncrementPieceCounter();
+                if (dataSync.pieceCounter - 1 == dataSync.piecesList.Count - 1) // if it is the one before the last piece, there is no more pieces in the pieceslist
+                    dataSync.pieceActiveNow[index] = -1; //set the piece to -1. it avoid the invalid alocation 
+                else
+                    CmdSetEnabledObject(index, dataSync.pieceCounter);
+            }
         }
         
 
