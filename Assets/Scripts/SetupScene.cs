@@ -80,7 +80,7 @@ public class SetupScene : NetworkBehaviour {
 
     [Command]
     void CmdStartScene() {
-        MyNetworkManager.singleton.ServerChangeScene("Trainning");
+        MyNetworkManager.singleton.ServerChangeScene("Tasks");
     }
 
     [Command]
