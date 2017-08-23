@@ -20,7 +20,7 @@ public class Log{
         fResumed = File.CreateText(Application.persistentDataPath + "/Group-" + group + "-Task-" + task + "---" + System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + "-Resumed.csv");
         string header = "Time";
         for (int i = 0; i < 2; i++) // hard coded for two clients (temporary)
-            header += ";UserID;Camera X;Camera Y;Camera Z;PieceID;Modality;TargetsTracked;Translation X;Translation Y;Translation Z;Rotation X;Rotation Y;Rotation Z;Rotation W;Scale";
+            header += ";UserID;Camera X;Camera Y;Camera Z;PieceID;Modality;CurrentOperation;TargetsTracked;Translation X;Translation Y;Translation Z;Rotation X;Rotation Y;Rotation Z;Rotation W;Scale";
         fUsersActions.WriteLine(header);
 
         header = "Time";
@@ -58,6 +58,7 @@ public class Log{
             else {
                 line += ";" + player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelectedShared[0];
                 line += ";" + player.GetComponent<Lean.Touch.NetHandleTransformations>().modality;
+                line += ";" + player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().currentOperation;
                 line += ";" + player.GetComponent<PlayerStuff>().targetsTracked;
                 Vector3 trans = player.GetComponent<HandleNetworkFunctions>().objTranslateStep;
                 Quaternion rot = player.GetComponent<HandleNetworkFunctions>().objRotStep;
