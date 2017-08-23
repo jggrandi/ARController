@@ -9,13 +9,15 @@ public class Log{
 
 	StreamWriter fUsersActions;
 	StreamWriter fPiecesState;
+    StreamWriter fResumed;
 
-	public Log(string group, int task,List<int> piecesList)
+    public Log(string group, int task,List<int> piecesList)
 	{
 
         Debug.Log(Application.persistentDataPath);
 		fUsersActions = File.CreateText(Application.persistentDataPath + "/Group-" + group + "-Task-" + task + "---" + System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + "-UserActions.csv");
         fPiecesState = File.CreateText(Application.persistentDataPath + "/Group-" + group + "-Task-" + task + "---" + System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + "-PiecesState.csv");
+        fResumed = File.CreateText(Application.persistentDataPath + "/Group-" + group + "-Task-" + task + "---" + System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + "-Resumed.csv");
         string header = "Time";
         for (int i = 0; i < 2; i++) // hard coded for two clients (temporary)
             header += ";UserID;Camera X;Camera Y;Camera Z;PieceID;Modality;TargetsTracked;Translation X;Translation Y;Translation Z;Rotation X;Rotation Y;Rotation Z;Rotation W;Scale";
@@ -26,17 +28,21 @@ public class Log{
             header += ";P" + piece + "Time" + ";P" + piece + "ErrorTrans" + ";P" + piece + "ErrorRot" + ";P" + piece + "ErrorScale";
         fPiecesState.WriteLine(header);
 
+        header = "Time;Piece;TotalTime;U1PieceTime;U2PieceTime";
+        fResumed.WriteLine(header);
     }
 
     public void close()
 	{
 		fUsersActions.Close();
 		fPiecesState.Close();
+        fResumed.Close();
 	}
 
     public void flush() {
         fUsersActions.Flush();
         fPiecesState.Flush();
+        fResumed.Flush();
     }
 
     public void saveUserActions(GameObject[] gs) {
@@ -75,6 +81,14 @@ public class Log{
         fPiecesState.WriteLine(line);
         fPiecesState.Flush();
 
+    }
+
+    public void saveResumed(int piece, float time, float timeU1, float timeU2) {
+        String line = "";
+        line += Time.realtimeSinceStartup + "";
+        line += ";" + piece + ";" + time + ";" + timeU1 + ";" + timeU2;
+        fResumed.WriteLine(line);
+        fResumed.Flush();
     }
 
 

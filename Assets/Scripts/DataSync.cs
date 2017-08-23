@@ -20,7 +20,9 @@ public class DataSync : NetworkBehaviour {
     public SyncListInt Groups = new SyncListInt();
     public SyncListInt piecesList = new SyncListInt();
     public SyncListBool activeState = new SyncListBool(); // sync the active state of the moving pieces (trackedObjects). it is necessary in case of client reconnections 
-    public SyncListFloat piecesTimer = new SyncListFloat();
+    public SyncListFloat piecesTimerTotal = new SyncListFloat();
+    public SyncListFloat piecesTimerU1 = new SyncListFloat();
+    public SyncListFloat piecesTimerU2 = new SyncListFloat();
 
     public List<float> piecesErrorTrans = new List<float>();
     public List<float> piecesErrorRot = new List<float>();
@@ -56,7 +58,9 @@ public class DataSync : NetworkBehaviour {
             for (int i = 0; i < trainningObjects.transform.childCount; i++) {
                 Groups.Add(-1);
                 activeState.Add(true); // true because all trackedObjects start active;
-                piecesTimer.Add(0.0f); // add seconds for each piece.
+                piecesTimerTotal.Add(0.0f); // add seconds for each piece.
+                piecesTimerU1.Add(0.0f); // add seconds for each piece.
+                piecesTimerU2.Add(0.0f); // add seconds for each piece.
                 piecesErrorTrans.Add(0.0f);
                 piecesErrorRot.Add(0.0f);
                 piecesErrorScale.Add(0.0f);
@@ -77,15 +81,14 @@ public class DataSync : NetworkBehaviour {
         if (TestController.tcontrol.sceneIndex != 0) {
 
             GameObject taskObjects = GameObject.Find("Objects").transform.FindChild("TaskObjects").gameObject;
-            Debug.Log(taskObjects.transform.childCount);
             if (taskObjects == null) return;
             GameObject ghosts = GameObject.Find("Objects").transform.FindChild("TaskObjectsGhost").gameObject;
-            Debug.Log(ghosts.transform.childCount);
-
             for (int i = 0; i < taskObjects.transform.childCount; i++) {
                 Groups.Add(-1);
                 activeState.Add(true); // true because all trackedObjects start active;
-                piecesTimer.Add(0.0f); // add seconds for each piece.
+                piecesTimerTotal.Add(0.0f); // add seconds for each piece.
+                piecesTimerU1.Add(0.0f); // add seconds for each piece.
+                piecesTimerU2.Add(0.0f); // add seconds for each piece.
                 piecesErrorTrans.Add(0.0f);
                 piecesErrorRot.Add(0.0f);
                 piecesErrorScale.Add(0.0f);

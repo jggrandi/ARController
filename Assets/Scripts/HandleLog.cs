@@ -58,7 +58,7 @@ public class HandleLog : NetworkBehaviour {
         
         if(countFrames%5 == 0) {
             log.saveUserActions(GameObject.FindGameObjectsWithTag("player"));
-            log.savePiecesState(new List<int>(dataSync.piecesList),new List<float>(dataSync.piecesTimer), dataSync.piecesErrorTrans,dataSync.piecesErrorRot,dataSync.piecesErrorScale);
+            log.savePiecesState(new List<int>(dataSync.piecesList),new List<float>(dataSync.piecesTimerTotal), dataSync.piecesErrorTrans,dataSync.piecesErrorRot,dataSync.piecesErrorScale);
         }
 
 		//if (countFrames % 5 == 0 ) { //&& dataSync.pieceActiveNow < dataSync.piecesList.Count
@@ -71,8 +71,8 @@ public class HandleLog : NetworkBehaviour {
         countFrames++;
     }
 
-    public void SaveResumed() {
-        //time = Time.realtimeSinceStartup - time;
+    public void SaveResumed(int pieceID) {
+        log.saveResumed(pieceID,dataSync.piecesTimerTotal[pieceID],dataSync.piecesTimerU1[pieceID],dataSync.piecesTimerU2[pieceID]);
         //if(dataSync.pieceTraining < 2)
         //    log.saveResume(true, dataSync.pieceTraining, -1, -1, -1, time, dataSync.errorTranslation, dataSync.errorRotation, dataSync.errorRotationAngle);
         //else
