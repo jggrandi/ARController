@@ -102,6 +102,7 @@ public class HandleNetworkFunctions : NetworkBehaviour {
     [ClientRpc]
     public void RpcLockTransform(int index, Vector3 position, Quaternion rotation) {
         if (isLocalPlayer) return;
+        if (TrackedObjects == null) TrackedObjects = GameObject.Find("TrackedObjects");
         position = GetLocalTransform().TransformPoint(position);
         rotation = rotation * GetLocalTransform().rotation;
         ObjectManager.Get(index).transform.position = position;
