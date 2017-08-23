@@ -293,31 +293,31 @@ namespace Lean.Touch {
         }
 
         private void OnFingerTap(LeanFinger finger) {
-            // Ignore this tap?
-            if (!isLocalPlayer) return;
-            //Debug.Log(MainController.control.isTapForTransform);
-            //if (MainController.control.isTapForTransform) return;
+            //// Ignore this tap?
+            //if (!isLocalPlayer) return;
+            ////Debug.Log(MainController.control.isTapForTransform);
+            ////if (MainController.control.isTapForTransform) return;
 
-            if (LeanTouch.Fingers.Count > 1) return;
-            if (IgnoreGuiFingers == true && finger.StartedOverGui == true) return;
-            if (RequiredTapCount > 0 && finger.TapCount != RequiredTapCount) return;
-            if (RequiredTapInterval > 0 && (finger.TapCount % RequiredTapInterval) != 0) return;
+            //if (LeanTouch.Fingers.Count > 1) return;
+            //if (IgnoreGuiFingers == true && finger.StartedOverGui == true) return;
+            //if (RequiredTapCount > 0 && finger.TapCount != RequiredTapCount) return;
+            //if (RequiredTapInterval > 0 && (finger.TapCount % RequiredTapInterval) != 0) return;
 
-            var ray = finger.GetRay();// Get ray for finger
-            var hit = default(RaycastHit);// Stores the raycast hit info
-            var component = default(Component);// Stores the component we hit (Collider)
+            //var ray = finger.GetRay();// Get ray for finger
+            //var hit = default(RaycastHit);// Stores the raycast hit info
+            //var component = default(Component);// Stores the component we hit (Collider)
 
-            if (Physics.Raycast(ray, out hit, float.PositiveInfinity, LayerMask) == true) { // if the finger touched an object
-                component = hit.collider;
-                Select(finger, component);
-                CmdSyncSelected();
-            } else {
-                //if (MainController.control.isTapForTransform) return;
-                if (objSelected.Count > 0) {
-                    unselectAllCount = 10;
+            //if (Physics.Raycast(ray, out hit, float.PositiveInfinity, LayerMask) == true) { // if the finger touched an object
+            //    component = hit.collider;
+            //    Select(finger, component);
+            //    CmdSyncSelected();
+            //} else {
+            //    //if (MainController.control.isTapForTransform) return;
+            //    if (objSelected.Count > 0) {
+            //        unselectAllCount = 10;
                     
-                }
-            }
+            //    }
+            //}
         }
 
         private void OnFingerHeldDown(LeanFinger finger) {

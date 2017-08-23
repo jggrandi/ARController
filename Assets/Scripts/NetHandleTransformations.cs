@@ -21,6 +21,10 @@ namespace Lean.Touch {
         float countFrames = 0;
         Matrix4x4 prevMatrix;
         public int modality = -1;
+
+        bool tapOnObject = false;
+        Component component = default(Component);// Stores the component we hit (Collider)
+        LeanFinger fingerOnObject;
         //int currentOperation = 0; /* move rotate resize move_cel */
 
         void Start() {
@@ -78,6 +82,12 @@ namespace Lean.Touch {
                 if (LeanTouch.Fingers.Count <= 0) {
                     translationZ = 0;
                     MainController.control.isTapForTransform = false;
+                    if (tapOnObject) {
+                        gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().Select(fingerOnObject, component);
+                        gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().CmdSyncSelected();
+                        fingerOnObject = null;
+                        tapOnObject = false;
+                    }
                     if (!MainController.control.lockTransform)
                         CmdUpdateModality(-1);
                 }
@@ -124,7 +134,35 @@ namespace Lean.Touch {
 
         float transFactor = 0.005f;
         private void OnFingerTap(LeanFinger finger) {
-            //if (TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIndex] == 1) return;
+            // Ignore this tap?
+            if (!isLocalPlayer) return;
+            //Debug.Log(MainController.control.isTapForTransform);
+            //if (MainController.control.isTapForTransform) return;
+
+            if (LeanTouch.Fingers.Count > 1) return;
+            if (IgnoreGuiFingers == true && finger.StartedOverGui == true) return;
+            if (gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().RequiredTapCount > 0 && finger.TapCount != gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().RequiredTapCount) return;
+            if (gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().RequiredTapInterval > 0 && (finger.TapCount % gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().RequiredTapInterval) != 0) return;
+
+            var ray = finger.GetRay();// Get ray for finger
+            var hit = default(RaycastHit);// Stores the raycast hit info
+            
+
+            if (Physics.Raycast(ray, out hit, float.PositiveInfinity, gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().LayerMask) == true) { // if the finger touched an object
+                component = hit.collider;
+                tapOnObject = true;
+                fingerOnObject = finger;
+            } else {
+                //if (MainController.control.isTapForTransform) return;
+                if (gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelected.Count > 0) {
+                    gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().unselectAllCount = 10;
+                    
+
+                }
+                fingerOnObject = null;
+                tapOnObject = false;
+            }
+
             translationZ = 1;
             if (gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelected.Count != 0)
                 MainController.control.isTapForTransform = true;
