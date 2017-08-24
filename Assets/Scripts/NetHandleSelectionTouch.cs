@@ -88,7 +88,7 @@ namespace Lean.Touch {
         protected virtual void OnEnable() {
             // Hook into the events we need
             LeanTouch.OnFingerTap += OnFingerTap;
-            LeanTouch.OnFingerHeldDown += OnFingerHeldDown;
+            //LeanTouch.OnFingerHeldDown += OnFingerHeldDown;
             LeanTouch.OnFingerDown += OnFingerDown;
         }
 
@@ -96,7 +96,7 @@ namespace Lean.Touch {
             // Unhook the events
             LeanTouch.OnFingerDown -= OnFingerDown;
             LeanTouch.OnFingerTap -= OnFingerTap;
-            LeanTouch.OnFingerHeldDown -= OnFingerHeldDown;
+            //LeanTouch.OnFingerHeldDown -= OnFingerHeldDown;
         }
 
         public GameObject lines;
