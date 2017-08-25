@@ -24,7 +24,7 @@ public class ObjectManager : MonoBehaviour {
         trackedObjects = GameObject.Find("TrackedObjects");
         GameObject trackedObjectsGhost = GameObject.Find("Ghosts");
         GameObject pai = GameObject.Find("Objects");
-        if (TestController.tcontrol.sceneIndex == 0) {
+        if (TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIndex] == -1) {
             parent = pai.transform.Find("TrainningObjects").transform;
             parentGhost = pai.transform.Find("TrainningObjectsGhost").transform;
         } else {
@@ -32,9 +32,9 @@ public class ObjectManager : MonoBehaviour {
             parentGhost = pai.transform.Find("TaskObjectsGhost").transform;
         }
 
-        if (TestController.tcontrol.sceneIndex == 2)
+        if (TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIndex] == 1)
             GameObject.Find("Objects").transform.Find("WallTask2").gameObject.SetActive(true);
-        else if (TestController.tcontrol.sceneIndex == 3)
+        else if (TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIndex] == 2)
             GameObject.Find("Objects").transform.Find("WallTask3").gameObject.SetActive(true);
 
         int count = parent.childCount;

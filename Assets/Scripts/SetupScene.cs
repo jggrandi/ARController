@@ -25,6 +25,7 @@ public class SetupScene : NetworkBehaviour {
             if (TestController.tcontrol.sceneIndex > TestController.tcontrol.taskOrder.Count - 1)
                 MyNetworkManager.singleton.ServerChangeScene("EndTest");
 
+            Debug.Log(TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIndex]);
             GameObject.Find("InputFieldSceneID").GetComponent<InputField>().text = TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIndex].ToString();
             GameObject.Find("InputFieldSceneNow").GetComponent<InputField>().text = TestController.tcontrol.sceneIndex.ToString();            
         } else{

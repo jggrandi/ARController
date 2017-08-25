@@ -24,7 +24,7 @@ public class StackController : NetworkBehaviour {
 
     DataSync dataSync;
 
-
+    bool sceneChanged = false;
     GUIStyle titleStyle = new GUIStyle();
     GUIStyle titleStyle2 = new GUIStyle();
 
@@ -217,7 +217,7 @@ public class StackController : NetworkBehaviour {
             ClearSelection(dataSync.pieceActiveNow[index]); // clear the selection to that piece
             dataSync.pieceActiveNow[index] = -1;
             count++;
-            if (count == dataSync.piecesList.Count)
+            if (count == dataSync.piecesList.Count && !sceneChanged)
                 ChangeScene();
         } else {
             
@@ -300,7 +300,10 @@ public class StackController : NetworkBehaviour {
     void ChangeScene() {
         //RpcIncrementSceneID();
         TestController.tcontrol.sceneIndex++;
+        Debug.Log(TestController.tcontrol.sceneIndex);
         MyNetworkManager.singleton.ServerChangeScene("SetupTest");
+        Debug.Log("Trocou");
+        sceneChanged = true;
     }
 
 

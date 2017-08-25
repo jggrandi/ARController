@@ -54,7 +54,7 @@ public class Log{
             line += ";" + player.GetComponent<PlayerStuff>().userID;
             Vector3 cam = player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().CameraPosition;
             line += ";" + cam.x + ";" + cam.y + ";" + cam.z;
-            if (player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelectedShared.Count <= 0) line += ";;;;;;;;;;;";
+            if (player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelectedShared.Count <= 0) line += ";;;;;;;;;;;;";
             else {
                 line += ";" + player.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelectedShared[0];
                 line += ";" + player.GetComponent<Lean.Touch.NetHandleTransformations>().modality;
