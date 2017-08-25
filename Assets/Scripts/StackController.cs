@@ -205,9 +205,9 @@ public class StackController : NetworkBehaviour {
             if (dataSync.errorTranslation[i] < stackToleranceTranslation && dataSync.errorRotationAngle[i] < stackToleranceRotation && dataSync.errorScale[i] < stackToleranceScale) {
                 //if (dataSync.errorTranslation[i] < 1.65f && dataSync.errorRotationAngle[i] < 150.0f && dataSync.errorScale[i] < 1.1f) { //relaxed values
                 //Debug.Log(dataSync.pieceActiveNow[i]);
-                Debug.Log("EnCAiXOu");
-                //ChangeActiveState(dataSync.pieceActiveNow[i], false); //the server keeps the active state of the pieces in case of clients reconnect.
-               // SetNextPiece(i);
+                //Debug.Log("EnCAiXOu");
+                ChangeActiveState(dataSync.pieceActiveNow[i], false); //the server keeps the active state of the pieces in case of clients reconnect.
+                SetNextPiece(i);
             }
         }
 
