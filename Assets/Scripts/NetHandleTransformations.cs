@@ -122,7 +122,7 @@ namespace Lean.Touch {
         }
 
 
-        float transFactor = 0.0005f;
+        float transFactor = 0.001f;
         private void OnFingerTap(LeanFinger finger) {
             //if (TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIndex] == 1) return;
             translationZ = 1;
