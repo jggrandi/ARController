@@ -122,7 +122,7 @@ namespace Lean.Touch {
         }
 
 
-        float transFactor = 0.005f;
+        float transFactor = 0.0005f;
         private void OnFingerTap(LeanFinger finger) {
             //if (TestController.tcontrol.taskOrder[TestController.tcontrol.sceneIndex] == 1) return;
             translationZ = 1;
@@ -157,8 +157,7 @@ namespace Lean.Touch {
                     Vector3 avg = avgCenterOfObjects(gameObject.GetComponent<Lean.Touch.NetHandleSelectionTouch>().objSelected);
                     Vector3 translate = (avg - Camera.main.transform.position).normalized * finger.ScreenDelta.y * transFactor * Utils.ToutchSensibility; // obj pos - cam pos
 
-                    this.gameObject.GetComponent<HandleNetworkFunctions>().Translate(index, Utils.PowVec3(translate, 1.2f));
-
+                    //this.gameObject.GetComponent<HandleNetworkFunctions>().Translate(index, Utils.PowVec3(translate, 1.2f));
                     this.gameObject.GetComponent<HandleNetworkFunctions>().Translate(index, translate);
                 }
             }

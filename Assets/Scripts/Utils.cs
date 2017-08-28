@@ -44,7 +44,7 @@ public static class Utils {
          * MotoX2 420
          * S6 577
          * Nexeus5 445
-         * 
+         * iPad 2 Air 264
          * */
         ToutchSensibility = 350/Screen.dpi;
         if (ToutchSensibility < 1) {
