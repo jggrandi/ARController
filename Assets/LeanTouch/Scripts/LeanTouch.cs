@@ -328,7 +328,7 @@ namespace Lean.Touch
 		protected virtual void OnGUI()
 		{
 			// Show simulated multi fingers?
-			if (FingerTexture != null && Input.touchCount == 0 && Fingers.Count > 1)
+			if (FingerTexture != null && Fingers.Count > 0)
 			{
 				for (var i = Fingers.Count - 1; i >= 0; i--)
 				{
